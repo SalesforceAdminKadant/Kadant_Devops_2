@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="25.96pt" version="1.1" xmlns="http://www.w3.org/2000/svg" height="25.96pt" viewBox="0 0 25.96 25.96" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs>
+  <clipPath id="Clip0">
+   <path d="M0 0 L25.4597 0 L25.4597 25.4597 L0 25.4597 L0 0 Z" transform="translate(0.25, 0.25)"/>
+  </clipPath>
+  <clipPath id="Clip1">
+   <path d="M0 0 L9.216 0 L9.216 5.8768 L0 5.8768 L0 0 Z" transform="translate(12.859, 14.0142)"/>
+  </clipPath>
+  <clipPath id="Clip2">
+   <path d="M0 0 L1.0784 0 L1.0784 10.604 L0 10.604 L0 0 Z" transform="translate(13.4238, 1.62304)"/>
+  </clipPath>
+  <clipPath id="Clip3">
+   <path d="M0 0 L9.1512 0 L9.1512 5.9888 L0 5.9888 L0 0 Z" transform="translate(2.71424, 11.9878)"/>
+  </clipPath>
+ </defs>
+ <g id="Background">
+  <g id="Layer_1" clip-path="url(#Clip0)">
+   <g id="HATCH_5_" clip-path="url(#Clip1)">
+    <path style="fill:#161413; fill-rule:evenodd;stroke:none;" d="M0 0.6288 L1.0824 1.244 L1.0736 0 L0 0.6288 Z" transform="translate(12.859, 14.0142)"/>
+    <path style="fill:#161413; fill-rule:evenodd;stroke:none;" d="M0 0.6296 L1.0816 1.2456 L1.0728 0 L0 0.6296 Z" transform="translate(14.4862, 14.939)"/>
+    <path style="fill:#161413; fill-rule:evenodd;stroke:none;" d="M0 0.6288 L1.0824 1.2448 L1.0744 0 L0 0.6288 Z" transform="translate(16.1118, 15.867)"/>
+    <path style="fill:#161413; fill-rule:evenodd;stroke:none;" d="M0 0.6288 L1.08 1.2456 L1.0744 0 L0 0.6288 Z" transform="translate(17.7398, 16.7918)"/>
+    <path style="fill:#161413; fill-rule:evenodd;stroke:none;" d="M0 0.6288 L1.0824 1.2456 L1.0744 0 L0 0.6288 Z" transform="translate(19.3662, 17.7182)"/>
+    <path style="fill:#161413; fill-rule:evenodd;stroke:none;" d="M0 0.6312 L1.0824 1.2472 L1.0744 0 L0 0.6312 Z" transform="translate(20.9926, 18.6438)"/>
+   </g>
+   <g id="HATCH_1_" clip-path="url(#Clip2)">
+    <path style="fill:#161413; fill-rule:evenodd;stroke:none;" d="M1.0784 1.2448 L1.0784 0 L0 0.6232 L1.0784 1.2448 Z" transform="translate(13.4238, 10.9822)"/>
+    <path style="fill:#161413; fill-rule:evenodd;stroke:none;" d="M1.0784 1.2456 L1.0784 0 L0 0.6232 L1.0784 1.2456 Z" transform="translate(13.4238, 9.11024)"/>
+    <path style="fill:#161413; fill-rule:evenodd;stroke:none;" d="M1.0784 1.2448 L1.0784 0 L0 0.6224 L1.0784 1.2448 Z" transform="translate(13.4238, 7.23904)"/>
+    <path style="fill:#161413; fill-rule:evenodd;stroke:none;" d="M1.0784 1.2448 L1.0784 0 L0 0.6232 L1.0784 1.2448 Z" transform="translate(13.4238, 5.36704)"/>
+    <path style="fill:#161413; fill-rule:evenodd;stroke:none;" d="M1.0784 1.2448 L1.0784 0 L0 0.6232 L1.0784 1.2448 Z" transform="translate(13.4238, 3.49504)"/>
+    <path style="fill:#161413; fill-rule:evenodd;stroke:none;" d="M1.0784 1.2448 L1.0784 0 L0 0.6232 L1.0784 1.2448 Z" transform="translate(13.4238, 1.62304)"/>
+   </g>
+   <g id="HATCH_2_" clip-path="url(#Clip3)">
+    <path style="fill:#161413; fill-rule:evenodd;stroke:none;" d="M1.0728 0 L0 0.6304 L1.084 1.244 L1.0728 0 Z" transform="translate(10.7814, 11.9878)"/>
+    <path style="fill:#161413; fill-rule:evenodd;stroke:none;" d="M1.072 0 L0 0.632 L1.0832 1.2448 L1.072 0 Z" transform="translate(9.16864, 12.9358)"/>
+    <path style="fill:#161413; fill-rule:evenodd;stroke:none;" d="M1.0736 0 L0 0.6312 L1.084 1.244 L1.0736 0 Z" transform="translate(7.55424, 13.8854)"/>
+    <path style="fill:#161413; fill-rule:evenodd;stroke:none;" d="M1.0728 0 L0 0.6312 L1.0832 1.2448 L1.0728 0 Z" transform="translate(5.94144, 14.8342)"/>
+    <path style="fill:#161413; fill-rule:evenodd;stroke:none;" d="M1.0728 0 L0 0.6312 L1.0832 1.2456 L1.0728 0 Z" transform="translate(4.32784, 15.783)"/>
+    <path style="fill:#161413; fill-rule:evenodd;stroke:none;" d="M1.0728 0 L0 0.6312 L1.0832 1.244 L1.0728 0 Z" transform="translate(2.71424, 16.7326)"/>
+   </g>
+   <path style="fill:none;stroke:#000000; stroke-width:1.19088; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:none;" d="M24.2688 12.1344 C24.2688 18.8363 18.8363 24.2688 12.1344 24.2688 C5.43276 24.2688 0 18.8363 0 12.1344 C0 5.43276 5.43276 0 12.1344 0 C18.8363 0 24.2688 5.43276 24.2688 12.1344 Z" transform="translate(0.84544, 0.84544)"/>
+   <path style="fill:none;stroke:#000000; stroke-width:0.794; stroke-linecap:butt; stroke-linejoin:miter; stroke-dasharray:none;" d="M0 0 L9.2464 5.2488 " transform="translate(13.0142, 13.0438)"/>
+   <path style="fill:none;stroke:#000000; stroke-width:0.8; stroke-linecap:butt; stroke-linejoin:miter; stroke-dasharray:none;" d="M0 5.3272 L9.1416 0 " transform="translate(3.90544, 12.9782)"/>
+   <path style="fill:none;stroke:#000000; stroke-width:0.798; stroke-linecap:butt; stroke-linejoin:miter; stroke-dasharray:none;" d="M0 0 L0 11.2936 " transform="translate(13.0734, 2.12464)"/>
+  </g>
+ </g>
+</svg>

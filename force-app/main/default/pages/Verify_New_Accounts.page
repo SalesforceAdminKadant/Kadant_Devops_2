@@ -1,0 +1,12 @@
+<apex:page standardcontroller="New_Account__c" tabstyle="New_Account__c" recordsetvar="allAccounts" lightningStylesheets="true">
+    <div align="center">
+        <flow:interview name="Verify_New_Accounts" finishlocation="/lightning/o/New_Account__c/list?filterName={!filterId}">
+            <apex:param name="varSelectedNewAccounts" value="{!selected}"/> 
+        </flow:interview>
+    </div> 
+    <div align="center"> 
+        <apex:form > 
+            <apex:commandbutton value="Cancel" action="{!cancel}"/> 
+        </apex:form>
+    </div> 
+</apex:page>

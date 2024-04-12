@@ -1,0 +1,21 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <lightning-card>        
+        <div class="slds-m-bottom_small">            
+            <lightning-button label="Open to Print" onclick={openWindowToPrintClick}></lightning-button>
+        </div>
+        <lightning-layout multiple-rows="true">
+            <lightning-layout-item size="12" padding="around-medium">
+                <div style="height: 555px;">
+                    <lightning-datatable
+                            columns={columns}
+                            data={assets}
+                            hide-checkbox-column="true"                        
+                            key-field="id"
+                            onsort={doSorting}>
+                    </lightning-datatable>
+                </div>
+            </lightning-layout-item>      
+        </lightning-layout>      
+    </lightning-card>    
+</template>

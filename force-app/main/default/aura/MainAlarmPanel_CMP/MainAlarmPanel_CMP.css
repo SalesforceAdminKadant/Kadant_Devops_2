@@ -1,0 +1,75 @@
+.THIS h4 {
+    font-weight: 600;
+    font-size: 1rem;
+}
+.THIS .slds-icon-standard-coaching {
+    background-color: red;
+}
+.THIS .slds-modal__container {
+    width: 80%!important
+}
+.THIS .backgroundClass{
+    /*background-color:darkcyan;*/
+    background-color:#ebebeb;
+}
+.THIS .paddingClass{
+    padding-top:10px; 
+    padding-left: 5px; 
+    padding-right: 5px; 
+    padding-bottom:10px
+}
+.THIS .toggleList {
+    display: none;
+}
+.THIS .head-drop{
+    display:none;
+}
+.THIS .head-drop{
+    background: white;
+    /*display: none;*/
+    position: absolute;
+    z-index: 100000;
+    top: 94%;
+    padding: 0 18px 10px;
+    background: #fff;
+    border: 1px solid #e7e7e7;
+    border-top: none;
+}
+.THIS .header-drop a{
+    color:#000;
+    padding: 6px 0;
+    font-style: normal;
+    line-height: 1.2;
+    letter-spacing: .03em;
+}
+.THIS .header-drop a:hover{
+    font-weight:bold;
+}
+.THIS .header-drop{
+    padding: 6px 3px;
+}
+@media screen and (max-width:1024px){
+    .THIS .backgroundClass{
+        background-color:#ebebeb;
+    }
+    .THIS .paddingClass{
+        padding-top:10px; 
+        padding-left: 5px; 
+        /*padding-right: 5px;*/ 
+        padding-bottom:10px
+    }
+    
+}
+@media screen and (max-width : 487px)
+{
+    .THIS .backgroundClass{
+        background-color:#ebebeb;
+    }
+    .THIS .paddingClass{
+        padding-top:10px; 
+        padding-left: 5px; 
+        /*padding-right: 5px;*/ 
+        padding-bottom:10px
+    }
+        
+}

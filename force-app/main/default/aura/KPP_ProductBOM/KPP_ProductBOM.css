@@ -1,0 +1,11 @@
+.THIS .colSmall {
+        width:80px !important;
+        overflow: hidden;
+    	white-space: nowrap;
+}
+
+.THIS .colMiddle {
+        width:130px !important;
+        overflow: hidden;
+    	white-space: nowrap;
+}

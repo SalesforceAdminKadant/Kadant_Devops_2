@@ -1,0 +1,36 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global" controller="KAI_Search_Products_Engine">
+	<aura:attribute name="ProductId" type="String" default=""/>
+    <aura:attribute name="ProductNum" type="String" default=""/>
+    <aura:attribute name="ProductBom" type="String" />
+    <aura:attribute name="SelectedDivisionsContainer" type="Map" default="{}"/>
+    <aura:attribute name="SelectedPartListContainer" type="Map" default="{}"/>
+    <aura:handler name="init" value="{!this}" action="{!c.loadScreen}"/>
+
+    <br/>
+    
+<table class="slds-table slds-table_cell-buffer">
+            <thead class="kadant-searchresults-head">
+                <tr>
+                <th>Seq</th>
+                <th>Part</th>
+                <th>Description</th>
+                <th>Qty per</th>
+                <th>Pos dwg</th>
+                </tr>
+            </thead>
+            <tbody class="kadant-searchresults-body">
+                <aura:iteration items="{!v.ProductBom}" var="bomitem"> 
+				<tr>
+                <td><div class="slds-truncate">{!bomitem[1]}</div></td>
+				<td><div class="slds-truncate"><a href="{!'&#47;psgeagent&#47;s&#47;product-details?pnum='+bomitem[3]+'&amp;pid='+bomitem[0]}" id="{!bomitem[0]}" title="{!bomitem[3]}" aura:id="bomassy">{!bomitem[3]}</a></div></td>
+				<td><div class="slds-truncate">{!bomitem[4]}</div></td>
+                <td><div title="Qty per">{!bomitem[2]}</div></td>
+				<td><div title="Product code">{!bomitem[5]}</div></td>
+				</tr>
+				</aura:iteration>
+            </tbody>
+</table>
+<br/>
+<a href="{!'/psgeagent/apex/PSGE_community_PDF_bom?pid='+v.ProductId}" target="_BLANK"><lightning:button class="ButtonReOrder" variant="brand" label="Print PDF" title="Print PDF" onclick="" iconName="utility:page" iconPosition="left"/></a>  
+    
+</aura:component>

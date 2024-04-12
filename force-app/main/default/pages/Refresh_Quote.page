@@ -1,0 +1,25 @@
+<apex:page lightningStylesheets="true" standardController="Opportunity" showHeader="false" sidebar="false" docType="html-5.0">
+
+    <script src="/soap/ajax/42.0/connection.js" type="text/javascript"></script>
+    <script src="/soap/ajax/42.0/apex.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+    if ("{!Opportunity.Division__c}" != "KSD")
+    {
+        alert('Currently, only KSD quotes can be refreshed.');
+    }else{
+        var r = confirm('Do you want to refresh this quote?');
+        if (r == true)
+        {
+            var varId = "{!Opportunity.Id}";
+            sforce.connection.sessionId = "{!$Api.Session_ID}";
+            var result = sforce.apex.execute("KadantHelperClasses","reuploadOpportunity",{oppId:varId});
+            alert(result);
+        }
+    }
+
+    window.history.back();
+    window.close();
+
+    </script>
+</apex:page>

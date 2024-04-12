@@ -1,0 +1,73 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" controller="MassCreateSalesTargets" >
+    <aura:attribute name="account" type="List"></aura:attribute>
+    <aura:attribute name="DocRecordId" type="String" default="{!v.recordId}"/>
+    
+    <aura:attribute name="BudgetRecord" type="Object" />
+    <aura:attribute name="recordLoadError" type="String"/>
+    
+    <!-- making RecordId and RecordType.Name, Name and Site available and adding them to the attribute accountrecord -->
+    <force:recordData aura:id="recordLoader"
+    recordId="{!v.recordId}"
+    fields="Name,RecordType.Name,OwnerId"
+    targetFields="{!v.BudgetRecord}"
+    targetError="{!v.recordLoadError}"
+    recordUpdated="{!c.handleRecordUpdated}"
+    />
+
+    <!-- Show error message on page -->
+     <aura:if isTrue="{!not(empty(v.recordLoadError))}">
+     <div class="recordError">
+     {!v.recordLoadError}</div>
+   	 </aura:if>
+    
+    <aura:attribute name="DocRecTypeName" type="String" default="{!v.BudgetRecord.RecordType}" /> 
+        
+    <!-- <aura:handler name="init" value="{!this}" action="{!c.accountList}"></aura:handler> -->
+    	<aura:handler name="init" value="{!this}" action="{!c.handleRecordUpdated}"></aura:handler>
+    
+    <div class="slds-grid">
+        <div class="slds-col slds-p-horizontal_small slds-size_1-of-2 slds-medium-size_5-of-6 slds-large-size_8-of-12"></div>
+        
+        <div class="slds-col slds-size_1-of-8 allBtn"><lightning:button label="Create Selected"
+                                              iconName="utility:check"
+                                              iconPosition="left"
+                                              variant="brand"
+                                              onclick="{!c.deleteSlctd}">
+                            </lightning:button></div>
+    </div>
+    <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--fixed-layout">
+        <thead>
+            <tr class="slds-text-heading--label"><th scope="row">Create Account Budgets</th></tr>
+        	<tr class="slds-text-heading--label">
+                <th scope="row" class="slds-text-align--right"><ui:inputCheckbox aura:id="cbox" class="cBox" change="{!c.selectAll}"/></th>
+                <th scope="row" ><div class="slds-truncate" title="Name">Name</div></th>
+                <aura:if isTrue="{!v.BudgetRecord.RecordType.Name=='PSG-E RSM Budget'}"><th scope="row"><div class="slds-truncate" title="Rating">Rating</div></th></aura:if>
+                <aura:if isTrue="{!v.BudgetRecord.RecordType.Name=='KL ASM Budget'}"><th scope="row"><div class="slds-truncate" title="Ranking">Ranking</div></th></aura:if>
+                <aura:if isTrue="{!v.BudgetRecord.RecordType.Name=='KBC Budget'}"><th scope="row"><div class="slds-truncate" title="Ranking">Ranking</div></th></aura:if>
+                <th scope="row"><div class="slds-truncate" title="2YA Sales">2Y Ago Sales</div></th>
+                <th scope="row"><div class="slds-truncate" title="1YA Sales">1Y Ago Sales</div></th>
+                <th scope="row"><div class="slds-truncate" title="CYTD">Current YTD</div></th>
+            </tr>
+        </thead>
+        <tbody>
+            <aura:iteration items="{!v.account}" var="a">
+            	<tr>
+                    <td><ui:inputCheckbox aura:id="cboxRow" text="{!a.Id}" class="cBox" change="{!c.changeSelectAll}"/></td>
+                    <th><div class="slds-truncate"><lightning:formattedurl value="{!'/lightning/r/Account/'+a.Id+'/view'}" tabindex="-1" target="_blank" label="{!a.Name}" /></div></th>
+                    <aura:if isTrue="{!v.BudgetRecord.RecordType.Name=='PSG-E RSM Budget'}"><td><div class="slds-truncate">{!a.Rating}</div></td></aura:if>
+                    <aura:if isTrue="{!v.BudgetRecord.RecordType.Name=='KL ASM Budget'}"><td><div class="slds-truncate">{!a.Strategex_Rank__c}</div></td></aura:if>
+                    <aura:if isTrue="{!v.BudgetRecord.RecordType.Name=='KBC Budget'}"><td><div class="slds-truncate">{!a.Strategex_Rank__c}</div></td></aura:if>
+                    <aura:if isTrue="{!v.BudgetRecord.RecordType.Name=='PSG-E RSM Budget'}"><td><div class="slds-truncate"><lightning:formattedNumber value="{!a.FY_Sales_2_Years_Ago__c}" style="currency" currencyCode="EUR" /></div></td></aura:if>
+                    <aura:if isTrue="{!v.BudgetRecord.RecordType.Name=='PSG-E RSM Budget'}"><td><div class="slds-truncate"><lightning:formattedNumber value="{!a.FY_Sales_Previous__c}" style="currency" currencyCode="EUR" /></div></td></aura:if>
+                    <aura:if isTrue="{!v.BudgetRecord.RecordType.Name=='PSG-E RSM Budget'}"><td><div class="slds-truncate"><lightning:formattedNumber value="{!a.FY_Sales_Current__c}" style="currency" currencyCode="EUR" /></div></td></aura:if>
+                    <aura:if isTrue="{!v.BudgetRecord.RecordType.Name=='KL ASM Budget'}"><td><div class="slds-truncate"><lightning:formattedNumber value="{!a.FY_Sales_2_Years_Ago__c}" style="currency" currencyCode="EUR" /></div></td></aura:if>
+                    <aura:if isTrue="{!v.BudgetRecord.RecordType.Name=='KL ASM Budget'}"><td><div class="slds-truncate"><lightning:formattedNumber value="{!a.FY_Sales_Previous__c}" style="currency" currencyCode="EUR" /></div></td></aura:if>
+                    <aura:if isTrue="{!v.BudgetRecord.RecordType.Name=='KL ASM Budget'}"><td><div class="slds-truncate"><lightning:formattedNumber value="{!a.FY_Sales_Current__c}" style="currency" currencyCode="EUR" /></div></td></aura:if>
+                    <aura:if isTrue="{!v.BudgetRecord.RecordType.Name=='KBC Budget'}"><td><div class="slds-truncate"><lightning:formattedNumber value="{!a.FY_Sales_2_Years_Ago__c}" style="currency" currencyCode="USD" /></div></td></aura:if>
+                    <aura:if isTrue="{!v.BudgetRecord.RecordType.Name=='KBC Budget'}"><td><div class="slds-truncate"><lightning:formattedNumber value="{!a.FY_Sales_Previous__c}" style="currency" currencyCode="USD" /></div></td></aura:if>
+                    <aura:if isTrue="{!v.BudgetRecord.RecordType.Name=='KBC Budget'}"><td><div class="slds-truncate"><lightning:formattedNumber value="{!a.FY_Sales_Current__c}" style="currency" currencyCode="USD" /></div></td></aura:if>
+                </tr>
+            </aura:iteration>
+        </tbody>
+    </table>
+</aura:component>

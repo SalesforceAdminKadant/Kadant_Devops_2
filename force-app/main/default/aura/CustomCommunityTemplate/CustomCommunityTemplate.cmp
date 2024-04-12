@@ -1,0 +1,13 @@
+<aura:component description="CustomCommunityTemplate" implements="forceCommunity:layout"
+                extends="c:CustomSectionLayout"
+                access="global" >
+    
+    <aura:attribute name="section_1_content_1" type="Aura.Component[]" required="false"/>
+    <div class="container">
+        <div class="section">
+            <div class="row">
+                {!v.section_1_content_1}
+            </div>
+        </div>
+    </div>
+</aura:component>

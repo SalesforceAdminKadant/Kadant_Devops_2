@@ -1,0 +1,522 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global">
+    
+    <aura:attribute name="accountRecord" type="Object" />
+    <aura:attribute name="recordLoadError" type="String"/>
+    
+    <!-- making RecordId and RecordType.Name, Name and Site available and adding them to the attribute accountrecord -->
+    <force:recordData aura:id="recordLoader"
+    recordId="{!v.recordId}"
+    fields="Name,Site,RecordType.Name,ParentId,KSD_User__c"
+    targetFields="{!v.accountRecord}"
+    targetError="{!v.recordLoadError}"
+    />
+
+    <!-- Show error message on page -->
+     <aura:if isTrue="{!not(empty(v.recordLoadError))}">
+     <div class="recordError">
+     {!v.recordLoadError}</div>
+   	 </aura:if>
+
+    <!-- the aura:if below conditionally renders each table based on recordtypeId of the account -->
+
+    <!-- Process Solutions Group - Europe (PSG-E) / KL -->
+	<aura:if isTrue="{!v.accountRecord.RecordTypeId=='0120z000000UOouAAG'}">
+    	<table style="width:100%">
+            <tr>
+                <th width="25%"><strong>Sales</strong></th>
+                <th width="25%"><strong>Quotes</strong></th>
+                <th width="25%"><strong>Activities</strong></th>
+                <th width="25%"><strong>Other</strong></th>
+            </tr>
+        	<tr>
+            	<td>• <!-- lightning:formattedurl renders an <a href=""></a> tag. Change the ID below for the report and 
+					the fvX for the filter position 0 = first, 1 = second filter etc. -->
+                    <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004eUH0EAM/view?fv0='+v.recordId+''}" target="_blank" label= "Total Selling History" />
+             
+            	</td>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005aQ7ZEAU/view?fv0='+v.recordId+''}" target="_blank" label= "Quote History" /></td>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005aFYiEAM/view?fv0='+v.recordId+''}" target="_blank" label= "Activity History" /></td>
+        		<td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005Yg2VEAS/view?fv0='+v.recordId+''}" target="_blank" label= "Customer Part References" /></td>
+			</tr>
+			<tr>
+        		<td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004eUHZEA2/view?fv1='+v.recordId+''}" target="_blank" label= "Year-over-Year-Summary" /></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            <aura:if isTrue="{!v.accountRecord.ParentId== null}"><td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O4W000007x9rEUAQ/view?fv0='+v.recordId+'&amp;fv1='+v.recordId+''}" target="_blank" label= "Account Hierarchy Report" /></td></aura:if>
+            </tr>
+			<tr>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004eUJLEA2/view?fv1='+v.recordId+''}" target="_blank" label= "Products (3 Years)" /></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+				<td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004eUJBEA2/view?fv1='+v.recordId+''}" target="_blank" label= "Product Code (3 Years)" /></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004eUImEAM/view?fv1='+v.recordId+''}" target="_blank" label= "Product Family (3 Years)" /></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005XRK3EAO/view?fv0='+v.recordId+''}" target="_blank" label= "Business Category (3 Years)" /></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004eUMZEA2/view?fv1='+v.recordId+''}" target="_blank" label= "Blade History (BLD-Number)" /></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004eUMeEAM/view?fv1='+v.recordId+''}" target="_blank" label= "Blade History (Material Type)" /></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O4W000007nvsrUAA/view?fv1='+v.recordId+''}" target="_blank" label= "5 Year Sales Margin - Order Lines" /></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O4W000007nvt1UAA/view?fv1='+v.recordId+''}" target="_blank" label= "5 Year Sales Margin - Summary" /></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+	</aura:if>
+
+    <!-- Kadant Johnson (KJ) and Kadant Solutions Division (KSD) -->
+    <aura:if isTrue="{!v.accountRecord.RecordTypeId=='012600000009eR7AAI'}">
+    	<aura:if isTrue="{!v.accountRecord.KSD_User__c}">
+    	Machine Reports
+        	<table style="width:100%">
+            	<tr>
+                	<th width="25%"><strong>Doctors</strong></th>
+                	<th width="25%"><strong>C &amp; C</strong></th>
+                	<th width="25%"><strong>Filtration</strong></th>
+                	<th width="25%"><strong>Other</strong></th>
+            	</tr>
+            	<tr>
+                	<td valign="top">• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004hegc/view?fv0='+v.recordId+''}" target="_blank" label="Blades" /></td>
+                	<td valign="top">• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z0000051E4c/view?fv0='+v.recordId+''}" target="_blank" label="Nozzle Cabinets" /></td>
+                	<td valign="top">• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004hemL/view?fv0='+v.recordId+''}" target="_blank" label="Filters" /></td>
+                	<td valign="top">• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005ElWREA0/view?fv0='+v.recordId+''}" target="_blank" label="Belt Clothing" /></td>
+            	</tr>
+            	<tr>
+                	<td valign="top">• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004dzy3EAA/view?fv0='+v.recordId+''}" target="_blank" label="Holders" /></td>
+                	<td valign="top"><td valign="top">• <lightning:formattedurl value="{!'/lightning/r/Report/00O4W000008IbASUA0/view?fv0='+v.recordId+''}" target="_blank" label="Nozzle Cabinet GP by Part" /></td></td>
+                	<td valign="top">• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z0000051HyY/view?fv0='+v.recordId+''}" target="_blank" label="Filters with Showers" /></td>
+                	<td valign="top">• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004hemVEAQ/view?fv0=&quot;'+v.accountRecord.Name+' - '+v.accountRecord.Site+'&quot;'}" target="_blank" label="Rolls with Doctors" /></td>
+            	</tr>
+            	<tr>
+                	<td valign="top">• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004hekU/view?fv0='+v.recordId+''}" target="_blank" label="Doctors" /></td>
+                	<td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z00000521t0EAA/view?fv0='+v.recordId+''}" target="_blank" label="Showers Data Collection" /></td>
+                	<td>&nbsp;</td>
+                	<td valign="top">• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005YRFoEAO/view?fv0='+v.recordId+''}" target="_blank" label="Drainage" /></td>
+            	</tr>
+            	<tr>
+                	<td valign="top">• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004e00iEAA/view?fv0='+v.recordId+''}" target="_blank" label="Bearings" /></td>
+                	<td valign="top">• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004heft/view?fv0='+v.recordId+''}" target="_blank" label="Showers" /></td>
+                	<td>&nbsp;</td>
+                	<td valign="top">• <lightning:formattedurl value="{!'/lightning/r/Report/00O4W0000089hYOUAY/view?fv1='+v.accountRecord.Name+''}" target="_blank" label=" kConnect Blade Changes" /></td>
+            	</tr>
+            	<tr>
+                	<td valign="top">• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005EnrCEAS/view?fv0='+v.recordId+''}" target="_blank" label="Yankee" /></td>
+                	<td valign="top">• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005XnM6EAK/view?fv0='+v.recordId+''}" target="_blank" label="Shower Oscillators" /></td>
+                	<td>&nbsp;</td>
+                	<td valign="top">• <lightning:formattedurl value="{!'/lightning/r/Report/00O4W000008IUN5UAO/view?fv0='+v.recordId+''}" target="_blank" label="Blade Cabinet Inventory" /></td>
+            	</tr>
+            	<tr>
+                	<td>&nbsp;</td>
+                	<td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005EjgyEAC/view?fv1='+v.recordId+''}" target="_blank" label="Uhle Box" /></td>
+                	<td>&nbsp;</td>
+                	<td>&nbsp;</td>
+            	</tr>
+        	</table>
+        	<hr />
+        	Account Reports
+        	<table style="width:100%">
+            	<tr>
+                	<th width="25%"><strong>Sales</strong></th>
+                	<th width="25%"><strong>Quotes</strong></th>
+                	<th width="25%"><strong>Activities</strong></th>
+                	<th width="25%"><strong>Other</strong></th>
+            	</tr>
+            	<tr>
+                	<td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z0000051FEx/view?fv1='+v.recordId+''}" target="_blank" label="Sales Summary" /></td>
+                    <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00ONv000000g9en/view?fv1='+v.recordId+''}" target="_blank" label="Quote History" /></td>                	
+                	<td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004cc11/view?fv2='+v.recordId+''}" target="_blank" label="Visit History" /></td>
+                	<td>• <lightning:formattedurl value="{!'/apex/SDOC__SDCreate1?id='+v.recordId+'&amp;Object=Account&amp;doclist=a5b0z000002AJRL&amp;oneclick=true&amp;autoopen=1'}" target="_blank" label="Visit Prep" /></td>
+                    <td>&nbsp;</td>
+            	</tr>
+            	<tr>
+                	<td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O4W000007nvNFUAY/view?fv6='+v.recordId+''}" target="_blank" label="Sales Summary - Current and Previous FY" /></td>
+                	<td>&nbsp;</td>
+                	<td>&nbsp;</td>
+                	<td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z0000051Ycj/view?fv0='+v.recordId+''}" target="_blank" label="White Space" /></td>
+                    <td>&nbsp;</td>
+            	</tr>
+            	<tr>
+                	<td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005ZAyt/view?fv3='+v.recordId+''}" target="_blank" label="Nozzle Bookings" /></td>
+                	<td>&nbsp;</td>
+                	<td>&nbsp;</td>
+                	<td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O4W0000089VO7UAM/view?fv0='+v.recordId+''}" target="_blank" label="Open Action Items" /></td>
+                    <td>&nbsp;</td>
+            	</tr>
+            	<tr>                  
+                    <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005ZBAG/view?fv4='+v.recordId+''}" target="_blank" label="Doctor Blade Bookings" /></td>
+                	<td>&nbsp;</td>
+                	<td>&nbsp;</td>
+                	<td valign="top">• <lightning:formattedurl value="{!'/lightning/r/Report/00O4W000008J0ZaUAK/view?fv0='+v.recordId+''}" target="_blank" label="Oscillator Rebuilds" /></td>
+                    <td>&nbsp;</td>
+            	</tr>
+            	<tr>
+                    <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O600000057vCv/view?fv3='+v.recordId+''}" target="_blank" label="3 Year Sales - by Product" /></td>
+                	<td>&nbsp;</td>
+                	<td>&nbsp;</td>              	
+                	<td valign="top">• <lightning:formattedurl value="{!'/lightning/r/Report/00ONv0000002CbNMAU/view?fv1='+v.recordId+''}" target="_blank" label="Drawings" /></td>
+                    <td>&nbsp;</td>
+            	</tr>
+        	</table>
+		</aura:if>
+    	<aura:if isTrue="{!v.accountRecord.KSD_User__c == false}">
+        	<table style="width:100%">
+            	<tr>
+                	<th width="25%"><strong>Sales</strong></th>
+                	<th width="25%"><strong>Quotes</strong></th>
+                	<th width="25%"><strong>Activities</strong></th>
+                	<th width="25%"><strong>Other</strong></th>
+            	</tr>
+            	<tr>
+                	<td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z0000051FEx/view?fv1='+v.recordId+''}" target="_blank" label="Sales Summary" /></td>                   
+                	<td>• <lightning:formattedurl value="{!'/lightning/r/Report/00ONv000000g9en/view?fv1='+v.recordId+''}" target="_blank" label="Quote History" /></td>                    
+                	<td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004cc11/view?fv2='+v.recordId+''}" target="_blank" label="Visit History" /></td>
+                	<td>• <lightning:formattedurl value="{!'/apex/SDOC__SDCreate1?id='+v.recordId+'&amp;Object=Account&amp;doclist=a5b4W0000011tduQAA&amp;oneclick=true&amp;autoopen=1'}" target="_blank" label="Visit Prep" /></td>
+            	</tr>
+            	<tr>
+                	<td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O600000057vCv/view?fv3='+v.recordId+''}" target="_blank" label="3 Year Sales - by Product" /></td>
+                	<td>&nbsp;</td>
+                	<td>&nbsp;</td>
+                	<td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O4W0000089VO7UAM/view?fv0='+v.recordId+''}" target="_blank" label="Open Action Items" /></td>                    
+            	</tr>
+            	<tr>
+                	<td>• <lightning:formattedurl value="{!'/apex/SDOC__SDCreate1?id='+v.recordId+'&amp;Object=Account&amp;doclist=a5b4W000001ANuNQAW&amp;oneclick=true&amp;autoopen=1'}" target="_blank" label="Customer Price Sheet - Excel" /></td>
+                	<td>&nbsp;</td>
+                	<td>&nbsp;</td>
+                	<td valign="top">• <lightning:formattedurl value="{!'/lightning/r/Report/00ONv0000002CbNMAU/view?fv1='+v.recordId+''}" target="_blank" label="Drawings" /></td>
+            	</tr>
+            	<tr>
+                	<td>• <lightning:formattedurl value="{!'/apex/SDOC__SDCreate1?id='+v.recordId+'&amp;Object=Account&amp;doclist=a5b4W000001ANuSQAW&amp;oneclick=true&amp;autoopen=1'}" target="_blank" label="Customer Price Sheet - PDF" /></td>
+                	<td>&nbsp;</td>
+                	<td>&nbsp;</td>
+                	<td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O4W000008IxADUA0/view?fv0='+v.recordId+''}" target="_blank" label="Rotary Joints" /></td>                
+            	</tr>
+        	</table>
+		</aura:if>
+	</aura:if>
+
+    <!-- Kadant Canada (KCC) -->
+    <aura:if isTrue="{!v.accountRecord.RecordType.Name=='Canada Account'}">
+		<table style="width:100%">
+            <tr>
+                <th width="34%"><strong>Machines</strong></th>
+                <th width="33%"><strong>Sales</strong></th>
+                <th width="33%"><strong>Quotes/Activities</strong></th>
+            </tr>
+            <tr>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004heft/view?fv0='+v.recordId+''}" target="_blank" label="Showers" /></td>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z0000051FEx/view?fv2='+v.recordId+''}" target="_blank" label="Sales Summary" /></td>              
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00ONv000000g9en/view?fv1='+v.recordId+''}" target="_blank" label="Quote History" /></td>                
+            </tr>
+            <tr>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004hegc/view?fv0='+v.recordId+''}" target="_blank" label="Blades" /></td>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O600000057vCv/view?fv2='+v.recordId+''}" target="_blank" label="3 Year Sales Summary - by Product" /></td>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004cc11/view?fv2='+v.recordId+''}" target="_blank" label="Account Visit History" /></td>
+            </tr>
+            <tr>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O4W000008IxADUA0/view?fv0='+v.recordId+''}" target="_blank" label="Rotary Joints" /></td>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O600000057vDj/view?fv2='+v.recordId+''}" target="_blank" label="3 Year Sales Summary - by Product Code" /></td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004hemL/view?fv0='+v.recordId+''}" target="_blank" label="Filters" /></td>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O600000057vCl/view?fv2='+v.recordId+''}" target="_blank" label="3 Year Sales Summary - by Product Family" /></td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004hekU/view?fv0='+v.recordId+''}" target="_blank" label="Doctors" /></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+	</aura:if>
+
+    <!-- Kadant GranTek (KGT) -->
+    <aura:if isTrue="{!v.accountRecord.RecordType.Name=='KGT Customer Account'}">
+		<table style="width:100%">
+            <tr>
+                <th width="50%"><strong>Sales</strong></th>
+                <th width="50%"><strong>Activities</strong></th>
+            </tr>
+            <tr>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z0000051FL5/view?fv1='+v.recordId+'&amp;fv2='+v.accountRecord.Site+''}" target="_blank" label="Sales Summary (Dollars) - This Location" /></td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004hVw7/view?fv1='+v.recordId+''}" target="_blank" label="Sales Summary (Dollars) - All Locations" /></td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z0000051FLU/view?fv3='+v.recordId+'&amp;fv4='+v.accountRecord.Site+''}" target="_blank" label="Sales Summary (Tons) - This Location" /></td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O600000046mrx/view?fv3='+v.recordId+''}" target="_blank" label="Sales Summary (Tons) - All Locations" /></td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+	</aura:if>
+
+    <!-- Kadant Carmanah Design -->
+    <aura:if isTrue="{!v.accountRecord.RecordType.Name=='KCD Account'}">
+		<table style="width:100%">
+            <tr>
+                <th width="25%"><strong>Sales</strong></th>
+                <th width="25%"><strong>Quotes</strong></th>
+                <th width="25%"><strong>Activities</strong></th>
+                <th width="25%"><strong>Other</strong></th>
+            </tr>
+        	<tr>
+            	<td>• <!-- lightning:formattedurl renders an <a href=""></a> tag. Change the ID below for the report and 
+					the fvX for the filter position 0 = first, 1 = second filter etc. -->
+                    <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004eUH0EAM/view?fv0='+v.recordId+''}" target="_blank" label= "Total Selling History" />
+             
+            	</td>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005aQ7ZEAU/view?fv0='+v.recordId+''}" target="_blank" label= "Quote History" /></td>                
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005aFYiEAM/view?fv0='+v.recordId+''}" target="_blank" label= "Activity History" /></td>
+        		<td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005Yg2VEAS/view?fv0='+v.recordId+''}" target="_blank" label= "Customer Part References" /></td>
+			</tr>
+			<tr>
+        		<td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004eUHZEA2/view?fv1='+v.recordId+''}" target="_blank" label= "Year-over-Year-Summary" /></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+        		<td>&nbsp;</td>
+            </tr>
+			<tr>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004eUJLEA2/view?fv1='+v.recordId+''}" target="_blank" label= "Products (3 Years)" /></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+	</aura:if>
+    <!-- Valon Kone Oy/Ab/Llc-->
+	<aura:if isTrue="{!v.accountRecord.RecordTypeId=='0124W000001AiswQAC'}">
+    	<table style="width:100%">
+            <tr>
+                <th width="25%"><strong>Sales</strong></th>
+                <th width="25%"><strong>Quotes</strong></th>
+                <th width="25%"><strong>Activities</strong></th>
+                <th width="25%"><strong>Other</strong></th>
+            </tr>
+        	<tr>
+            	<td>• <!-- lightning:formattedurl renders an <a href=""></a> tag. Change the ID below for the report and 
+					the fvX for the filter position 0 = first, 1 = second filter etc. -->
+                    <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004eUH0EAM/view?fv0='+v.recordId+''}" target="_blank" label= "Total Selling History" />
+             
+            	</td>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005aQ7ZEAU/view?fv0='+v.recordId+''}" target="_blank" label= "Quote History" /></td>                
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005aFYiEAM/view?fv0='+v.recordId+''}" target="_blank" label= "Activity History" /></td>
+        		<td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005Yg2VEAS/view?fv0='+v.recordId+''}" target="_blank" label= "Customer Part References" /></td>
+			</tr>
+			<tr>
+        		<td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004eUHZEA2/view?fv1='+v.recordId+''}" target="_blank" label= "Year-over-Year-Summary" /></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            <aura:if isTrue="{!v.accountRecord.ParentId== null}"><td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O4W000007x9rEUAQ/view?fv0='+v.recordId+'&amp;fv1='+v.recordId+''}" target="_blank" label= "Account Hierarchy Report" /></td></aura:if>
+            </tr>
+			<tr>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004eUJLEA2/view?fv1='+v.recordId+''}" target="_blank" label= "Products (3 Years)" /></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+				<td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004eUJBEA2/view?fv1='+v.recordId+''}" target="_blank" label= "Product Code (3 Years)" /></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004eUImEAM/view?fv1='+v.recordId+''}" target="_blank" label= "Product Family (3 Years)" /></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005XRK3EAO/view?fv0='+v.recordId+''}" target="_blank" label= "Business Category (3 Years)" /></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004eUMZEA2/view?fv1='+v.recordId+''}" target="_blank" label= "Blade History (BLD-Number)" /></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004eUMeEAM/view?fv1='+v.recordId+''}" target="_blank" label= "Blade History (Material Type)" /></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+	</aura:if>
+    
+    <!-- Kadant South America -->
+    <aura:if isTrue="{!v.accountRecord.RecordType.Name=='KSA Account'}">
+		<table style="width:100%">
+            <tr>
+                <th width="25%"><strong>Sales</strong></th>
+                <th width="25%"><strong>Quotes</strong></th>
+                <th width="25%"><strong>Activities</strong></th>
+                <th width="25%"><strong>Other</strong></th>
+            </tr>
+        	<tr>
+            	<td>• <!-- lightning:formattedurl renders an <a href=""></a> tag. Change the ID below for the report and 
+					the fvX for the filter position 0 = first, 1 = second filter etc. -->
+                    <lightning:formattedurl value="{!'/lightning/r/Report/00O4W000007nv1OUAQ/view?fv0='+v.recordId+''}" target="_blank" label= "Total Selling History" />
+             
+            	</td>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005aQ7ZEAU/view?fv0='+v.recordId+''}" target="_blank" label= "Quote History" /></td>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005aFYiEAM/view?fv0='+v.recordId+''}" target="_blank" label= "Activity History" /></td>
+        		<td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005Yg2VEAS/view?fv0='+v.recordId+''}" target="_blank" label= "Customer Part References" /></td>
+			</tr>
+			<tr>
+        		<td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004eUHZEA2/view?fv1='+v.recordId+''}" target="_blank" label= "Year-over-Year-Summary" /></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+        		<td>&nbsp;</td>
+            </tr>
+			<tr>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004eUJLEA2/view?fv1='+v.recordId+''}" target="_blank" label= "Products (3 Years)" /></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+	</aura:if>
+
+    <!-- Nicholson Mfg -->
+    <aura:if isTrue="{!v.accountRecord.RecordType.Name=='NML Account'}">
+		<table style="width:100%">
+            <tr>
+                <th width="25%"><strong>Sales</strong></th>
+                <th width="25%"><strong>Quotes</strong></th>
+                <th width="25%"><strong>Activities</strong></th>
+                <th width="25%"><strong>Other</strong></th>
+            </tr>
+        	<tr>
+            	<td>• <!-- lightning:formattedurl renders an <a href=""></a> tag. Change the ID below for the report and 
+					the fvX for the filter position 0 = first, 1 = second filter etc. -->
+                    <lightning:formattedurl value="{!'/lightning/r/Report/00O4W000008Ij8CUAS/view?fv0='+v.recordId+''}" target="_blank" label= "Total Selling History" />
+             
+            	</td>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005aQ7ZEAU/view?fv0='+v.recordId+''}" target="_blank" label= "Quote History" /></td>                
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005aFYiEAM/view?fv0='+v.recordId+''}" target="_blank" label= "Activity History" /></td>
+        		<td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005Yg2VEAS/view?fv0='+v.recordId+''}" target="_blank" label= "Customer Part References" /></td>
+			</tr>
+			<tr>
+        		<td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O4W000008Ij8MUAS/view?fv1='+v.recordId+''}" target="_blank" label= "Year-over-Year-Summary" /></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+        		<td>&nbsp;</td>
+            </tr>
+			<tr>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O4W000008Ij8NUAS/view?fv1='+v.recordId+''}" target="_blank" label= "Products (3 Years)" /></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+	</aura:if>
+
+    <!-- Syntron -->
+    <aura:if isTrue="{!v.accountRecord.RecordType.Name=='SMH Account'}">
+		<table style="width:100%">
+            <tr>
+                <th width="25%"><strong>Sales</strong></th>
+                <th width="25%"><strong>Quotes</strong></th>
+                <th width="25%"><strong>Activities</strong></th>
+                <th width="25%"><strong>Other</strong></th>
+            </tr>
+        	<tr>
+            	<td>• <!-- lightning:formattedurl renders an <a href=""></a> tag. Change the ID below for the report and 
+					the fvX for the filter position 0 = first, 1 = second filter etc. -->
+                    <lightning:formattedurl value="{!'/lightning/r/Report/00O4W000008Ij8CUAS/view?fv0='+v.recordId+''}" target="_blank" label= "Total Selling History" />
+             
+            	</td>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005aQ7ZEAU/view?fv0='+v.recordId+''}" target="_blank" label= "Quote History" /></td>                
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005aFYiEAM/view?fv0='+v.recordId+''}" target="_blank" label= "Activity History" /></td>
+        		<td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005Yg2VEAS/view?fv0='+v.recordId+''}" target="_blank" label= "Customer Part References" /></td>
+			</tr>
+			<tr>
+        		<td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O4W000008Ij8MUAS/view?fv1='+v.recordId+''}" target="_blank" label= "Year-over-Year-Summary" /></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+        		<td>&nbsp;</td>
+            </tr>
+			<tr>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O4W000008Ij8NUAS/view?fv1='+v.recordId+''}" target="_blank" label= "Products (3 Years)" /></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+	</aura:if>
+    
+    <!-- KPG -->
+    <aura:if isTrue="{!v.accountRecord.RecordType.Name=='KPG Account'}">
+		<table style="width:100%">
+            <tr>
+                <th width="25%"><strong>Sales</strong></th>
+                <th width="25%"><strong>Quotes</strong></th>
+                <th width="25%"><strong>Activities</strong></th>
+                <th width="25%"><strong>Other</strong></th>
+            </tr>
+        	<tr>
+            	<td>• <!-- lightning:formattedurl renders an <a href=""></a> tag. Change the ID below for the report and 
+					the fvX for the filter position 0 = first, 1 = second filter etc. -->
+                    <lightning:formattedurl value="{!'/lightning/r/Report/00O4W000008Ij8CUAS/view?fv0='+v.recordId+''}" target="_blank" label= "Total Selling History" />
+             
+            	</td>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005aQ7ZEAU/view?fv0='+v.recordId+''}" target="_blank" label= "Quote History" /></td>                
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005aFYiEAM/view?fv0='+v.recordId+''}" target="_blank" label= "Activity History" /></td>
+        		<td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005Yg2VEAS/view?fv0='+v.recordId+''}" target="_blank" label= "Customer Part References" /></td>
+			</tr>
+			<tr>
+        		<td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O4W000008Ij8MUAS/view?fv1='+v.recordId+''}" target="_blank" label= "Year-over-Year-Summary" /></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+        		                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O4W000007rk93UAA/view?fv0='+v.recordId+''}" target="_blank" label= "Account Assets" /></td>
+            </tr>
+			<tr>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O4W000008Ij8NUAS/view?fv1='+v.recordId+''}" target="_blank" label= "Products (3 Years)" /></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+				<td>&nbsp;</td>
+            </tr>
+        </table>
+	</aura:if>
+</aura:component>

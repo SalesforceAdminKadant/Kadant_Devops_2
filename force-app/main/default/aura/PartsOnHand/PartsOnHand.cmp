@@ -1,0 +1,49 @@
+<aura:component implements="force:hasRecordId,force:hasSObjectName,force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" access="global" controller="PartsOnHandCallOut" >
+
+<aura:attribute name="DocRecordId" type="String" default="{!v.recordId}"/>
+<aura:attribute name="DocObjectName" type="String" default="{!v.sObjectName}"/> 
+
+<aura:attribute name="productinfo" type="List"></aura:attribute>      
+<aura:handler name="init" value="{!this}" action="{!c.doInit}"></aura:handler>
+<aura:attribute name="hasinfo" type="boolean" default="false"></aura:attribute>
+<aura:attribute name="oninit" type="boolean" default="false"></aura:attribute>  
+<aura:attribute name="noinfo" type="boolean" default="false"></aura:attribute>
+ <aura:attribute name="lastrefreshed" type="DateTime"></aura:attribute>    
+   <lightning:card class="slds-card_boundary" title="Parts On Hand" iconName="custom:custom32">
+       <aura:set attribute="actions">
+          <lightning:button name="RefreshButton" label="Check Stock" variant="neutral" onclick="{!c.getStockInfo}" />
+       </aura:set>
+  
+        <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--fixed-layout">
+            <thead>
+               <tr class="slds-text-title">
+                    <th scope="row"><div class="slds-truncate" title="Warehouse">Warehouse</div></th>
+                    <th scope="row"><div class="slds-truncate" title="Qty on hand">On hand</div></th>
+                    <th scope="row"><div class="slds-truncate" title="Qty allocated">Allocated</div></th>
+                <!--	<th scope="row"><div class="slds-truncate" title="Available to promise">Available to promise</div></th> -->
+                </tr>
+            </thead>
+            <tbody>
+                <aura:if isTrue="{!v.hasinfo}">
+                <aura:iteration items="{!v.productinfo}" var="a">
+                    <tr>
+                        <td><div class="slds-truncate">{!a[0]}</div></td>
+                        <td><div class="slds-truncate"><lightning:formattedNumber value="{!a[1]}" maximumFractionDigits="2"/></div></td>
+                        <td><div class="slds-truncate"><lightning:formattedNumber value="{!a[2]}" maximumFractionDigits="2"/></div></td>
+                    <!--	<td><div class="slds-truncate"></div><lightning:formattedNumber value="{!a[2]}" maximumFractionDigits="2"/></td> -->
+                    </tr>
+                </aura:iteration>
+                    <tr><td colspan="3">Last refreshed: {!v.lastrefreshed}</td></tr>
+                </aura:if>
+                <aura:if isTrue="{!v.oninit}">
+               <tr><td colspan="3">Press the Check Stock button to check for actual stock information in Epicor.</td></tr>  
+                </aura:if>
+                <aura:if isTrue="{!v.noinfo}">
+               <tr><td colspan="3">Stock information is not available for this ERP.</td></tr>  
+                </aura:if>
+            </tbody>
+        </table>
+    </lightning:card> 
+    
+    
+</aura:component>

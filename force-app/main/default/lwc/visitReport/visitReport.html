@@ -1,0 +1,142 @@
+<template>
+    <!-- Header Contacts-->
+    <div class="slds-card" style="border: 1px solid rgb(205, 205, 205);border-radius: 3px;">
+        <div class="slds-page-header" >
+        <div class="slds-page-header__row">
+        <div class="slds-page-header__col-title">
+        <div class="slds-media">
+        <div class="slds-media__figure">
+            <span class="slds-icon_container slds-icon-standard-opportunity" title="opportunity">
+                <lightning-icon icon-name="standard:contact" size="small" alternative-text="Task" title="Task"></lightning-icon>
+                <span class="slds-assistive-text">Contacts</span>
+            </span>
+        </div>
+        <div class="slds-media__body">
+        <div class="slds-page-header__name">
+        <div class="slds-page-header__name-title">
+            <h1>
+            <span class="slds-page-header__title slds-truncate" title="Tasks">Contacts</span>
+            </h1>
+        </div>
+        </div>
+        </div>
+        </div>
+        </div>
+        </div>
+        </div>
+        <!-- Contacts Table-->
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered" aria-label="Example default base table of Opportunities">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th class="" scope="col">
+                    <div class="slds-truncate" title="Name">Name</div>
+                    </th>
+                    <th class="" scope="col">
+                    <div class="slds-truncate" title="Phone">Phone</div>
+                    </th>
+                    <th class="" scope="col">
+                    <div class="slds-truncate" title="Assignee">Email</div>
+                    </th>  
+                </tr>
+            </thead>
+            <tbody>
+                <template for:each={Contacts} for:item="currentContact">
+                    <tr class="slds-hint-parent" key={currentContact.Id}>
+                        <th data-label="Subject" scope="row">
+                        <div class="slds-truncate" title={currentContact.Subject}>
+                        <a href="" onclick={handleRowAction} id={currentContact.Id} tabindex="-1">{currentContact.Name}</a>
+                        </div>
+                        </th>
+                        <td data-label="Related to">
+                        <div class="slds-truncate" title={currentContact.OwnerId}>{currentContact.Phone}</div>
+                        </td>
+                        <td data-label="Assignee">
+                        <div class="slds-truncate" title={currentContact.Subject}>
+                        <a href="" onclick={handleRowAction} tabindex="-1">{currentContact.Email}</a>
+                        </div>
+                        </td>
+                    </tr>
+                </template>
+            </tbody>
+            </table>
+        </div>
+    
+    
+    
+    <!--Tasks Header-->
+    <div class="slds-card" style="border: 1px solid rgb(205, 205, 205);border-radius: 3px;">
+    <div class="slds-page-header" >
+        <lightning-button style="float: right;" label="New" title="New Task" onclick={handleClick} class="slds-m-left_x-small"></lightning-button>
+    <div class="slds-page-header__row">
+    <div class="slds-page-header__col-title">
+    <div class="slds-media">
+    <div class="slds-media__figure">
+        <span class="slds-icon_container slds-icon-standard-opportunity" title="opportunity">
+            <lightning-icon icon-name="standard:task" size="small" alternative-text="Task" title="Task"></lightning-icon>
+            <span class="slds-assistive-text">opportunity</span>
+        </span>
+    </div>
+    <div class="slds-media__body">
+    <div class="slds-page-header__name">
+    <div class="slds-page-header__name-title">
+        <h1>
+        <span class="slds-page-header__title slds-truncate" title="Tasks">Tasks</span>
+        </h1>   
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    <!-- Tasks Table-->
+    <table class="slds-table slds-table_cell-buffer slds-table_bordered" aria-label="Example default base table of Opportunities">
+        <thead>
+            <tr class="slds-line-height_reset">
+                <th class="" scope="col">
+                <div class="slds-truncate" title="Subject">Subject</div>
+                </th>
+                <!-- Haven't got this working
+                <th class="" scope="col">
+                <div class="slds-truncate" title="Related to">Related to</div>
+                </th>
+                -->
+                <th class="" scope="col">
+                <div class="slds-truncate" title="Assignee">Assignee</div>
+                </th>
+                <th class="" scope="col">
+                <div class="slds-truncate" title="Due Date">Due Date</div>
+                </th>
+
+            </tr>
+        </thead>
+        <tbody>
+            <template for:each={Tasks} for:item="currentTask">
+                
+                <tr class="slds-hint-parent" key={currentTask.Id}>
+                    <th data-label="Subject" scope="row">
+                    <div class="slds-truncate" title={currentTask.Subject}>
+                    <a href="" onclick={handleRowAction} id={currentTask.Id} tabindex="-1">{currentTask.Subject}</a>
+                    </div>
+                    </th>
+                    <!-- Haven't got this working
+                    <td data-label="Related to">
+                    <div class="slds-truncate" title={currentTask.OwnerId}>{currentTask.OwnerId}</div>
+                    </td>
+                    -->
+                    <td data-label="Assignee">
+                    <div class="slds-truncate" title={currentTask.Subject}>
+                    <a href="" onclick={handleRowAction} id={currentTask.OwnerId} tabindex="-1">{currentTask.Owner_Name}</a>
+                    </div>
+                    </td>
+                    <td data-label="Due Date">
+                    <div class="slds-truncate" title={currentTask.ActivityDate}>{currentTask.ActivityDate}</div>
+                    </td>
+                </tr>
+            </template>
+        </tbody>
+        </table>
+    </div>
+
+    
+</template>

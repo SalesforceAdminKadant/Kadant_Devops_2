@@ -1,0 +1,180 @@
+<aura:component controller="MainAlarmPanelAuraController"
+                implements="forceCommunity:availableForAllPageTypes"
+                description="MainAlarmPanel_CMP">
+    <aura:attribute name="headerDetails" type="Object"/>
+    <aura:attribute name="rules" type="Rule__c[]"/>
+    <aura:attribute name="rulessortedbyName" type="Rule__c[]"/>
+    <aura:attribute name="ruleDetails" type="Rule_Detail__c[]"/>
+    <aura:attribute name="selectedRule" type="Rule__c"/>
+    <aura:attribute name="totalRules" type="Integer"/>
+    <aura:attribute name="totalActiverules" type="Integer"/>
+    <aura:attribute name="totalInActiverules" type="Integer"/>
+    <aura:attribute name="headerText" type="String" default="Alerts"/>
+    <aura:attribute name="showModel" type="Boolean" default="false"/>
+    <aura:attribute name="showRules" type="Boolean" default="false"/>
+    <aura:attribute name="sortDirection" type="String" default="ASC"/>
+    <aura:attribute name="assets" type="List" default="[]" />
+    <aura:attribute name="accounts" type="List" default="[]" />
+    <aura:attribute name="selectedAssetId" type="String" />
+    <aura:attribute name="selectedAccountId" type="String" />
+    <aura:attribute name="showSpinner" type="Boolean" default="true"/>
+    <aura:attribute name="isUserTimezone" type="Boolean" default="true"/>
+    <aura:attribute name="defaultTimezone" type="String"/>
+    <aura:attribute name="disabledAssetSelect" type="boolean" default="true"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInIt}"/>
+    <aura:handler event="c:eventSelect_EVT" action="{!c.handleSelection}"/>
+    <div class="slds-grid slds-grid_vertical">
+        <div class="slds-col">
+            <div style="font-size: 16px; border-style: solid;border-width: 0px;background-color: #333;width: 100%;"
+                 class="slds-p-top_small slds-p-bottom_small">
+                <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-12 slds-p-left_xx-small" style="cursor:pointer" onclick="{! c.closeModel }">
+                        <lightning:icon iconName="utility:chevronleft" alternativeText="Menu" />
+                    </div>
+                    <div class="slds-col slds-size_2-of-12">
+                        <img src="{!$Resource.Kadent_Logo}"/>
+                    </div>
+                    <div class="slds-col slds-size_2-of-12 slds-show_large  slds-show_medium slds-align_absolute-center" style="color:#fff;">
+                        {!v.headerDetails.assetName}
+                    </div>
+                    <div class="slds-col slds-size_2-of-12" style="text-align:center; color:#fff;">
+                        <h4 style="text-align:center;">{!v.headerText}</h4>
+                    </div>
+                    <div class="slds-col slds-size_4-of-12" style="text-align:center; color:#fff;">
+                        {!v.headerDetails.clientName}
+                    </div>
+                    <div class="slds-col slds-size_1-of-12 slds-hide_medium"  style="text-align:center;"></div>
+                    <!-- <div class="slds-col slds-size_1-of-12" style="text-align:center;">
+						<lightning:buttonMenu alternativeText="Show menu">
+                            <lightning:menuItem value="logout" label="Logout" href="/CustomerPortal/secur/logout.jsp" />
+                        </lightning:buttonMenu>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+        <aura:if isTrue="{!v.showRules}">
+            <aura:set attribute="else">
+                <div class="slds-col">
+                    <div style="font-size: 16px; height: 500px; width: 100%;"
+                    	class="slds-align_absolute-center slds-p-top_small slds-p-bottom_small slds-grid slds-grid_vertical">
+                        <lightning:select name="select1" label="Select Account" variant="label-inline" value="{!v.selectedAccountId}" onchange="{!c.onAccountSelection}">
+                            <option value="">Select An Account</option>
+                            <aura:iteration items="{!v.accounts}" var="account">
+                                <option value="{!account.Id}" selected="{!account.Id == selectedAccountId}">{!account.Name}</option>
+                            </aura:iteration>
+                        </lightning:select>
+                        <lightning:select name="select1" label="Select Asset" variant="label-inline" value="{!v.selectedAssetId}" disabled="{!v.disabledAssetSelect}" onchange="{!c.onAssetSelection}">
+                            <option value="">Select An Asset&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                            <aura:iteration items="{!v.assets}" var="asset">
+                                <option value="{!asset.Id}" selected="{!asset.Id == selectedAssetId}">{!asset.Name}</option>
+                            </aura:iteration>
+                        </lightning:select> 
+                    </div>
+                </div>
+            </aura:set>
+            <!-- <div class="slds-col">
+                <div style="font-size: 16px; border-style: solid;border-width: 0px;background-color: #333; width: 100%;"
+                     class="slds-p-top_small slds-p-bottom_small">
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-col slds-size_1-of-12 slds-p-left_xx-small" style="cursor:pointer" onclick="{! c.closeModel }">
+                            <lightning:icon iconName="utility:chevronleft" alternativeText="Menu" />
+                        </div>
+                        <div class="slds-col slds-size_2-of-12">
+                            <img src="{!$Resource.Kadent_Logo}"/>
+                        </div>
+                        <div class="slds-col slds-size_2-of-12 slds-show_large  slds-show_medium slds-align_absolute-center" style="color:#fff;">
+                            {!v.headerDetails.assetName}
+                        </div>
+                        <div class="slds-col slds-size_2-of-12" style="text-align:center; color:#fff;">
+                            <h4 style="text-align:center;">{!v.headerText}</h4>
+                        </div>
+                        <div class="slds-col slds-size_4-of-12" style="text-align:center; color:#fff;">
+                            {!v.headerDetails.clientName}
+                        </div>
+                        <div class="slds-col slds-size_1-of-12 slds-hide_medium"  style="text-align:center;"></div>
+                        <div class="slds-col slds-size_1-of-12"  style="text-align:center;">
+                            <lightning:buttonMenu alternativeText="Show menu">
+                                <lightning:menuItem value="logout" label="Logout" href="/CustomerPortal/secur/logout.jsp" />
+                            </lightning:buttonMenu>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+            <div class="slds-col slds-p-top_small">
+                <div aura:id="main" class="slds-show" >
+                    <div class="slds-grid slds-wrap " style="font-size: 16px; font-weight: 600;border-radius: 5px; background-color:#ebebeb;">
+                        <div class="slds-col slds-small-size_1-of-2 slds-medium-size_3-of-12 slds-large-size_2-of-12 slds-align_absolute-center slds-p-around_small">
+                            <h4>Total ALERTS:  &nbsp; &nbsp; {!v.totalRules} </h4> 
+                        </div>
+                        <div class="slds-col slds-small-size_1-of-4 slds-medium-size_1-of-12 slds-large-size_1-of-12 slds-align_absolute-center slds-p-around_small">
+                            <img src="{!$Resource.Alert_Logo}" width="20"/> &nbsp; &nbsp; {!v.totalActiverules}
+                        </div>
+                        <div class="slds-col slds-small-size_1-of-4 slds-medium-size_1-of-12 slds-large-size_1-of-12 slds-align_absolute-center slds-p-around_small">
+                            <img src="{!$Resource.Information_Logo}" width="20"/> &nbsp; &nbsp; {!v.totalInActiverules}
+                        </div>
+                        <div class="slds-col slds-medium-size_2-of-12 slds-large-size_4-of-12"></div>
+                        <div class="slds-col slds-small-size_1-of-2 slds-medium-size_2-of-12 slds-large-size_2-of-12 slds-align_absolute-center slds-p-around_small">
+                            <lightning:input type="toggle" label="Timezone" messageToggleActive="User Timezone" messageToggleInactive="Machine Timezone" name="timezone" checked="{!v.isUserTimezone}" onchange="{!c.onTimezoneChange}"/>
+                        </div>
+                        <div style="" class="slds-col slds-small-size_1-of-2 slds-medium-size_3-of-12 slds-large-size_2-of-12 slds-text-link_reset slds-align_absolute-center slds-p-around_small" >
+                            <h4> <span> Sort </span>
+                                <lightning:buttonMenu variant="container" aura:id="menu" alternativeText="Show menu" onselect="{! c.handleSelect }">
+                                    <lightning:menuItem value="Date" label="Date" />
+                                    <lightning:menuItem value="Name" label="Name" />
+                                    <lightning:menuItem value="Severity" label="Severity" />
+                                </lightning:buttonMenu> 
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="backgroundClass" style="padding-top:1%;padding-bottom:1%;">
+                        <div class="slds-grid slds-wrap slds -gutters">
+                            <aura:iteration items="{!v.rules}" var="rule">
+                                <div style="height:110px;" class="paddingC lass slds-p-around_xx-small slds-col slds-grid slds-small-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_4-of-12 slds-max-large-size --3-of-12 slds-size_1-of-1 slds-p- around_xx-small slds-align_ absolute-center">
+                                    <c:AlarmSingle_CMP rule="{!rule}" timeZone="{!v.defaultTimezone}"/>
+                                </div>
+                            </aura:iteration>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aura:if>
+    </div>
+    <aura:if isTrue="{!v.showSpinner}">
+        <div class="demo-only demo-only demo-only_viewport demo--inverse" style="height:6rem">
+            <div class="slds-spinner_container slds-is-fixed">
+                <div role="status" class="slds-spinner slds-spinner_medium">
+                    <span class="slds-assistive-text">Loading</span>
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+        </div>
+    </aura:if>
+    <aura:if isTrue="{!v.showModel}">
+        <div aura:id="detail" class=" slds-p-top_small slds-hide">
+            <div class="slds-size_1-of-1 slds-grid slds-align_ absolute-center slds-p-around _small">
+                <div class="slds-col slds-size_4-of-12 slds-p-top_large"/>
+                <div class="slds-col slds-size_3-of-12 slds-align_absolute-center slds-p-top_large" style="font-weight: 600;text-align:center;">
+                    <h4> Status History <br/> <div style="text-align:center;border: 2px solid orange; width:120px;"/></h4>
+                </div>
+                <div class="slds-col slds-size_3-of-12 slds-p-top_large"/>
+                <div class="slds-col slds-size_1-of-8 slds-float- -right slds-p-top_small slds-m-right-small" >
+                    <aura:if isTrue="{!v.selectedRule.AlertStatus__c == 'ACTIVE' }">
+                        <img src="{!$Resource.Alert_Logo}" class="slds-float- -right" width="30"/>
+                        <aura:set attribute="else">
+                            <aura:if isTrue="{!v.selectedRule.AlertLastTriggeredDtTm__c != null }">
+                                <img src="{!$Resource.Information_Logo}" class="slds-float- -right" width="30"/>
+                            </aura:if>
+                        </aura:set>
+                    </aura:if>
+                </div>
+            </div>
+            <div class="slds-size_1-of-1 slds-align_absolute-center" />
+            <div class="slds-scrollable" style="height: auto;">
+                <c:showChart rule="{!v.selectedRule}" timeZone="{!v.defaultTimezone}"/>
+            </div>
+            <div class="slds-size_1-of-1" style=""/> <br/>
+        </div>
+    </aura:if>
+</aura:component>

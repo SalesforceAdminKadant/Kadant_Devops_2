@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="39.78pt" version="1.1" xmlns="http://www.w3.org/2000/svg" height="23.35pt" viewBox="0 0 39.78 23.35" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs>
+  <clipPath id="Clip0">
+   <path d="M0 0 L39.7848 0 L39.7848 23.3504 L0 23.3504 L0 0 Z" transform="translate(0, 0)"/>
+  </clipPath>
+ </defs>
+ <g id="Background">
+  <g id="Layer_1" clip-path="url(#Clip0)">
+   <path style="fill:none;stroke:#000000; stroke-width:0.8; stroke-linecap:butt; stroke-linejoin:miter; stroke-dasharray:none;" d="M0 0 L38.9848 0 L38.9848 22.5504 L0 22.5504 L0 0 Z" transform="translate(0.4, 0.4)"/>
+   <path style="fill:#161413; fill-rule:evenodd;stroke:none;" d="M0 0 L38.8896 0 L38.8896 7.4312 L0 7.4312 L0 0 Z" transform="translate(0.516, 15.3352)"/>
+  </g>
+ </g>
+</svg>

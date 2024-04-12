@@ -1,0 +1,35 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" controller="KPP_Function_Library">
+
+<aura:attribute name="DataSet" type="String" />
+<aura:handler name="init" value="{!this}" action="{!c.onLoad}"/> 
+<aura:attribute name="DocId" type="String" />
+<aura:attribute name="cusId" type="Id"/>
+    
+<table><tr><td class="MainScreen">   
+        
+<table class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols">
+  <thead>
+    <tr>
+      <th>Case</th>
+      <th>Subject</th>
+      <th>Type</th>
+      <th>Status</th>
+      <th>Open</th>
+      <th>Closed</th>
+      </tr>
+	</thead>
+    <tbody>
+       	<aura:iteration items="{!v.DataSet}" var="row"> 
+            <tr>
+				<td><a href="{!'case?page=cas&amp;docid='+row[0]+'&amp;cusid='+v.DocId}">{!row[1]}</a></td>
+            	<td>{!row[2]}</td>
+                 <td>{!row[6]}</td>
+                <td>{!row[3]}</td>
+                <td>{!row[4]}</td>
+               <td>{!row[7]}</td>
+            </tr> 
+        </aura:iteration>
+	</tbody>
+    </table>
+</td></tr></table>
+</aura:component>

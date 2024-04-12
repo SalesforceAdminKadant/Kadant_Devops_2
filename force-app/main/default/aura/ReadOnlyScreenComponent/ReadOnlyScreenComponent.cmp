@@ -1,0 +1,27 @@
+<aura:component  implements="lightning:availableForFlowScreens">
+        <aura:attribute name='value' type="string"/>
+        <aura:attribute name='label' type='string'/>
+        <aura:attribute name="dataType" type="string" />
+    
+   
+<aura:if isTrue="{!v.dataType=='datetime'}">
+
+       <div>
+       <label class="slds-form-element__label" id="fixed-text-label">{!v.label}</label>
+       <lightning:input type="{!v.dataType}" label="{!v.label}" name="Field" 
+                        value="{!v.value}" disabled="true" variant="label-hidden">
+       </lightning:input>
+       </div>
+   
+<aura:set attribute="else">
+
+        <div>
+        <lightning:input type="{!v.dataType}" label="{!v.label}" name="Field"
+                         value="{!v.value}" checked="{!v.value}" disabled="true">
+        </lightning:input>
+        </div>
+   
+</aura:set>
+</aura:if>
+
+</aura:component>

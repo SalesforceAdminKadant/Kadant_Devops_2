@@ -1,0 +1,60 @@
+<aura:component  implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" controller="KPP_Function_Library">
+    <aura:attribute name="DocId" type="String" />
+    <aura:attribute name="CusId" type="String" />
+    <aura:attribute name="Page" type="String" />
+    
+    <aura:attribute name="DataSet" type="String"/>
+	<aura:handler name="init" value="{!this}" action="{!c.onLoad}"/>   
+
+    
+    
+<table><tr><td class="RightScreen">  
+
+    <table class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols">
+    <thead> 
+    <tr>
+      <th>Work order</th>
+      <th>Status</th>
+      <th>Type</th>
+      <th colspan="3">Subject</th>
+      </tr>
+	</thead>
+    <tbody>
+       	<aura:iteration items="{!v.DataSet}" var="row"> 
+            <aura:if isTrue="{!row[0]=='W'}">
+            <tr style="vertical-align:top;">
+				<td><b>{!row[2]}</b></td>
+            	<td>{!row[3]}</td>
+                <td>{!row[7]}</td>
+                <td colspan="3">{!row[4]}</td>
+            </tr>
+            <tr>
+      			<th style="text-align:right;">Activity</th>
+      			<th>Status</th>
+      			<th>Resource</th>
+      			<th>Start</th>
+      			<th>End</th>
+      			<th>Report</th>
+      		</tr>
+            </aura:if>
+            <aura:if isTrue="{!row[0]=='S'}">
+            <tr>
+				<td style="text-align:right;"><i>{!row[8]}</i></td>
+            	<td><i>{!row[3]}</i></td>
+                <td><i>{!row[6]}</i></td>
+                <td><i>{!row[4]}</i></td>
+                <td><i>{!row[5]}</i></td>
+                <td><i>
+                    <aura:if isTrue="{!row[7]!=''}">
+                			<a href="{!'../sfc/servlet.shepherd/document/download/'+row[7]+'?operationContext=S1'}" target="_BLANK"><lightning:icon iconName="doctype:pdf" size="small" />View</a>
+            		</aura:if>
+                    </i>
+                </td>
+                </tr> 
+            </aura:if>
+        </aura:iteration>
+	</tbody>
+    </table>
+
+</td></tr></table>
+</aura:component>

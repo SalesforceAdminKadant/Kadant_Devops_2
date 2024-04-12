@@ -1,0 +1,121 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false" Controller="KAI_Search_Products_Engine"  action="{!PDFprint}">
+<html>
+<head>
+<style>
+    div.headerFP{
+        /*position:;*/
+        height:3em;
+        width:100%;
+        background-color:#FF0000;
+         display: block; 
+         top: 0;
+         /*position: running(header); */
+    }
+    
+    apex:column {
+    padding:2em;}
+    
+    body {
+    font-size: 13px;
+    font-family: Arial;
+    }
+    
+    .BOMtable{
+        padding:1em;
+    }
+    
+    div.header{
+        /*position:fixed;*/
+        height:3em;
+        width:100%;
+        background-color:#00FF00;
+         display: block; 
+         top: 0;
+         /*position: running(header); */
+         background-image:url('https://media.kadant.com/layout/kadant_logo-white.svg');
+         background-repeat: no-repeat;
+    }
+    
+
+    
+    @page{
+        size: A4; 
+        /*size: A4 landscape;*/
+        @top-center {content: element(header)}
+        margin-top: 0;
+        background-image: url('{!'https://kadantportal.force.com/psgeagent/sfc/servlet.shepherd/version/renditionDownload?rendition=SVGZ&versionId='+PDFdrawing}')
+    }
+
+    @page:first{
+        /* size: A4; */
+        size: A4 ;
+        @top-center {content: element(headerFP)}
+        margin-top: 0;
+    }
+    
+    .rotateimg90 {
+      -webkit-transform:rotate(-90deg);
+      -moz-transform: rotate(-90deg);
+      -ms-transform: rotate(-90deg);
+      -o-transform: rotate(-90deg);
+      transform: rotate(-90deg);
+      /*transform-origin: 0% 0%; */
+      margin-top:10em;
+      margin-left:-14em;
+      width:1450px;
+      height:1150px;
+    }
+</style>
+</head>
+
+<body >
+<div class="headerFP">
+Logo komt hier
+</div>
+  
+<div class="header">
+
+</div>
+<h2>Bill of material</h2> 
+<apex:form >
+<apex:pageBlock >
+<apex:pageBlockTable value="{!PDFbomList}" var="app">
+<apex:column styleclass="BOMtable" value="{!app[2]}"/>
+<apex:column styleclass="BOMtable" value="{!app[3]}"/>
+<apex:column styleclass="BOMtable" value="{!app[4]}"/>
+<apex:column styleclass="BOMtable" value="{!app[5]}"/>
+</apex:pageBlockTable>
+</apex:pageBlock>
+</apex:form>
+  
+  
+<div style="page-break-before:always">&nbsp;</div>
+<!--apex:image styleclass="DrawingPage" url="{!'https://kadantportal.force.com/psgeagent/sfc/servlet.shepherd/version/renditionDownload?rendition=SVGZ&versionId='+PDFdrawing}"/-->
+<img class="rotateimg90" src="{!'https://kadantportal.force.com/psgeagent/sfc/servlet.shepherd/version/renditionDownload?rendition=SVGZ&versionId='+PDFdrawing}"/>
+
+ 
+<div style="page-break-before:always">&nbsp;</div>
+<img class="rotateimg90" src="{!'https://kadantportal.force.com/psgeagent/sfc/servlet.shepherd/version/renditionDownload?rendition=SVGZ&versionId='+PDFdrawing}"/>
+
+
+<div style="page-break-before:always">&nbsp;</div>
+<h2>Bill of material</h2> 
+<apex:form >
+<apex:pageBlock >
+<apex:pageBlockTable value="{!PDFbomList}" var="app">
+<apex:column styleclass="BOMtable" value="{!app[2]}"/>
+<apex:column styleclass="BOMtable" value="{!app[3]}"/>
+<apex:column styleclass="BOMtable" value="{!app[4]}"/>
+<apex:column styleclass="BOMtable" value="{!app[5]}"/>
+</apex:pageBlockTable>
+</apex:pageBlock>
+</apex:form>
+
+ 
+<div style="page-break-before:always">&nbsp;</div>
+<img class="rotateimg90" src="{!'https://kadantportal.force.com/psgeagent/sfc/servlet.shepherd/version/renditionDownload?rendition=SVGZ&versionId='+PDFdrawing}"/>
+
+ 
+</body>
+</html>
+</apex:page>

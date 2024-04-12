@@ -1,0 +1,118 @@
+<template>
+    <lightning-card>
+        <div class="slds-card__body slds-card__body_inner">
+            <table class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th scope="col" class="slds-is-resizable" style="width: 170px;">
+                            <a class="slds-th__action slds-text-link_reset" href="javascript:void(0);" role="button" tabindex="0" data-index="0"  data-id="Name" onclick={doSorting}>
+                                <span class="slds-assistive-text">Sort by: </span>
+                                <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                    <span class="slds-truncate" title="Quote Number">Quote Number</span>
+                                    <lightning-button-icon variant="bare" data-icon-id="Name" alternative-text="Connected" size="medium" title="small size"></lightning-button-icon>
+                                </div>
+                            </a>
+                        </th>
+                        <th scope="col" class="slds-is-resizable" style="width: 330px;">
+                            <a class="slds-th__action slds-text-link_reset" href="javascript:void(0);" role="button" tabindex="0" data-index="1" data-id="Opportunity.Name" onclick={doSorting}>
+                                <span class="slds-assistive-text">Sort by: </span>
+                                <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                    <span class="slds-truncate" title="Description">Description</span>
+                                    <lightning-button-icon variant="bare" data-icon-id="Opportunity.Name" alternative-text="Connected" size="medium" title="small size"></lightning-button-icon>
+                                </div>
+                            </a>
+                        </th>
+                        <th scope="col" class="slds-is-resizable" style="width: 100px;">
+                            <a class="slds-th__action slds-text-link_reset" role="button" tabindex="0" data-index="2" data-id="EffectiveDate" onclick={doSorting}>
+                                <span class="slds-assistive-text">Sort by: </span>
+                                <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                    <span class="slds-truncate" title="Amount">Amount</span>
+                                    <lightning-button-icon variant="bare" data-icon-id="Quote_Total__c" alternative-text="Connected" size="medium" title="small size"></lightning-button-icon>
+                                </div>
+                            </a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                <template for:each={quotes} for:item="quote" for:index="quoteIndex">
+                    <tr key={quote.Id} class="slds-hint-parent">
+                        <td key={quote.Id} role="gridcell">
+                            <div class="slds-truncate">
+                                <lightning-button-icon key={quote.Id} icon-name="utility:chevronright" variant="bare" class="slds-m-right_x-small" alternative-text="Expand Quotes"
+                                                       title="Expand Quotes" data-quote-id={quote.Id} data-index={quoteIndex} onclick={openQuotesAction}></lightning-button-icon>
+                                <lightning-formatted-text value={quote.Name}></lightning-formatted-text>
+                            </div>
+                        </td>
+                        <td key={quote.Id}>
+                            <div class="slds-truncate">
+                                <lightning-formatted-text value={quote.Opportunity.Name}></lightning-formatted-text>
+                            </div>
+                        </td>                        
+                        <td key={quote.Id}>
+                            <div class="slds-truncate">
+                                <lightning-formatted-number format-style="currency" currency-code="USD" value={quote.Quote_Total__c}></lightning-formatted-number>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr if:true={quote.toggleOpen} key={quote.Id} class="slds-hint-parent">
+                        <td colspan="3" style="padding-left: 100px; padding-right: 0;">
+                            <table class="slds-table slds-table_fixed-layout slds-table_bordered">
+                                <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th scope="col" style="width: 50px;">
+                                        <div class="slds-truncate" title="Line">Line</div>
+                                    </th>
+                                    <th scope="col" style="width: 100px;">
+                                        <div class="slds-truncate" title="Quantity">Quantity</div>
+                                    </th>
+                                    <th scope="col" style="width: 150px;">
+                                        <div class="slds-truncate" title="Part Number">Part Number</div>
+                                    </th>
+                                    <th scope="col" style="width: 350px;">
+                                        <div class="slds-truncate" title="Description">Description</div>
+                                    </th>
+                                    <th scope="col" style="width: 150px;">
+                                        <div class="slds-truncate" title="Total Price">Total Price</div>
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <template for:each={quote.QuoteLineItems} for:item="quoteLine" for:index="quoteLineIndex">
+                                    <tr key={quoteLine.Id} class="slds-hint-parent">
+                                        <td>
+                                            <div class="slds-truncate">
+                                                <lightning-formatted-number value={quoteLine.Line_No__c}></lightning-formatted-number>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-truncate">
+                                                <lightning-formatted-number value={quoteLine.Quantity}></lightning-formatted-number>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-truncate">
+                                                <lightning-formatted-text value={quoteLine.Product_Name__c}></lightning-formatted-text>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-truncate">
+                                                <lightning-formatted-text value={quoteLine.Description}></lightning-formatted-text>
+                                            </div>
+                                        </td>    
+                                        <td>
+                                            <div class="slds-truncate">
+                                                <lightning-formatted-number format-style="currency" currency-code="USD" value={quoteLine.TotalPrice}></lightning-formatted-number>
+                                            </div>
+                                        </td>                                  
+                                    </tr>
+                                </template>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </template>
+                </tbody>
+            </table>
+        </div>
+    </lightning-card>
+    </template>

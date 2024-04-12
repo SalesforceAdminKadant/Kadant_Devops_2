@@ -1,0 +1,85 @@
+<template>
+    <lightning-card title={title} icon-name="custom:custom14">        
+        <template if:true={stiList}>
+            <div style={dt_height}>
+                <lightning-datatable
+                        key-field="id"
+                        data={stiList}
+                        show-row-number-column
+                        row-number-offset={rowOffset}
+                        suppress-bottom-bar
+                        hide-checkbox-column="true" 
+                        columns={columns}
+                        onrowaction={handleRowAction}>
+                </lightning-datatable>
+            </div>
+        </template>
+        <template if:true={error}>
+            <p>{error}</p>        
+        </template>
+    </lightning-card>
+    <!--Use template if:true to display/hide popup based on isModalOpen value IK--> 
+    <template if:true={isModalOpen}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+           <div class="slds-modal__container">
+              <!-- Modal/Popup Box LWC header here -->
+              <header class="slds-modal__header">
+                 <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Open Topic - {the_position}</h2>
+              </header>
+              <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                  <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                    <tr>
+                        <td>Created Date:</td>
+                        <td>
+                              <lightning-formatted-date-time value={the_date} month="short" day="2-digit" year="numeric"></lightning-formatted-date-time>
+                        </td>
+                     </tr>    
+                    <tr><td>Creator:</td><td>{the_owner}</td></tr>                
+                    <tr><td>Priority:</td><td>{the_priority}</td></tr>
+                    <tr><td>Topic:</td><td>{the_topic}</td></tr>                    
+                    <tr><td style="vertical-align:top;">Customer Action Summary:</td><td class="slds-cell-wrap">{the_action}</td></tr>
+                    <tr><td style="vertical-align:top;">Summary:</td><td class="slds-cell-wrap">{the_summary}</td>
+                    </tr>  
+                 </table>
+              </div>
+              <!-- Modal/Popup Box LWC footer starts here -->
+              <footer class="slds-modal__footer">                  
+                  <button class="slds-button slds-button_brand" onclick={closeModal} title="OK">OK</button>
+              </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+        <template if:true={error}>
+           <p>{error}</p>        
+       </template>  
+    </template>
+    <template if:true={isEditOpen}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container"> 
+                <header class="slds-modal__header">
+                    <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">Edit Topic - {the_position}</h2>
+                 </header>   
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                <tr><td>Creator:</td><td>{the_owner}</td></tr>                
+                <tr><td>Topic:</td><td>{the_topic}</td></tr>                    
+                <tr><td style="vertical-align:top;">Customer Action Summary:</td><td class="slds-cell-wrap">
+                    <lightning-input onchange={handleActionChange} value={the_action} maxlength="255"></lightning-input>
+                </td></tr>
+                <tr><td style="vertical-align:top;">Summary:</td><td class="slds-cell-wrap" contenteditable='true'>
+                    <lightning-textarea onchange={handleSummaryChange} value={summary}></lightning-textarea>
+            </td></tr>
+               <!-- <lightning-input type="email" label="Email"> </lightning-input> -->
+            </table>
+         </div>
+           <!-- Modal/Popup Box LWC footer starts here -->
+           <footer class="slds-modal__footer">
+            <lightning-button  label="Cancel" variant="neutral" style="float:right; margin-left: 5px; font-weight: bold;" onclick={handleCancel} ></lightning-button >
+                <lightning-button class="slds-m-left_x-small slds-button_brand" label="Save" variant="brand" title="Primary action" style="float:right; font-weight: bold;" onclick={updateTopicSummary} ></lightning-button>
+        </footer>
+        </div>
+</section>
+<div class="slds-backdrop slds-backdrop_open"></div>
+</template>
+</template>
+</template>

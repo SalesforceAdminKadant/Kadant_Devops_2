@@ -1,0 +1,91 @@
+<aura:component implements="force:hasRecordId,force:hasSObjectName,force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" controller="KadantHelperClasses">
+<aura:attribute name="DocRecordId" type="String" default="{!v.recordId}"/>
+<aura:attribute name="DocObjectName" type="String" default="{!v.sObjectName}"/> 
+<aura:attribute name="SourceOrderLines" type="String" />
+    
+<aura:attribute name="SelectedPartListContainer" type="Map" default="{}"/>
+<aura:attribute name="SelectedPartList" type="List"/>
+<aura:attribute name="SelectedPartListContainerQty" type="Map" default="{}"/>
+<aura:attribute name="SelectedPartListQty" type="List"/>
+    
+<aura:handler name="init" value="{!this}" action="{!c.GetOrderLines}"/>
+    
+    <!--Custom Styles for Modal Header and Footer--> 
+    <aura:html tag="style">
+        .cuf-content {
+        padding: 0 0rem !important;
+        }
+        .slds-p-around--medium {
+        padding: 0rem !important;
+        }       
+        .slds-modal__content{
+        overflow-y:hidden !important;
+        height:unset !important;
+        max-height:unset !important;
+        }
+    </aura:html>
+    
+    
+    <!--Modal Header-->  
+    <div class="modal-header slds-modal__header slds-size_1-of-1">
+        <h4 class="title slds-text-heading--medium">Copy order lines to return order</h4><br/>
+        
+		<aura:iteration items="{!v.SelectedPartList}" indexVar="key" var="item"> 
+    	<lightning:pill media="" title="{!'pil'+item.key}" label="{!item.value+' ('+item.qty+')'}">
+            <aura:set attribute="media"><lightning:icon iconName="standard:account"  alternativeText="Selected"/>
+        </aura:set>
+        </lightning:pill>
+		</aura:iteration>
+        
+    </div>
+    <!--End Modal Header-->  
+     
+    <!--Modal Body-->       
+    <div class="slds-modal__content slds-p-around--x-small slds-align_absolute-center slds-size_1-of-1 slds-is-relative">
+    	<form class="slds-form--stacked">
+            <B>ERP Order ID</B>: {!v.SourceOrderLines[0][0]}<br/>
+            <B>Customer</B>: {!v.SourceOrderLines[0][1]}<br/><br/>
+            
+            
+        <table role="grid" class="slds-table slds-table_cell-buffer slds-table_bordered">
+		<thead>
+            <tr class="slds-line-height_reset">
+                <th>&nbsp;</th>
+                <th>Line</th>
+                <th>Qty</th>
+                <th>Return qty</th>
+                <th>Part</th>
+                <th>Description</th>
+             </tr>
+            </thead>
+    	<tbody>
+            <aura:iteration items="{!v.SourceOrderLines}" var="SourceOrderLine"> 
+                <tr class="slds-line-height_reset">
+               	<td role="gridcell"  class="slds-text-align_left" style="width: 1.10rem;padding-top:1rem;">
+                    <div class="slds-checkbox_add-button">
+        			<lightning:input aura:id="checkboxParts" type="checkbox-button" label="{!SourceOrderLine[4]}" name="{!'line'+SourceOrderLine[2]}"  title="{!SourceOrderLine[3]}" value="" checked="false" onchange="{!c.selectLine}" />
+                    </div>
+				</td>                
+                <td role="gridcell">{!SourceOrderLine[2]}</td>
+                <td role="gridcell">{!SourceOrderLine[3]}</td>
+                <td role="gridcell"><lightning:input name="{!SourceOrderLine[4]}" value="{!SourceOrderLine[3]}" type="number" onchange="{!c.ChangeQty}"/></td>
+                <td role="gridcell">{!SourceOrderLine[5]}</td>
+                <td role="gridcell">{!SourceOrderLine[6]}</td>
+                </tr>
+			</aura:iteration>
+        </tbody>
+        </table>
+            </form> 
+    </div>
+    <!--End of Modal Body--> 
+     
+    <!--Modal Footer-->
+    <div class="modal-footer slds-modal__footer slds-size_1-of-1">
+        <lightning:button variant="Brand" class="slds-button" label="Copy Lines" onclick="{!c.CopyLines}"/>
+        <lightning:button variant="Neutral" class="slds-button" label="Cancel" onclick="{!c.CloseDialog}"/>
+    </div>
+    <!--End of Modal Footer-->
+
+
+    
+</aura:component>

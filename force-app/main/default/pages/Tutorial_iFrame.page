@@ -1,0 +1,8 @@
+<apex:page standardController="work_instructions__c" showHeader="false" showChat="false" sidebar="false">
+    <center>
+    <iframe height="350px" width="625px"
+        src="https://kadant.sharepoint.com/portals/hub/_layouts/15/VideoEmbedHost.aspx?&chid={!Work_Instructions__c.Channel_ID__c}&vid={!Work_Instructions__c.Tutorial_ID__c}"
+        frameborder="0" allowfullscreen="true">
+    </iframe>
+    </center>
+</apex:page>

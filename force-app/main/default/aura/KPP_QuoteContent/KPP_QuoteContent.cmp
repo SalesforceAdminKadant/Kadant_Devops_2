@@ -1,0 +1,38 @@
+<aura:component  implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" controller="KPP_Function_Library">
+	<aura:attribute name="DocumentDetail" type="String"/>
+    <aura:attribute name="AssetList" type="String"/>
+    <aura:attribute name="DocId" type="String" />
+    <aura:attribute name="CusId" type="String" />
+	<aura:handler name="init" value="{!this}" action="{!c.getDocumentDetail}"/>
+    
+    <table><tr><td class="MainScreen"> 
+    <div id="readonlyModus">
+    	<lightning:button class="ActionButton" variant="brand" label="Edit" iconName="utility:edit" iconPosition="left" title="Edit" onclick="{! c.editForm }"/>
+        <br/><br/>
+        <table style="padding:0.2em">
+            <tr><td class="TCel"><b>Customer</b></td><td><lightning:formattedText value="{!v.DocumentDetail[0][1]}" /></td></tr>
+            <tr><td class="TCel"><b>Street</b></td><td><lightning:formattedText value="{!v.DocumentDetail[0][9]}" /></td></tr>            
+            <tr><td class="TCel"><b>City</b></td><td><lightning:formattedText value="{!v.DocumentDetail[0][10]}" /></td></tr>            
+            <tr><td class="TCel"><b>Zipcode</b></td><td><lightning:formattedText value="{!v.DocumentDetail[0][11]}" /></td></tr>            
+            <tr><td class="TCel"><b>Country</b></td><td><lightning:formattedText value="{!v.DocumentDetail[0][12]}" /></td></tr>
+            
+        </table>
+    </div>
+        
+    <div id="editModus" style="display:none;">
+        <lightning:button class="ActionButton" variant="brand" label="Save" iconName="utility:save" iconPosition="left" title="Save" onclick="{! c.saveForm }"/>
+        <lightning:button class="ActionButton" variant="brand" label="Cancel" iconName="utility:cancel" iconPosition="left" title="Cancel" onclick="{! c.cancelForm }"/>
+        <br/><br/>
+        <table>
+
+        <tr><td class="TCel" ><b>Customer</b></td><td><textarea id="DocName" name="DocName" class="slds-textarea" >{!v.DocumentDetail[0][1]}</textarea></td></tr>
+        <tr><td class="TCel" ><b>Street</b></td><td><textarea id="DocStreet" name="DocStreet" class="slds-textarea" >{!v.DocumentDetail[0][9]}</textarea></td></tr>        
+        <tr><td class="TCel" ><b>City</b></td><td><textarea id="DocCity" name="DocCity" class="slds-textarea" >{!v.DocumentDetail[0][10]}</textarea></td></tr>  
+        <tr><td class="TCel" ><b>Zipcode</b></td><td><textarea id="DocZip" name="DocZip" class="slds-textarea" >{!v.DocumentDetail[0][11]}</textarea></td></tr>
+        <tr><td class="TCel" ><b>Country</b></td><td><textarea id="DocCountry" name="DocCountry" class="slds-textarea" >{!v.DocumentDetail[0][12]}</textarea></td></tr>  
+        </table>
+    </div>
+    
+    </td></tr></table>
+        
+</aura:component>

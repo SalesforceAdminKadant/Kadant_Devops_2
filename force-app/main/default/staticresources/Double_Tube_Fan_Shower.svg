@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="27.95pt" version="1.1" xmlns="http://www.w3.org/2000/svg" height="35.43pt" viewBox="0 0 27.95 35.43" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs>
+  <clipPath id="Clip0">
+   <path d="M0 0 L30.9539 0 L30.9539 36.9293 L0 36.9293 L0 0 Z" transform="translate(-1.5, -1.5)"/>
+  </clipPath>
+  <clipPath id="Clip1">
+   <path d="M0 0 L30.9539 0 L30.9539 36.9293 L0 36.9293 L0 0 Z" transform="translate(-1.5, -1.5)"/>
+  </clipPath>
+  <clipPath id="Clip2">
+   <path d="M0 36.9293 L30.9539 36.9293 L30.9539 0 L0 0 L0 36.9293 Z" transform="translate(-1.5, -1.5)"/>
+  </clipPath>
+  <clipPath id="Clip3">
+   <path d="M0 36.9293 L30.9539 36.9293 L30.9539 0 L0 0 L0 36.9293 Z" transform="translate(-1.5, -1.5)"/>
+  </clipPath>
+  <clipPath id="Clip4">
+   <path d="M0 36.9293 L30.9539 36.9293 L30.9539 6e-05 L0 6e-05 L0 36.9293 Z" transform="translate(-1.5, -1.5)"/>
+  </clipPath>
+ </defs>
+ <g id="Background">
+  <g id="Group5" clip-path="url(#Clip0)">
+   <g id="Copy of Background" clip-path="url(#Clip1)">
+    <g id="Group3" clip-path="url(#Clip2)">
+     <g id="Background" clip-path="url(#Clip3)">
+      <g id="Layer_1" clip-path="url(#Clip4)">
+       <path style="fill:none;stroke:#424244; stroke-width:1.20192; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:none;" d="M19.6456 9.8288 C19.6456 15.2528 15.2552 19.6528 9.8216 19.6528 C4.3904 19.6528 0 15.2528 0 9.8288 C0 4.3976 4.3904 0 9.8216 0 C15.2552 0 19.6456 4.3976 19.6456 9.8288 L19.6456 9.8288 Z" transform="translate(4.15616, 4.14656)"/>
+       <path style="fill:none;stroke:#424244; stroke-width:1.20192; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:none;" d="M7.3344 25.5848 C1.42 21.4184 0 13.2488 4.1672 7.3352 C8.3248 1.412 16.5032 0 22.4176 4.1664 C28.332 8.3256 29.752 16.5032 25.596 22.4176 C24.716 23.6488 23.6488 24.716 22.4176 25.5848 " transform="translate(-0.89904, -0.89904)"/>
+       <path style="fill:#424244; fill-rule:evenodd;stroke:none;" d="M13.1032 11.3456 L0 11.3456 L6.5512 0 L13.1032 11.3456 Z" transform="translate(7.42656, 23.8002)"/>
+       <path style="fill:none;stroke:#424244; stroke-width:0.56696; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:none;" d="M0 0 L6.552 11.3456 " transform="translate(13.9778, 23.8002)"/>
+       <path style="fill:none;stroke:#424244; stroke-width:0.56696; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:none;" d="M6.5512 0 L0 11.3456 " transform="translate(7.42656, 23.8002)"/>
+       <path style="fill:none;stroke:#424244; stroke-width:0.56696; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:none;" d="M0 0 L13.1032 0 " transform="translate(7.42656, 34.5788)"/>
+      </g>
+     </g>
+    </g>
+   </g>
+  </g>
+ </g>
+</svg>

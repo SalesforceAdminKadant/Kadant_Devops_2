@@ -1,0 +1,5 @@
+<aura:component implements="force:hasRecordId,force:hasSObjectName,force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader,lightning:availableForFlowScreens" access="global" controller="KPP_Function_Library">
+    Record ID = {!v.recordId}
+    &nbsp;<button class="slds-button slds-button_brand" onclick="{!c.AddFileAccess}" >Add Youp Portal</button>
+    &nbsp;<button class="slds-button slds-button_brand" onclick="{!c.DeleteFileAccess}" >Delete Youp Portal</button>
+</aura:component>

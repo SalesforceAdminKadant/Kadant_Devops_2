@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="27.59pt" version="1.1" xmlns="http://www.w3.org/2000/svg" height="27.59pt" viewBox="0 0 27.59 27.59" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs>
+  <clipPath id="Clip0">
+   <path d="M0 0 L27.5856 0 L27.5856 27.5856 L0 27.5856 L0 0 Z" transform="translate(0, 0)"/>
+  </clipPath>
+  <clipPath id="Clip1">
+   <path d="M0 0 L8.9872 0 L8.9872 8.8272 L0 8.8272 L0 0 Z" transform="translate(9.3128, 9.444)"/>
+  </clipPath>
+ </defs>
+ <g id="Background">
+  <g id="Layer_1" clip-path="url(#Clip0)">
+   <path style="fill:none;stroke:#000000; stroke-width:0.6; stroke-linecap:butt; stroke-linejoin:miter; stroke-dasharray:none;" d="M26.9856 13.4928 C26.9856 20.9449 20.9449 26.9856 13.4928 26.9856 C6.04093 26.9856 0 20.9449 0 13.4928 C0 6.04093 6.04093 0 13.4928 0 C20.9449 0 26.9856 6.04093 26.9856 13.4928 Z" transform="translate(0.3, 0.3)"/>
+   <g id="Group1" clip-path="url(#Clip1)">
+    <path style="fill:#a5a5a6; fill-rule:nonzero;stroke:#a6a6a6; stroke-width:0.6; stroke-linecap:butt; stroke-linejoin:miter; stroke-dasharray:none;" d="M4.1312 3.9792 L0 3.9792 L0 0 C0 0 1.9304 0.0832 2.8024 0.9552 C3.6744 1.8272 4.1312 3.9792 4.1312 3.9792 Z" transform="translate(13.8688, 9.744)"/>
+    <path style="fill:#a5a5a6; fill-rule:nonzero;stroke:#a6a6a6; stroke-width:0.6; stroke-linecap:butt; stroke-linejoin:round; stroke-dasharray:none;" d="M4.1048 4.32 C4.1048 4.32 2.1168 3.9824 1.1208 2.944 C0.1248 1.9056 0 0 0 0 L4.1832 0 L4.1048 4.32 Z" transform="translate(9.6128, 13.6512)"/>
+   </g>
+   <path style="fill:none;stroke:#000000; stroke-width:0.6; stroke-linecap:butt; stroke-linejoin:miter; stroke-dasharray:none;" d="M8.432 4.216 C8.432 6.54452 6.54452 8.432 4.216 8.432 C1.88757 8.432 0 6.54452 0 4.216 C0 1.88757 1.88757 0 4.216 0 C6.54452 0 8.432 1.88757 8.432 4.216 Z" transform="translate(9.6008, 9.6136)"/>
+  </g>
+ </g>
+</svg>

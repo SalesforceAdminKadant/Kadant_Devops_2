@@ -1,0 +1,167 @@
+<aura:component controller="KadantReportClasses" implements="flexipage:availableForAllPageTypes">
+    <aura:attribute name="report" type="Report"/>
+	<aura:attribute name="reportId" type="String" description="SFDC Report ID" default="00O0z00000513mxEAA"/>
+    <aura:attribute name="GrpDown" type="String" description="Vertical grouping" default="INDUSTRY"/>
+    <aura:attribute name="GrpDownDate" type="String" description="Vertical grouping" default="OrderItem.Order_Date__c"/>
+    <aura:attribute name="GrpAcross" type="String" description="Horizontal grouping" default="ORDER_EFFECTIVE_DATE"/>
+    <aura:attribute name="GrpAcrossDim" type="String" description="Horizontal grouping granularity" default="FISCAL_PERIOD"/>
+    
+    <!-- Reportfilters -->
+    <aura:attribute name="CurrentZoomLevel" type="Integer" description="Current zoom level" default="1"/>
+    <aura:attribute name="ZoomFilter1key" type="String" description="Filter level 1 zoom" default=""/>
+    <aura:attribute name="ZoomFilter1val" type="String" description="Filter level 1 zoom" default=""/>
+    <aura:attribute name="ZoomFilter2key" type="String" description="Filter level 2 zoom" default=""/>
+    <aura:attribute name="ZoomFilter2val" type="String" description="Filter level 2 zoom" default=""/>
+    <aura:attribute name="ZoomFilter3key" type="String" description="Filter level 3 zoom" default=""/>
+    <aura:attribute name="ZoomFilter3val" type="String" description="Filter level 3 zoom" default=""/>
+    
+   	<aura:attribute name="StandardFilter1key" type="String" description="Standard filter1 key" default="Order.Order_Record_Type__c"/>
+    <aura:attribute name="StandardFilter1val" type="String" description="Standard filter1 value" default="PSG-E Orders"/>
+    <aura:attribute name="StandardFilter2key" type="String" description="Standard filter2 key" default=""/>
+    <aura:attribute name="StandardFilter2val" type="String" description="Standard filter2 value" default=""/>
+
+    <aura:attribute name="DateFilterValFrom" type="String" description="Date filter from" default="2018-01-01"/>
+    <aura:attribute name="DateFilterValTo" type="String" description="Date filter to" default="2018-12-31"/>
+    
+    <!-- Run the report on launch -->
+    <aura:handler name="init" action="{!c.RunReport}" value="{!this}"/>
+    
+    <aura:attribute name="reportResponse" type="String"/>
+    <aura:attribute name="row" type="String"/>
+    <aura:attribute name="isHeader" type="Boolean"/>
+    
+    <div class="slds-scrollable--x">
+    <table class="slds-table slds-table--bordered">
+    <tr>
+    	<td>
+    		<lightning:select label="Sales division:" aura:id="DivisonList" name="DivisionList" class="FieldSmall"  onchange="{!c.ApplyStandardFilter}">
+				<OPTION VALUE="ALL">- All- </OPTION>
+    			<OPTION VALUE="JF">Johnson Fluiten</OPTION>
+    			<OPTION VALUE="KAI">Kadant Inc.</OPTION>
+    			<OPTION VALUE="KJBE">Kadant Johnson Benelux</OPTION>
+    			<OPTION VALUE="KJDE">Kadant Jonhson Deutschland</OPTION>
+    			<OPTION VALUE="KJE">Kadant Johnson Europe</OPTION>
+    			<OPTION VALUE="KJFR">Kadant Johnson France</OPTION>
+    			<OPTION VALUE="KJIN">Kadant Johnson India</OPTION>
+    			<OPTION VALUE="KJPO">Kadant Johnson Poland</OPTION>
+    			<OPTION VALUE="KJSP">Kadant Johnson Spain</OPTION>
+    			<OPTION VALUE="KJTK">Kadant Johnson Turkey</OPTION>
+    			<OPTION VALUE="KN">Kadant Nordic</OPTION>
+    			<OPTION VALUE="KUK">Kadant UK</OPTION>
+    		</lightning:select>
+    	</td>
+    	<td>
+    		<lightning:input type="date" label="From date" name="DateFrom" aura:id="DateFrom" value="{!v.DateFilterValFrom}" onchange="{!c.ApplyDateFilter}" />		
+    	</td>
+        <td>
+        	<lightning:input type="date" label="To date" name="DateTo" aura:id="DateTo" value="{!v.DateFilterValTo}" onchange="{!c.ApplyDateFilter}"/>
+        </td>
+    </tr>
+        
+    <tr>
+    <td>
+    <lightning:select label="Category:" aura:id="GrpDownList" name="GrpDownList" onchange="{!c.RegroupVertical}" class="FieldSmall">
+    	<OPTION VALUE="INDUSTRY">Account Industry</OPTION>
+        <OPTION VALUE="Account.PaperSector__c">Account Industry sector</OPTION>
+        <OPTION VALUE="ORDER_SHIPPING_COUNTRY">Account shipping country</OPTION>
+        <OPTION VALUE="ACCOUNT_OWNER">Account manager</OPTION>
+        <OPTION VALUE="TYPE">Account type</OPTION>
+        <OPTION VALUE="OrderItem.Business_Category__c">Business category</OPTION>
+        <OPTION VALUE="Order.Division__c">Kadant Mfg division</OPTION>
+        <OPTION VALUE="Order.Owner_Division__c">Kadant Sales division</OPTION>
+        <OPTION VALUE="OrderItem.Product_Family__c">Product Family</OPTION>
+        <OPTION VALUE="OrderItem.Product_Line__c">Product Line</OPTION>
+        <OPTION VALUE="ORDER_ITEM_CUSTOMER_PROD_ID">Product Code</OPTION>
+        <OPTION VALUE="OrderItem.Product_Type__c">Product Type</OPTION>
+        <OPTION VALUE="QUARTER">Quarter (calendar)</OPTION>
+        <OPTION VALUE="FISCAL_QUARTER">Quarter (fiscal)</OPTION>
+        <OPTION VALUE="MONTH">Month (calendar)</OPTION>
+        <OPTION VALUE="FISCAL_PERIOD">Month (fiscal)</OPTION>
+        <OPTION VALUE="WEEK">Week (calendar)</OPTION>
+        <OPTION VALUE="FISCAL_WEEK">Week (fiscal)</OPTION>
+        <OPTION VALUE="ORDER_NAME">Order Nr</OPTION>
+        
+        
+    </lightning:select>
+    </td>
+    <td>
+    <lightning:select label="Dimension:" aura:id="GrpAcrossDimList" name="GrpAcrossDimList" onchange="{!c.RegroupHorizontal}" class="FieldSmall">
+    	<OPTION VALUE="FISCAL_PERIOD">Fiscal period</OPTION>
+        <OPTION VALUE="FISCAL_YEAR">Fiscal year</OPTION>
+		<OPTION VALUE="FISCAL_QUARTER">Fiscal quarter</OPTION>        
+        <OPTION VALUE="FISCAL_WEEK">Fiscal week</OPTION>
+        <OPTION VALUE="MONTH">Calender month</OPTION>
+        <OPTION VALUE="YEAR">Calender year</OPTION>
+		<OPTION VALUE="QUARTER">Calender quarter</OPTION>        
+        <OPTION VALUE="WEEK">Calender week</OPTION>
+        <OPTION VALUE="NONE">Day</OPTION>
+    </lightning:select>
+    </td>
+        <td>
+            {!v.ZoomFilter1key}={!v.ZoomFilter1val}<br></br>
+            {!v.ZoomFilter2key}={!v.ZoomFilter2val}<br></br>
+            {!v.ZoomFilter3key}={!v.ZoomFilter3val}
+        </td>
+    </tr>
+    </table>    
+    	<table class="slds-table slds-table--bordered slds-max-medium-table--stacked">
+                <thead> 
+                        <tr class="slds-text-heading--label">
+                                <aura:iteration var="cell" items="{!v.reportResponse[0]}" indexVar="counter2">
+                                    <aura:renderIf isTrue="{!counter2==0}">
+                						<th scope="col"><b>{!cell}</b></th>
+                                    </aura:renderIf>
+                                   	<aura:renderIf isTrue="{!counter2>0}">
+                						<th scope="col" class="RightAlign"><b>{!cell}</b></th>
+                                    </aura:renderIf>
+                                </aura:iteration>
+                        </tr>
+                </thead>
+                <tbody>
+                        <aura:iteration var="row" items="{!v.reportResponse}" indexVar="counter">
+                            	<aura:renderIf isTrue="{!counter>0}">
+                                <aura:renderIf isTrue="{!row[0]!='TOTAL'}">
+                                <tr class="slds-text-heading--label">
+                                <aura:iteration var="cell" items="{!row}" indexVar="counter2">
+                                    <aura:renderIf isTrue="{!counter2==0}">
+                						<td scope="col"><ui:outputURL aura:id="url" label="{!cell}" class="field" click="{!c.LevelDown}"/></td>
+                                    </aura:renderIf>
+                                    <aura:renderIf isTrue="{!counter2>0}">
+                						<td scope="col" class="RightAlign"><ui:outputNumber value="{!cell}" format="0,000"/></td>
+                                    </aura:renderIf>
+                                </aura:iteration>
+                                </tr>
+                            	</aura:renderIf>
+                            	</aura:renderIf>
+                        </aura:iteration>
+                 </tbody>
+                <thead>
+                    	<tr class="slds-text-heading--label">
+                            <aura:iteration var="row" items="{!v.reportResponse}" indexVar="counter">
+                                <aura:iteration var="cell" items="{!row}" indexVar="counter2">
+                                    <aura:renderIf isTrue="{!row[0]=='TOTAL'}">
+                                        <aura:renderIf isTrue="{!counter2==0}">
+                							<th scope="col"><b>{!cell}</b></th>
+                                    	</aura:renderIf>
+                                   	 	<aura:renderIf isTrue="{!counter2>0}">
+                							<th scope="col" class="RightAlign"><b><ui:outputNumber value="{!cell}" format="0,000"/></b></th>
+                                    	</aura:renderIf>
+									</aura:renderIf>
+                                </aura:iteration>
+                            </aura:iteration>
+                        </tr>
+            	</thead>                   
+    	</table>
+        <table class="slds-table slds-table--bordered">
+    	<tr>
+    	<td>
+        <aura:renderIf isTrue="{!v.CurrentZoomLevel>1}">
+            <ui:outputURL aura:id="levup" label="&lt;&lt; Level up" class="field" click="{!c.LevelUp}"/>&nbsp;&nbsp;
+        </aura:renderIf>
+        Current level:{!v.CurrentZoomLevel}
+        </td>
+        </tr>
+        </table>
+     </div>
+    
+</aura:component>

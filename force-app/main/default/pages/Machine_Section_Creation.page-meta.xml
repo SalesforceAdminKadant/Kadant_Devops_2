@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApexPage xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>40.0</apiVersion>
+    <availableInTouch>false</availableInTouch>
+    <confirmationTokenRequired>false</confirmationTokenRequired>
+    <description>This vf page is used when creating a new machine section.  It is designed to lead the person creating a machine section thru 3 different screens to end up with the correctly configured Machine Section.</description>
+    <label>Machine Section Creation</label>
+</ApexPage>

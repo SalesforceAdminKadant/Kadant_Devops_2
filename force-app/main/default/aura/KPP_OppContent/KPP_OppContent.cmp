@@ -1,0 +1,18 @@
+<aura:component  implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" controller="KPP_Function_Library">
+	<aura:attribute name="DocumentDetail" type="String"/>
+    <aura:attribute name="AssetList" type="String"/>
+    <aura:attribute name="DocId" type="String" />
+    <aura:attribute name="CusId" type="String" />
+	<aura:handler name="init" value="{!this}" action="{!c.getDocumentDetail}"/>
+    
+    <table><tr><td class="MainScreen"> 
+        <table style="padding:0.2em">
+            <tr><td class="TCel"><b>Name</b></td><td><lightning:formattedText value="{!v.DocumentDetail[0][11]}" /></td></tr>
+            <tr><td class="TCel"><b>Description</b></td><td><lightning:formattedText value="{!v.DocumentDetail[0][2]}" /></td></tr>
+            <tr><td class="TCel"><b>Type</b></td><td><lightning:formattedText value="{!v.DocumentDetail[0][6]}" /></td></tr>
+            <tr><td class="TCel"><b>Created</b></td><td><lightning:formattedText value="{!v.DocumentDetail[0][4]}" /></td></tr>            
+            <tr><td class="TCel"><b>Probability</b></td><td><lightning:formattedText value="{!v.DocumentDetail[0][10]}" />%</td></tr>
+        </table>    
+    </td></tr></table>
+        
+</aura:component>

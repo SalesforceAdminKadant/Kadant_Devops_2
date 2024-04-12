@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>48.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>CreateServiceTopic</masterLabel>
+    <description>Open LWC Create Service Topic from an Action Button.</description>
+    <targets>
+      <target>lightning__FlowScreen</target>
+    </targets>  
+    <targetConfigs>
+      <targetConfig targets="lightning__FlowScreen">
+        <property name="recordId" type="string" role="inputOnly" />
+      </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StaticResource xmlns="http://soap.sforce.com/2006/04/metadata">
+    <cacheControl>Public</cacheControl>
+    <contentType>image/png</contentType>
+    <description>This is the Kadant Logo file.  It is used in the Machine Mapping application.  Do NOT DELETE or rename.  You may update with a new logo if appropriate.</description>
+</StaticResource>

@@ -1,0 +1,3 @@
+<apex:page standardController="Machine__c" showHeader="false">
+<XFILES:XFileList />
+</apex:page>

@@ -1,0 +1,26 @@
+<aura:component controller="BomController" implements="flexipage:availableForAllPageTypes,lightning:isUrlAddressable,force:hasRecordId" access="global" >
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+	<aura:attribute name="theRecordId" type="String" />
+    <aura:attribute name="assets" type="Object" />
+    <lightning:button variant="brand" label="Print This Page" title="Print This Page" onclick="{!c.printClick}" class="slds-m-left_x-small" />
+    <div class="slds-card">
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th>Account Name</th><th>Asset Name</th><th>Serial Number</th><th>Product Name</th><th>Install Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <aura:iteration items="{!v.assets}" var="asset"> 
+                    <tr>
+                        <td>{!asset.Account.Name}</td>
+                        <td>{!asset.Name}</td>
+                        <td>{!asset.SerialNumber}</td>
+                        <td>{!asset.Product2.Name}</td>
+                        <td>{!asset.InstallDate}</td>
+                    </tr>
+                </aura:iteration>     
+            </tbody>
+        </table>        
+    </div>
+</aura:component>

@@ -1,0 +1,166 @@
+<template>
+    <lightning-card>
+        <div class="slds-card__body slds-card__body_inner" style="height:1250px;">
+            <table class="slds-table slds-table_bordered">
+                <tr>
+                    <td><h1>{accountSite}</h1></td>
+                    <td style="text-align:right"><lightning-formatted-date-time value={dateValue}></lightning-formatted-date-time></td>
+                </tr>
+            </table>
+            <br />
+            <table class="slds-table slds-border" style="border: 1px solid #000080; border-collapse: collapse;">
+                <tr>
+                    <td colspan="2" class="slds-text-heading_medium" style="background:#000080; color:#FFFFFF;">
+                        Qualification (-30 to 60 Points)
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <lightning-combobox name="budget" label="Customer's budget has been approved." value={budgetValue} 
+                        placeholder="Select Customer's Budget" options={budgets} onchange={budgetHandler}></lightning-combobox>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <lightning-combobox name="curcus" label="Customer is currently using our products or has expressed a willingness to change." value={curcusValue} 
+                        placeholder="Select Products" options={curcus} onchange={curcusHandler}></lightning-combobox>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <lightning-combobox name="whtspc" label="Customer has been designated as a White Space target." value={whtspcValue} 
+                        placeholder="Select White Space" options={whtspc} onchange={whtspcHandler}></lightning-combobox>
+                    </td>
+                </tr>    
+                <tr>
+                    <td class="slds-text-heading_medium" style="background:#000080; color:#FFFFFF; text-align:right; z-index:0;" width="90%">Category Score</td>
+                    <td class="slds-text-heading_medium" style="background:#000080; color:#FFFFFF; text-align:right; z-index:0;" width="10%">{qualificationScore}</td>
+                </tr>                
+            </table>
+            <br />
+            <table class="slds-table slds-border" style="border: 1px solid #000080; border-collapse: collapse;">
+                <tr>
+                    <td colspan="2" class="slds-text-heading_medium" style="background:#000080; color:#FFFFFF;">
+                        Insight (0 to 30 Points)
+                    </td>
+                </tr>            
+                <tr>
+                    <td colspan="2">
+                        <lightning-combobox name="decision" label="The customer has identified their decision making criteria to you." value={decisionValue} 
+                        placeholder="Select Decision Criteria" options={decision} onchange={decisionHandler}></lightning-combobox>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <lightning-combobox name="technical" label="We can provide a solution with specific advantages to the customer that our competitor(s) cannot." value={technicalValue} 
+                        placeholder="Select Specific Advantages" options={technical} onchange={technicalHandler}></lightning-combobox>
+                    </td>
+                </tr>            
+                <tr>
+                    <td class="slds-text-heading_medium" style="background:#000080; color:#FFFFFF; text-align:right; z-index:0;" width="90%">Category Score</td>
+                    <td class="slds-text-heading_medium" style="background:#000080; color:#FFFFFF; text-align:right; z-index:0;" width="10%">{insightScore}</td>
+                </tr>
+            </table>
+            <br />
+            <table class="slds-table slds-border" style="border: 1px solid #000080; border-collapse: collapse;">
+                <tr>
+                    <td colspan="2" class="slds-text-heading_medium" style="background:#000080; color:#FFFFFF;">
+                        Relationship (0 to 45 Points)
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <lightning-combobox name="coach" label="You have a Coach inside the organization that believes our products are superior and is willing to help us." value={coachValue} 
+                        placeholder="Select Coach Inside" options={coach} onchange={coachHandler}></lightning-combobox>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <lightning-combobox name="maker" label="Your Coach is the final decision maker." value={makerValue} 
+                        placeholder="Select Decision Maker" options={maker} onchange={makerHandler}></lightning-combobox>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <lightning-combobox name="influencer" label="You have relationships with other decision makers/influencers in addition to your Coach." value={influencerValue} 
+                        placeholder="Select Decision Makers/Influencers" options={influencer} onchange={influencerHandler}></lightning-combobox>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="slds-text-heading_medium" style="background:#000080; color:#FFFFFF; text-align:right; z-index:0;" width="90%">Category Score</td>
+                    <td class="slds-text-heading_medium" style="background:#000080; color:#FFFFFF; text-align:right; z-index:0;" width="10%">{relationshipScore}</td>
+                </tr>
+            </table>
+            <br />
+            <table class="slds-table slds-border" style="border: 1px solid #000080; border-collapse: collapse;">
+                <tr>
+                    <td colspan="2" class="slds-text-heading_medium" style="background:#000080; color:#FFFFFF;">
+                        Competition (-30 to 10 Points)
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <lightning-combobox name="established" label="The competitor has established business with the customer." value={establishedValue} 
+                        placeholder="Select Established Business" options={established} onchange={establishedHandler}></lightning-combobox>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <lightning-combobox name="competitor" label="The competitor has their own Coach inside the business." value={competitorValue} 
+                        placeholder="Select Competitor Coach" options={competitor} onchange={competitorHandler}></lightning-combobox>
+                    </td>                    
+                </tr>
+                <tr>
+                    <td class="slds-text-heading_medium" style="background:#000080; color:#FFFFFF; text-align:right; z-index:0;" width="90%">Category Score</td>
+                    <td class="slds-text-heading_medium" style="background:#000080; color:#FFFFFF; text-align:right; z-index:0;" width="10%">{competitionScore}</td>
+                </tr>
+            </table>
+            <br />
+            <table class="slds-table slds-border" style="border: 1px solid #000080; border-collapse: collapse;">
+                <tr>
+                    <td colspan="2" class="slds-text-heading_medium" style="background:#000080; color:#FFFFFF; text-align:center;">
+                        Account Diagnostics Summary
+                    </td>
+                </tr>            
+                <tr>
+                    <td>
+                        1) Qualification (-30 to 60 Points)
+                    </td>
+                    <td style="text-align:right">{qualificationScore}</td>
+                </tr>
+                <tr>
+                    <td>
+                        2) Insight (0 to 30 Points)
+                    </td>
+                    <td style="text-align:right">{insightScore}</td>
+                </tr>
+                <tr>
+                    <td>
+                        3) Relationship (0 to 45 Points)
+                    </td>
+                    <td style="text-align:right">{relationshipScore}</td>
+                </tr>
+                <tr>
+                    <td>
+                        4) Competition (-30 to 10 Points)
+                    </td>
+                    <td style="text-align:right">{competitionScore}</td>
+                </tr>
+                <tr>
+                    <td class="slds-text-heading_medium" style="background:#000080; color:#FFFFFF; text-align:right; z-index:0;" width="90%">Total Score</td>
+                    <td class="slds-text-heading_medium" style="background:#000080; color:#FFFFFF; text-align:right; z-index:0;" width="10%">{totalScore}</td>
+                </tr>
+            </table>
+            <table class="slds-table slds-table_bordered">
+                <tr>
+                    <td>
+                        <lightning-button variant="brand" label="Save" title="Save Scorecard" onclick={updateScoreCard}></lightning-button>                        
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </lightning-card>
+    <template if:true={error}>
+        <p>{error}</p>        
+    </template>
+</template>

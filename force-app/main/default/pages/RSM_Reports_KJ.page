@@ -1,0 +1,50 @@
+<apex:page standardController="District__c" lightningStyleSheets="true">
+        <table style="width:100%">
+            <tr>
+                <th width="50%"><strong>Sales</strong></th>
+                <th width="50%"><strong>Other Reports</strong></th>
+            </tr>
+            <tr>
+                <td><a href='/apex/LaunchReport?Reportid=00O600000046lxV' target="_blank">3 Year Sales Summary - by Product Family</a></td>
+                <td><a href='/apex/LaunchReport?Reportid=00O60000004nkMB' target="_blank">Current Forecast vs. Actuals</a></td>
+            </tr>
+            <tr>
+                <td><a href='/apex/LaunchReport?Reportid=00O600000046lyO' target="_blank">3 Year Sales Summary - by Industry</a></td>
+                <td><a href='/apex/LaunchReport?Reportid=00O60000003uH9o' target="_blank">Open Quotes > $30K</a></td>
+            </tr>
+            <tr>
+                <td><a href='/apex/LaunchReport?Reportid=00O600000046iYw' target="_blank">3 Year Sales Summary - by Account</a></td>
+                <td><a href='/apex/LaunchReport?Reportid=00O60000003suay' target="_blank">All Open Opportunities over $50K</a></td>
+            </tr>
+            <tr>
+                <td><a href='/apex/LaunchReport?Reportid=00O0z000005aVuz' target="_blank">Total Sales History - My Accounts</a></td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+        <table style="width:100%">
+            <tr>
+                <th width="50%"><strong>Bookings</strong></th>
+                <th width="50%"><strong>&nbsp;</strong></th>
+            </tr>
+            <tr>
+                <td><a href='/apex/LaunchReport?Reportid=00O60000004g1ho' target="_blank">YTD Bookings by Account</a></td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td><a href='/apex/LaunchReport?Reportid=00O60000003u3jE' target="_blank">YTD Bookings by Industry</a></td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td><a href='/apex/LaunchReport?Reportid=00O60000003u2vx' target="_blank">YTD Bookings by Forecast Category and Industry</a></td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td><a href='/apex/LaunchReport?Reportid=00O60000004g1hP' target="_blank">YTD Bookings by Forecast Category</a></td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td><a href='/apex/LaunchReport?Reportid=00O600000046hE3' target="_blank">YTD Bookings by Product Family</a></td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+</apex:page>

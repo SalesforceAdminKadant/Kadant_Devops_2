@@ -1,0 +1,3 @@
+<apex:page standardController="Mfg_Cost_Price__c" showHeader="false">
+<XFILES:XFileList />
+</apex:page>

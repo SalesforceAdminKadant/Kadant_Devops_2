@@ -1,0 +1,69 @@
+.THIS .FilterTabsClass{
+    background-color: #fafafa;
+    padding:8px;
+}
+
+.THIS .SearchFieldStyle{
+    width:10% !important;
+    float:left;
+}
+
+.THIS .FieldSmall{
+    width:50%;
+}
+
+.THIS .SectionButton{
+    border:0px;
+    padding-left:0px;
+}
+
+.THIS .scopeCheckbox{
+  display:inline !important;
+}
+
+/* ----- winter 2019 edition */
+.THIS .kadant-checkboxParts-custom > div > label {
+    width:1.2rem !important;
+    height:1.2rem !important;
+}
+
+.THIS .kadant-checkboxParts-custom > div > label::before {
+    width:0.12rem !important;
+    height:0.675rem !important;
+}
+
+.THIS .kadant-checkboxParts-custom > div > label::after {
+    width:0.675rem !important;
+    height:0.12rem !important;
+}
+
+/* ipad - landscape */
+@media screen and (max-width: 1024px) and (min-width: 1px) {
+    .THIS ul > li{
+        font-size: 0.6rem !important;
+    }
+    .THIS select{
+        font-size: 0.6rem !important;
+    }
+    .THIS label{
+        font-size: 0.6rem !important;
+    }
+    .THIS input{
+        font-size: 0.6rem !important;
+    }    
+	.THIS .kadant-searchresults-head > tr > th{
+    	font-size: 0.6rem !important;    
+	}
+	.THIS .kadant-searchresults-body > tr > td{
+    	font-size: 0.6rem !important;    
+	}
+}
+@media screen and (min-width: 1024px) {
+
+	.THIS .kadant-searchresults-head > tr > th{
+    	font-size: 0.72rem !important;    
+	}
+	.THIS .kadant-searchresults-body > tr > td{
+    	font-size: 0.72rem !important;    
+	}
+}

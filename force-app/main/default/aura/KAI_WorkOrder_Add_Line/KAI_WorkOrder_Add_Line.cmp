@@ -1,0 +1,218 @@
+<aura:component access="global" implements="force:hasRecordId,force:hasSObjectName,force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" controller="KAI_WorkOrder_Add_Line">
+<lightning:workspaceAPI aura:id="workspaceWO"/>
+<aura:attribute name="DocRecordId" type="String" default="{!v.recordId}"/>
+<aura:attribute name="DocObjectName" type="String" default="{!v.sObjectName}"/>
+    
+<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+<aura:attribute name="showthisButton" type="boolean" default="false"/>
+
+<aura:attribute name="woRecord" type="Object" />
+<aura:attribute name="recordLoadError" type="String"/>
+   <force:recordData aura:id="recordLoader"
+    recordId="{!v.recordId}"
+    fields="RecordType.Name,RecordTypeId,CurrencyIsoCode,Pricebook2Id,Division__c,AssetId,AccountId,ServiceContractId"
+    targetFields="{!v.woRecord}"
+    targetError="{!v.recordLoadError}"
+    />
+
+    <!-- Show error message on page -->
+     <aura:if isTrue="{!not(empty(v.recordLoadError))}">
+     <div class="recordError">
+     {!v.recordLoadError}</div>
+   	 </aura:if>
+
+<aura:attribute name="objInfo" type="product2" default="{sobjectType : 'Product2'}" />
+<!--use boolean to toggle open and close screen1 and 2 -->
+<aura:attribute name="isOpen" type="boolean" default="false"/>
+<aura:attribute name="isOpen2" type="boolean" default="false"/>
+<aura:attribute name="searchText" type="String" default=""/>
+<aura:attribute name="SearchResults" type="String" />
+
+<aura:attribute name="SelectedPartListContainer" type="Map" default="{}"/>
+<aura:attribute name="SelectedPartList" type="List"/>
+<aura:attribute name="SelectedPartListContainerQty" type="Map" default="{}"/>
+<aura:attribute name="SelectedPartListQty" type="List"/>
+<aura:attribute name="SelectedPartListContainerUP" type="Map" default="{}"/>
+<aura:attribute name="SelectedPartListUP" type="List"/>
+<aura:attribute name="SelectedPartListContainerSPEC" type="Map" default="{}"/>
+<aura:attribute name="SelectedPartListSPEC" type="List"/>
+
+<aura:attribute name="PicklistValueCollection" type="List"/>
+    
+<aura:attribute name="SearchFilterMap" type="Map" default="{}"/>
+<aura:attribute name="SearchFilterMapTest" type="String" default=""/>
+<aura:attribute name="SearchFilterSQL" type="String" default=""/>
+<aura:attribute name="SelectedTab" type="String" default="tab-SVCS"/>
+    
+<aura:attribute name="WorkOrderLineList" type="String" />
+<aura:attribute name="WorkOrderPricingList" type="String" />
+<aura:attribute name="WorkOrderCurrency" type="String" default="{!v.woRecord.CurrencyIsoCode}"/>
+<aura:attribute name="WorkOrderDivision" type="String" default="{!v.woRecord.Division__c}"/>
+<aura:attribute name="WorkOrderAccount" type="String" default="{!v.woRecord.AccountId}"/>
+<aura:attribute name="WorkOrderAsset" type="String" default="{!v.woRecord.AssetId}"/>    
+<aura:attribute name="WorkOrderPriceBook" type="String" default="{!v.woRecord.Pricebook2Id}"/>
+<!--Button above quote line screen--> 
+<div class="slds-m-around--xx-small" style="width:95%;height:25px;display:flex;justify-content:flex-end;margin-right:5px;">
+    <lightning:button variant="brand" label="Add lines" title="Add lines" onclick="{!c.openPage1}" aura:id="btnAddLines" />
+</div>
+
+    
+<!--Screen1 Advanced part search screen -->   
+<aura:if isTrue="{!v.isOpen}">
+    
+<!--###### MODAL BOX Start From Here  slds-modal slds-fade-in-open ######--> 
+<div role="dialog" tabindex="-1" aria-labelledby="header99" class="slds-modal slds-fade-in-open slds-modal_large slds-list-builder" aria-modal="true">
+<div class="slds-modal__container" style="margin-top:-4px;max-width: 120rem !important;width:90% !important;height:98% !important;min-height:85% !important;">
+    
+<!--###### MODAL BOX HEADER Part Start From Here ######-->
+<div class="slds-modal__header">
+<button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" onclick="{!c.cancelPages}">
+X
+<span class="slds-assistive-text">Close</span>
+</button>
+<h2 id="header99" class="slds-text-heading--medium">Search services and products</h2>
+  <div class="slds-form-element slds-lookup" data-select="single">
+    <div class="slds-form-element__control">
+        <div class="slds-input-has-icon slds-input-has-icon--right">
+            <lightning:buttonIcon iconName="utility:search" variant="bare" onclick="{!c.searchServiceRates}" alternativeText="Search" class="slds-input__icon" />
+            <ui:inputText value="{!v.searchText}" class="slds-lookup__search-input slds-input" placeholder="Search" keyup="{!c.searchOnEnter}"/>
+        </div>
+    </div>
+  </div>
+	<aura:iteration items="{!v.SelectedPartList}" indexVar="key" var="item"> 
+    	<lightning:pill media="" title="{!'pil'+item.key}" label="{!item.value+' ('+item.qty+')'}" onremove="{! c.deselectPart }" onclick="{! c.changeQty }">
+            <aura:set attribute="media"><lightning:icon iconName="utility:price_book_entries"  alternativeText="Selected"/>
+        </aura:set>
+        </lightning:pill>
+	</aura:iteration>
+</div>  
+    
+<!--###### SEARCH FILTER TABS ######-->
+<lightning:tabset class="MainTabs" selectedTabId="{!v.SelectedTab}" onselect="{!c.switchMainTab}">
+	<lightning:tab class="MainTab" label="HISTORY" id="tab-HISTORY"></lightning:tab>
+    <lightning:tab class="MainTab" label="SERVICES" id="tab-SVCS"></lightning:tab>
+    <lightning:tab class="MainTab" label="PARTS" id="tab-PARTS"></lightning:tab>
+    <lightning:tab class="MainTab" label="SERVCE CONTRACT LINES" id="tab-SERVCONS"></lightning:tab>
+</lightning:tabset>    
+    
+<!--###### MODAL BOX BODY Part Start From Here ######-->
+<div class="slds-table--header-fixed_container" style="height:100%;">
+<div class="slds-scrollable" style="height:100%;">
+
+<table class="slds-table slds-table_bordered  slds-table_cell-buffer slds-table--header-fixed">    
+<thead class="kadant-searchresults-head">
+           <tr  style="vertical-align:bottom;">
+                <th><div class="slds-truncate slds-cell-fixed" title="IDsel">&nbsp;</div></th>
+                <th scope="col" style="width: 3rem;"><div class="slds-cell-fixed" title="ID">ID</div><a id="anchor_ScrollTo">&nbsp;</a></th>
+                <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Description">Description</div></th>
+                <th scope="col" style="width: 3rem;"><div class="slds-cell-fixed" title="Rate">Rate</div></th>
+                <th scope="col" style="width: 3rem;"><div class="slds-cell-fixed" title="OnHold">On Hold</div></th>
+                <th scope="col" style="width: 3rem;"><div class="slds-cell-fixed" title="RunOut">Run Out</div></th>
+                <th scope="col" style="width: 3rem;"><div class="slds-cell-fixed" title="Disc">Discount</div></th>
+               	<th scope="col" style="width: 3rem;"><div class="slds-cell-fixed" title="Uom">U/M</div></th>
+         </tr>
+</thead>
+<tbody class="kadant-searchresults-body">
+	<aura:iteration items="{!v.SearchResults}" var="item"> 
+		<tr>
+		<td role="gridcell" tabindex="0" class="slds-text-align_left" style="width: 1.10rem;">              
+        	  <lightning:input class="kadant-checkboxParts-custom" aura:id="checkboxParts" type="checkbox-button" label="{!item.id}" name="{!item.name}" title="1" value="" onchange="{!c.selectPart}" size="small" />
+ 		</td>
+		<td>
+            <div class="slds-truncate" title="Service">{!item.name}
+                <!-- <a onclick="{!c.openBomDialog}" id="{!item[0]}" title="{!item[1]}" aura:id="bomassy">{!item[1]}</a>
+                <aura:if isTrue="{!item[20]=='Y'}">
+            	&nbsp;<lightning:icon iconName="utility:success" size="xx-small" alternativeText="Reorder"/>
+            	</aura:if> -->
+            </div>
+		</td>
+		<td>
+			<div class="slds-truncate" title="Description" >{!item.description}</div>
+		</td>
+		<td>
+			<div title="Price">{!item.serviceRate}</div>
+		</td>
+        <td>
+			<div title="OnHold">{!item.onHold}</div>
+		</td>
+        <td>
+            <div title="RunOut">{!item.runOut}</div>
+		</td>
+        <td>
+			<div title="Disc">0%</div>
+		</td>    
+        <td>
+			<div title="Uom">{!item.uom}</div>
+		</td>    
+		</tr>
+	</aura:iteration>
+    
+</tbody>
+</table>  
+        </div></div>
+ <!--###### MODAL BOX FOOTER Part Start From Here ######-->
+          <div class="slds-modal__footer">
+            <button class="slds-button slds-button--neutral" onclick="{!c.clearSearch}" >Clear</button>
+            <button class="slds-button slds-button--neutral" onclick="{!c.cancelPages}" >Cancel</button>
+            <button class="slds-button slds-button--brand" onclick="{!c.openPage2}">Next</button>
+          </div>
+        </div>
+      </div>
+      <div class="slds-backdrop slds-backdrop--open"></div>
+      <!--###### MODAL BOX Part END Here ######-->
+
+    </aura:if>   
+ 
+<aura:if isTrue="{!v.isOpen2}">
+    <!--###### MODAL BOX Start From Here  slds-modal slds-fade-in-open ######--> 
+<div role="dialog" tabindex="-1" aria-labelledby="header99" class="slds-modal slds-fade-in-open slds-modal_large slds-list-builder" aria-modal="true">
+<div class="slds-modal__container">
+    
+<!-- ###### MODAL BOX HEADER Part Start From Here ######-->
+<div class="slds-modal__header">
+<button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" onclick="{!c.cancelPages}">
+X
+<span class="slds-assistive-text">Close</span>
+</button>
+<h2 id="header99" class="slds-text-heading--medium">Add to WorkOrder line</h2>
+</div>
+            
+<div class="slds-modal__content slds-p-around--medium">
+<div class="slds-scrollable slds-grow">
+	<table id="Screen2Table">
+	<thead></thead>
+    <tbody>
+        <aura:iteration items="{!v.WorkOrderLineList}" var="item"> 
+            <tr>
+                <td><lightning:layoutItem  flexibility="grow"><lightning:input class="xFieldSmall" label="Product" name="{!'prod'+item[0]}" value="{!item[1]}" aura:id="lineProd" /></lightning:layoutItem></td>
+                <td><lightning:input label="Description" value="{!item[2]}" /></td>
+                <td><lightning:textarea label="Specifications" name="{!'spec'+item[0]}" value="{!item[6]}" aura:id="lineSPEC" /></td>
+                <td><lightning:input type="number" step="0.01" label="Qty" name="{!'qty'+item[0]}" value="{!item[5]}" aura:id="lineQty" /></td>                
+                <td><lightning:input type="number" step="0.01" label="Discount %" name="{!'disc'+item[0]}" value="{!item[11]}" aura:id="lineDisc" /></td>
+                <td><lightning:input type="number" step="0.01" label="{!'Unit Price'}" name="{!'up'+item[0]}" value="{!item[3]}" aura:id="lineUP" fieldLevelHelp="{!'Divisional price list applied: '+item[7]}" /></td>
+            </tr>           
+   		</aura:iteration>
+        </tbody>
+    </table>             
+    </div>
+</div>
+<!--###### MODAL BOX BODY Part Start From Here ######-->
+<div class="slds-modal__content slds-p-around--medium">
+<div class="slds-scrollable slds-grow">
+
+</div>
+</div>
+          <!--###### MODAL BOX FOOTER Part Start From Here ######-->
+          <div class="slds-modal__footer">
+              <aura:if isTrue="{!not(empty(v.woRecord.ServiceContractId))}"><lightning:icon iconName="utility:warning" size="x-small" alternativeText="Has service contract!"/>This WO has a <lightning:formattedurl value="{!'/lightning/r/ServiceContract/'+v.woRecord.ServiceContractId+'/view'}" target="_blank" label= "Service Contract"/>. Check your pricing against the contract before saving.&nbsp;</aura:if>  
+            <button class="slds-button slds-button--neutral" onclick="{!c.openPreviousPage}">Back</button>
+            <button class="slds-button slds-button--neutral" onclick="{!c.cancelPages}" >Cancel</button>
+            <button class="slds-button slds-button--brand" onclick="{!c.closePages}">Save</button>
+          </div>
+        </div>
+      </div>
+      <div class="slds-backdrop slds-backdrop--open"></div>
+      <!--###### MODAL BOX Part END Here ######-->
+</aura:if> 
+    
+</aura:component>

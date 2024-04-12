@@ -1,0 +1,20 @@
+<apex:page standardController="Machine__c" extensions="displayMachineController" showHeader="false">
+    <style>
+    @media print
+    { 
+        .noprint {
+        	display:none;
+        }        
+    }
+    </style>   
+        
+   	<apex:repeat value="{!fileIds}" var="id" id="theRepeat">
+   		<apex:image value="{!id}"/>
+	</apex:repeat> 	
+    
+    <apex:form >
+		<apex:commandLink value="Print" styleClass="noprint" onclick="window.print();"/>
+    </apex:form>
+    <br />    
+    <b>{!errorMessage}</b>
+</apex:page>

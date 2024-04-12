@@ -1,0 +1,121 @@
+<aura:component  implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" controller="KPP_Function_Library">
+	<aura:attribute name="DocumentDetail" type="String"/>
+    <aura:attribute name="PageName" type="String"/>
+	<aura:handler name="init" value="{!this}" action="{!c.getDocumentDetail}"/>   
+
+<table><tr><td class="RightScreen">  
+    
+    <aura:if isTrue="{!v.PageName=='opp'}"> 
+    	<i>Opportunity:</i><br/>
+    	<b><lightning:formattedText value="{!v.DocumentDetail[0][1]}" /></b>
+    	<br/>
+    	Status: <lightning:formattedText value="{!v.DocumentDetail[0][3]}" /><br/>
+		Close date: <lightning:formattedText value="{!v.DocumentDetail[0][8]}" /><br/>
+		Amount: <lightning:formattedText value="{!v.DocumentDetail[0][9]}" />
+    	<br/>
+    	<br/>
+    	<i>Customer:</i><br/>
+    	<a href="{!'customer?page=cus&amp;docid='+v.DocumentDetail[0][5]+'&amp;tabset-7d7af=333d6'}">{!v.DocumentDetail[0][7]}</a>
+    </aura:if>
+    
+    
+    <aura:if isTrue="{!v.PageName=='cas'}"> 
+    	<i>Case:</i><br/>
+    	<b><lightning:formattedText value="{!v.DocumentDetail[0][1]}" /></b>
+    	<br/>
+    	Status: <lightning:formattedText value="{!v.DocumentDetail[0][2]}" /><br/>
+		Created: <lightning:formattedText value="{!v.DocumentDetail[0][3]}" /><br/>
+		Type: <lightning:formattedText value="{!v.DocumentDetail[0][8]}" />
+    	<br/>
+    	<br/>
+    	<i>Customer:</i><br/>
+    	<a href="{!'customer?page=cus&amp;docid='+v.DocumentDetail[0][4]+'&amp;tabset-7d7af=333d6'}">{!v.DocumentDetail[0][5]}</a>
+    </aura:if>
+
+    
+    <aura:if isTrue="{!v.PageName=='ast'}">
+		<i>Asset:</i><br/>
+    	<b><lightning:formattedText value="{!v.DocumentDetail[0][0]}" /></b>
+    	<br/>
+    	<lightning:formattedText value="{!v.DocumentDetail[0][3]}" />
+    	<br/>
+    	<br/>
+    	<i>Customer:</i><br/>
+    	<a href="{!'customer?docid='+v.DocumentDetail[0][2]}">{!v.DocumentDetail[0][1]}</a>        
+    </aura:if>
+    
+    
+    <aura:if isTrue="{!v.PageName=='ord'}">
+		<i>Order:</i><br/>
+    	<b><lightning:formattedText value="{!v.DocumentDetail[0][0]}" /></b>
+    	<br/>
+    	<lightning:formattedText value="{!v.DocumentDetail[0][3]}" />
+    	<br/>
+    	<br/>
+    	<i>Customer:</i><br/>
+    	<a href="{!'customer?docid='+v.DocumentDetail[0][2]+'&amp;tabset-7d7af=3'}">{!v.DocumentDetail[0][1]}</a>        
+    </aura:if>
+    
+    
+    <aura:if isTrue="{!v.PageName=='quo'}">
+		<i>Quote:</i><br/>
+    	<b><lightning:formattedText value="{!v.DocumentDetail[0][0]}" /></b>
+    	<br/>
+    	<lightning:formattedText value="{!v.DocumentDetail[0][3]}" />
+    	<br/>
+    	<br/>
+    	<i>Customer:</i><br/>
+    	<a href="{!'customer?docid='+v.DocumentDetail[0][2]+'&amp;tabset-7d7af=2'}">{!v.DocumentDetail[0][1]}</a>        
+    </aura:if>
+    
+        <aura:if isTrue="{!v.PageName=='prd'}">
+    	<b><lightning:formattedText value="{!v.DocumentDetail[0][1]}" /></b>
+    	<br/>
+    	<lightning:formattedText value="{!v.DocumentDetail[0][2]}" />
+    	<br/>
+    	<b>Product code:</b>&nbsp;<lightning:formattedText value="{!v.DocumentDetail[0][3]}" />  
+        <br/>
+        <b>Unit price:</b>&nbsp;<lightning:formattedNumber value="{!v.DocumentDetail[0][24]}" maximumFractionDigits="2"/>&nbsp;EUR
+        <br/>
+        <br/>     
+        <Table>
+            <thead>
+            	<tr>
+           			<th>Details</th>
+                	<th></th>
+            	</tr>    
+            </thead>
+        <aura:if isTrue="{!v.DocumentDetail[0][6]=='FH - Joints'}">
+            <tr><td>Joint Nipple-size:</td> <td>{!v.DocumentDetail[0][20]}</td></tr>
+            <tr><td>Joint M-size:</td> <td>{!v.DocumentDetail[0][7]}</td></tr>
+    		<tr><td>Joint P-size:</td> <td>{!v.DocumentDetail[0][8]}</td></tr>
+    		<tr><td>Joint S-size:</td> <td>{!v.DocumentDetail[0][9]}</td></tr>
+			<tr><td>Sealring:</td> <td>{!v.DocumentDetail[0][10]}</td></tr>
+            <tr><td>Medium:</td> <td>{!v.DocumentDetail[0][23]}</td></tr>
+			<tr><td>Max. Temperature:</td> <td>{!v.DocumentDetail[0][11]}</td></tr>
+			<tr><td>Max. Pressure:</td> <td>{!v.DocumentDetail[0][12]}</td></tr>
+         </aura:if>
+            
+         <aura:if isTrue="{!v.DocumentDetail[0][6]=='Blades'}">
+            <br/>Material: {!v.DocumentDetail[0][17]}
+    		<br/>Width: {!v.DocumentDetail[0][19]}
+    		<br/>Thickness: {!v.DocumentDetail[0][18]}
+		    <br/>Bevel angle: {!v.DocumentDetail[0][14]}
+			<br/>Length: {!v.DocumentDetail[0][16]}
+         </aura:if>
+       
+    </Table>        
+    </aura:if>
+    
+    <aura:if isTrue="{!v.PageName=='cus'}">
+    	<b><lightning:formattedText value="{!v.DocumentDetail[0][1]}" /></b>
+    	<br/>
+    	<lightning:formattedText value="{!v.DocumentDetail[0][2]}" />
+    	<br/>
+    	<lightning:formattedText value="{!v.DocumentDetail[0][3]}" />  
+    </aura:if>
+
+    
+</td></tr></table>
+    
+</aura:component>

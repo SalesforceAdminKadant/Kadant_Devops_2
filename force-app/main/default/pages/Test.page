@@ -1,0 +1,6 @@
+<apex:page sidebar="false" showHeader="false" standardStylesheets="false">
+<body>
+      <div id="app"></div>
+      <script charset="utf-8" src="https://www.salesforce.com" type="text/javascript"></script>
+</body>
+</apex:page>

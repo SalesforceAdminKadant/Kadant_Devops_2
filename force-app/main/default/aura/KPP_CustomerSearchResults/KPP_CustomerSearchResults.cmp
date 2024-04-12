@@ -1,0 +1,32 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" controller="KPP_Function_Library">
+<aura:attribute name="recordValue" type="String"/>
+<aura:attribute name="SearchResults" type="String"/>
+
+<aura:handler name="init" value="{!this}" action="{!c.srcCustomers}"/>   
+<lightning:messageChannel type="test__c" onMessage="{!c.handleChanged}" scope="APPLICATION"/>
+          
+<table><tr><td class="RightScreen">        
+        
+	<lightning:formattedText value="{!v.recordValue}" />
+
+	<table class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols">
+    <thead>
+        <tr>
+        	<th>Name</th>
+        	<th>City</th>
+        	<th>Country</th>
+		</tr>
+    </thead>
+    <tbody>   
+  	<aura:iteration items="{!v.SearchResults}" var="item">             
+		<tr>
+            <td><a href="{!'customer?page=cus&amp;docid='+item[0]}">{!item[1]}</a></td>
+        	<td>{!item[2]}</td>
+        	<td>{!item[3]}</td>
+		</tr>
+	</aura:iteration>
+    </tbody> 
+	</table>
+    
+</td></tr></table>
+</aura:component>

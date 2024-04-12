@@ -1,0 +1,95 @@
+<apex:page standardController="Visit_Report__c" extensions="VisitReportController" renderAs="pdf">
+<body style="font-family: 'Arial Unicode MS';font-size: 11pt;font-weight: normal;">
+<div style="font-size: 30pt;text-align:right;">
+<table width="100%">
+    <tr>
+        <td style="text-align:left;"><apex:image url="{!$Resource.KadantLogo}" width="318" height="56"/></td>
+        <td style="text-align:right;">{!vrReportType}</td>
+    </tr>
+</table>
+</div>
+
+<br></br>
+<br></br>
+<table width="100%">
+    <tr valign="top">
+        <td>
+            <b style="font-family: sans-serif;"><apex:outputText value="Customer: "/></b>
+            <br></br>
+            <apex:outputText value="{!vrAccountName}"/>
+            <br></br>
+            <apex:outputText value="{!vrAccountShipping1}"/>
+            <br></br>
+            <apex:outputText value="{!vrAccountShipping2}"/>
+            <br></br>
+            <apex:outputText value="{!vrAccountShipping3}"/>
+        </td>
+        <td style="text-align:right;">
+            <br></br>
+            <apex:outputText value="{!Visit_Report__c.Name}"/>
+            <br></br>
+            <apex:outputText value="{!Visit_Report__c.Owner_Name__c}"/>                    
+            <br></br>
+            Visit Date:
+            <apex:outputText value="{0, date, MMM-dd-YYYY}">
+                    <apex:param value="{!vrEventDate}" />
+            </apex:outputText>
+            <br></br>
+            Created Date:
+            <apex:outputText value="{0, date, MMM-dd-YYYY}">
+                    <apex:param value="{!Visit_Report__c.CreatedDate}" />
+            </apex:outputText>
+            <br></br>
+        </td>
+    </tr>
+</table>
+<br></br>
+<p><h3 style="font-family: sans-serif;">Subject:</h3><apex:outputText escape="false" value="{!Visit_Report__c.Subject__c}" ></apex:outputText></p>
+<p><h3 style="font-family: sans-serif;">Executive Summary:</h3></p>
+<apex:outputText escape="false" value="{!Visit_Report__c.Executive_Summary__c}" ></apex:outputText>
+<br></br>
+<h3 style="font-family: sans-serif;">Sales Call Objectives:</h3>
+   <apex:outputText value="{!vrObjectivesHTML}" escape="false" />
+
+<h3 style="font-family: sans-serif;">Contacts:</h3>
+    <ul class="taskList">
+        <apex:repeat value="{!vrContacts}" var="Contact">
+            <li>{!Contact.Title} <b style="font-family: sans-serif;">{!Contact.Name}</b> - {!Contact.Phone} - {!Contact.Email}</li> 
+        </apex:repeat>
+    </ul>
+
+<h3 style="font-family: sans-serif;">Actions:</h3>
+    <ul class="taskList">
+        <apex:repeat value="{!vrTasks}" var="Task">
+            <li>
+                <p><b style="font-family: sans-serif;">{!Task.Subject}</b><br></br>
+                Assigned to: {!Task.Owner_Name}<br></br>
+                <apex:outputText value="{0, date, MMM-dd-YYYY}">
+                    <apex:param value="{!Task.ActivityDate}" />
+                </apex:outputText>  <br></br>
+                {!Task.Description}</p>
+            </li>
+        </apex:repeat>
+    </ul>
+
+<h3 style="font-family: sans-serif;">Satisfaction:</h3>
+Is customer satisfied with KBC’s last Spare Parts order? {!vrSatisfactionSpareParts} <br></br>
+Is customer satisfied with KBC’s last Capital order? {!vrSatisfactionCapital} <br></br>
+Is customer satisfied with KBC’s Field Service Representative? {!vrSatisfactionFieldRep} <br></br>
+Is customer satisfied with KBC’s overall performance? {!vrSatisfactionOverall} <br></br>
+<apex:outputText escape="false" value="{!vrSatisfactionComments}"></apex:outputText>
+
+<apex:outputPanel rendered="{!Internal}">
+<h3 style="font-family: sans-serif;" >Internal Notes:</h3>
+<ul class="taskList">
+    <apex:repeat value="{!vrNotes}" var="Note">
+        <li>{!Note.Creator}<apex:outputText value="{!Note.Body}" escape="false" /></li> 
+    </apex:repeat>
+</ul>
+</apex:outputPanel>
+
+<h3 style="font-family: sans-serif;">Call Details:</h3>
+<apex:outputText escape="false" value="{!Visit_Report__c.Summary__c}" ></apex:outputText>
+
+</body>
+</apex:page>

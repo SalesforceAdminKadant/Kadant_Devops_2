@@ -1,0 +1,81 @@
+<aura:component controller="ShowChartAuraController" implements="flexipage:availableForAllPageTypes" access="global">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <aura:attribute name="timeZone" type="String"/>
+    <aura:attribute name="rule" type="Rule__c"/>
+    <aura:attribute name="tags" type="List"/>
+    <aura:attribute name="width" type="Integer"/>
+    <aura:attribute name="showSpinner" type="Boolean" default="true"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInIt}"/>
+
+    <ltng:require scripts="{!$Resource.Chart}" afterScriptsLoaded="{!c.ctr}"/>
+
+
+    <!--<aura:handler name="change" value="{!v.rule}" action="{!c.ctr}"/>-->
+    <div class="slds-grid slds-wrap slds-p-around_medium" style="font-size: 16px;">
+        <div class="slds-col slds-small-size_1-of-2 slds-large-size_1-of-12 slds-p-top_medium"></div>
+        <div class="slds-col slds-small-size_1-of-2 slds-large-size_5-of-12 slds-p-top_medium">
+            <span class="dot" style="background-color:rgba(255,99,132)"></span> &nbsp; Active &nbsp; &nbsp;
+            <span class="dot" style="background-color:rgba(112,189,216)"></span> &nbsp; InActive &nbsp; &nbsp;
+            <span class="dot" style="background-color:rgba(7,7,7)"></span> &nbsp; Triggered &nbsp; &nbsp;
+        </div>
+        <div class="slds-col slds-small-size_1-of-2 slds-large-size_3-of-12 slds-p-top_medium" >
+            <p><Strong>Timezone: </Strong>{!v.timeZone}</p>
+        </div>
+        <div class="slds-col slds-small-size_1-of-2 slds-large-size_3-of-12 slds-p-top_medium">
+            <aura:if isTrue="{!v.rule.AlertStatus__c == 'ACTIVE' }">
+                <Strong>Active Since:</Strong>
+                <aura:set attribute="else">
+                    <Strong>Last Alarm:</Strong>
+                </aura:set>
+            </aura:if> &nbsp;
+            <aura:if isTrue="{!v.rule.AlertStatus__c == 'ACTIVE' }">
+                <ui:outputDateTime value="{!v.rule.AlertAlarmDtTm__c}" timezone="{!v.timeZone}" format="MMM d, HH:mm"/>
+                <aura:set attribute="else">
+                    <aura:if isTrue="{!v.rule.AlertAlarmDtTm__c == null }">
+                        <aura:set attribute="else">
+                            <ui:outputDateTime value="{!v.rule.AlertAlarmDtTm__c}" timezone="{!v.timeZone}"
+                                               format="MMM d, HH:mm"/>
+                        </aura:set>
+                        (Blank)
+                    </aura:if>
+                </aura:set>
+            </aura:if>
+
+        </div>
+    </div>
+    <div class="slds-grid slds-wrap">
+        <div class="slds-size_1-of-1 slds-m-around_medium slds-text-align_center"
+             style="border-bottom: solid black 0.5px; width:90%;">
+            <aura:if isTrue="{!v.showSpinner}">
+                <div class="slds-align_absolute-center" style="height:4rem">
+                    <div role="status" class="slds-spinner slds-spinner_medium slds-spinner_inline">
+                        <span class="slds-assistive-text">Loading</span>
+                        <div class="slds-spinner__dot-a"></div>
+                        <div class="slds-spinner__dot-b"></div>
+                    </div>
+                </div>
+            </aura:if>
+            <canvas aura:id="barChart" id="barChart" height="300" width="{!v.width}"/>
+        </div>
+        <div class="slds-size_1-of-1 slds-grid slds-align_ absolute-center slds-p-around _small">
+            <div class="slds-col slds-size_4-of-12 slds-p-top_large"/>
+            <div class="slds-col slds-size_3-of-12 slds-align_absolute-center slds-p-top_large"
+                 style="font-weight: 600;text-align:center;">
+                <h4> <!--{!v.selectedRule.RuleLongNm__c}--> Trend <br/>
+                    <div class="slds-align_absolute-center"
+                         style="text-align:center;border: 2px solid orange; width:115;"/>
+                </h4>
+            </div>
+            <div class="slds-col slds-size_3-of-12 slds-p-top_large"/>
+            <div class="slds-col slds-size_2-of-12 slds-p-top_large"/>
+        </div>
+        <aura:iteration items="{!v.tags}" var="tag">
+            <div class="slds-size_1-of-1 slds-m-around_medium slds-text-align_center"
+                 style="border-bottom: solid black 0.5px; width:90%;">
+                <c:LineChart rule="{!v.rule}" tag="{!tag.name}" lineColor="{!tag.color}" width="{!v.width}"
+                             timeZone="{!v.timeZone}"/>
+            </div>
+        </aura:iteration>
+    </div>
+</aura:component>

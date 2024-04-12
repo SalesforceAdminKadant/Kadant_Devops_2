@@ -1,0 +1,16 @@
+<aura:component controller="MachineSectionMapController" implements="flexipage:availableForAllPageTypes" access="global">
+
+	<aura:handler name="init" value="{!this}" action="{!c.initComponent}"/>
+
+	<aura:attribute name="recordId" type="Id" />
+	<aura:attribute name="returl" type="string" />
+
+	<aura:attribute name="vfHost" type="string" />
+	<aura:attribute name="lcHost" type="string" />
+	<aura:attribute name="iframeSrc" type="string" />
+
+	<aura:attribute name="dirty" type="boolean" default="false" />
+
+	<iframe aura:id="vfFrame" src="{!v.iframeSrc}" width="100%" height="100%" style="border:none;" />
+
+</aura:component>

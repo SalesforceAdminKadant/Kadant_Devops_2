@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="33.63pt" version="1.1" xmlns="http://www.w3.org/2000/svg" height="22.15pt" viewBox="0 0 33.63 22.15" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs>
+  <clipPath id="Clip0">
+   <path d="M0 0 L33.6339 0 L33.6339 22.1528 L0 22.1528 L0 0 Z" transform="translate(0, 0)"/>
+  </clipPath>
+ </defs>
+ <g id="Background">
+  <g id="Top" clip-path="url(#Clip0)">
+   <path style="fill:none;stroke:#000000; stroke-width:0.8; stroke-linecap:round; stroke-linejoin:miter; stroke-dasharray:none;" d="M1.77636e-15 8.2504 C0.7624 7.9504 1.2592 7.1872 1.408 6.804 C2.9584 2.8208 6.8304 0 11.3608 0 C17.144 0 21.852 4.5976 22.0312 10.3376 L22.0368 10.6768 C22.0368 16.5736 17.2568 21.3528 11.3608 21.3528 C6.8304 21.3528 2.9592 18.532 1.408 14.5488 C1.2584 14.1656 0.7624 13.4024 0 13.1024 " transform="translate(11.1971, 0.4)"/>
+   <path style="fill:none;stroke:#000000; stroke-width:0.73344; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:none;" d="M13.4536 0.9088 L2.6176 0.9088 L2.3344 0.9152 C1.0456 0.9152 0.568 0.6248 0.0008 0 L0.004 0.0432 C0.432 0.7608 0.7136 1.856 0.7376 3.092 L0.7392 3.3448 C0.7392 4.6536 0.452 5.8192 0.0032 6.5712 L0 6.6144 C0.5672 5.9904 1.0448 5.6992 2.3336 5.6992 L2.6168 5.7056 L13.452 5.7056 " transform="translate(0.36672, 7.7696)"/>
+  </g>
+ </g>
+</svg>

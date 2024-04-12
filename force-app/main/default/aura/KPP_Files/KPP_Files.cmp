@@ -1,0 +1,47 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" controller="KPP_Function_Library">
+	<aura:attribute name="DataSet" type="String" />
+    <aura:attribute name="cusId" type="Id"/>
+	
+    <aura:handler name="init" value="{!this}" action="{!c.onLoad}"/> 
+    <!--Showing spinner while uploading -->
+    <aura:attribute name="showLoadingSpinner" type="boolean" default="false" />
+    <aura:attribute name="nofiles" type="boolean" default="true" />
+    <aura:attribute name="fileName" type="String" default="No File Selected.." />
+    <!--List of file which are uploaded -->
+    <aura:attribute name="FilesUploaded" type="List" /> 
+
+    <table><tr><td class="RightScreen">  
+
+                <lightning:input aura:id="file" onchange="{!c.handleFilesChange}" type="file" name="file" label="Select files" multiple="true"/>
+                <div class="slds-text-body_medium slds-text-color_error">{!v.fileName} </div>
+                <!--use aura:if for show-hide the loading spinner image--> 
+                <aura:if isTrue="{!v.showLoadingSpinner}">
+                   <lightning:spinner alternativeText="Loading" size="medium" />
+                </aura:if>
+
+
+                <br/>
+                <button class="slds-button slds-button_brand" onclick="{!c.startUpload}" disabled="{!v.nofiles}">Upload Files</button>
+
+        <br/><br/>
+        <aura:iteration items="{!v.DataSet}" var="row"> 
+            <p class="LnH">
+            <aura:if isTrue="{!row[3]=='PDF'}">
+                <a href="{!'../sfc/servlet.shepherd/document/download/'+row[4]+'?operationContext=S1'}" target="_BLANK"><lightning:icon iconName="doctype:pdf" size="small" />&nbsp;{!row[0]}</a>
+            </aura:if>
+                
+            <aura:if isTrue="{!row[3]=='UNKNOWN'}">
+                <a href="{!'../sfc/servlet.shepherd/document/download/'+row[4]+'?operationContext=S1'}" target="_BLANK"><lightning:icon iconName="doctype:unknown" size="small" />&nbsp;{!row[0]}</a>
+            </aura:if>
+            
+            <aura:if isTrue="{!row[3]!='PDF'}">
+                <aura:if isTrue="{!row[3]!='UNKNOWN'}">
+            	<a href="{!'../sfc/servlet.shepherd/version/renditionDownload?rendition=ORIGINAL_'+row[3]+'&amp;versionId='+row[1]+'&amp;operationContext=CHATTER&amp;contentId='+row[2]}" target="_BLANK"><lightning:icon iconName="doctype:image" size="small" />&nbsp;{!row[0]}</a>
+            	</aura:if>
+            </aura:if>
+            </p>
+        </aura:iteration>
+        		
+    
+    </td></tr></table> 
+</aura:component>

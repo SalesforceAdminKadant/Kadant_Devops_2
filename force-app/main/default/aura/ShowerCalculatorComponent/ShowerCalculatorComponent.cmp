@@ -1,0 +1,3 @@
+<aura:component implements="force:lightningQuickAction,force:hasRecordId" >
+    <c:showerCalculation showerID="{!v.recordId}" showTitle="{!false}"></c:showerCalculation>
+</aura:component>

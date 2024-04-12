@@ -1,0 +1,15 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" controller="KPP_Function_Library">
+    <aura:attribute name="DrawingFileId" type="String" />
+    <aura:attribute name="DrawingImage" type="String" />
+    <aura:attribute name="DrawingUrl" type="String" />
+    <aura:attribute name="DrawingMsg" type="String" />
+    <aura:handler name="init" value="{!this}" action="{!c.loadScreen}"/>
+    
+
+    <aura:if isTrue="{!empty(v.DrawingMsg)}">
+    	<a href="{!v.DrawingUrl}" target="_BLANK"><img src="{!v.DrawingImage}"/></a>
+   	</aura:if>
+    <br/>&nbsp;<br/>{!v.DrawingMsg}    
+    
+    
+</aura:component>

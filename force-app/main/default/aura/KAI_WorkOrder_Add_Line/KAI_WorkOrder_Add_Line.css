@@ -1,0 +1,205 @@
+.THIS .MainTabs{
+    background-color: #fafafa;
+    padding-left:4px;
+    padding-right:4px;
+}
+
+.THIS .SubTabs{
+    background-color: #fafafa;
+    /*padding:0px;*/
+}
+
+.THIS .MainTab{
+    background-color: #fafafa;
+    padding:4px !important;
+}
+
+.THIS .SearchFieldStyle{
+    width:10%;
+    float:left;
+}
+
+.THIS .FieldSmall{
+    /*width:50%;
+    width: min-content;
+    min-width: 120px;*/
+}
+
+.THIS .SectionButton{
+    border:0px;
+    padding-left:0px;
+}
+
+.THIS .AccordionSection{
+    font-size: 0.8rem;
+    color:0000FF;
+}
+
+.THIS .kadant-searchtable-custom tr > td{
+    /*background-color:#FF0000;*/
+    /*padding:3px;*/
+}
+
+/* ----- zomer 2018 edition 
+.THIS .kadant-checkboxParts-custom > div > div > label {
+    width:1.2rem !important;
+    height:1.2rem !important;
+}
+
+.THIS .kadant-checkboxParts-custom > div > div > label::before {
+    width:0.12rem !important;
+    height:0.675rem !important;
+}
+
+.THIS .kadant-checkboxParts-custom > div > div > label::after {
+    width:0.675rem !important;
+    height:0.12rem !important;
+}
+*/
+
+/* ----- winter 2019 edition */
+.THIS .kadant-checkboxParts-custom > div > label {
+    width:1.2rem !important;
+    height:1.2rem !important;
+}
+
+.THIS .kadant-checkboxParts-custom > div > label::before {
+    width:0.12rem !important;
+    height:0.675rem !important;
+}
+
+.THIS .kadant-checkboxParts-custom > div > label::after {
+    width:0.675rem !important;
+    height:0.12rem !important;
+}
+
+.THIS .kadant-dummyPartButton-custom  {
+    font-size:0.9rem !important;
+    /*width:1.2rem !important;
+    height:1.2rem !important;*/
+}
+
+.THIS .kadant-dummyPartButton-custom > div > label::before {
+    /*width:0.12rem !important;
+    height:0.675rem !important;*/
+}
+
+.THIS .BLDconfig{
+    width:48%;
+    vertical-align:top;
+}
+
+.THIS .BLDconfigFLD{
+    width:30%;
+}
+
+/* ipad - landscape */
+/*@media screen and (max-width: 1024px) and (min-width: 1px) {*/
+@media screen and (max-height: 725px) and (min-height: 1px) {
+    .THIS ul > li{
+        font-size: 0.6rem !important;
+    }
+    .THIS select{
+        font-size: 0.6rem !important;
+    }
+    .THIS label{
+        font-size: 0.6rem !important;
+    }
+    .THIS input{
+        font-size: 0.6rem !important;
+    }    
+	.THIS .kadant-searchresults-head > tr > th{
+    	font-size: 0.6rem !important;    
+	}
+	.THIS .kadant-searchresults-body > tr > td{
+    	font-size: 0.6rem !important;    
+	}
+    
+    .THIS .slds-docked_container{
+        height: 350px !important; 
+        width: 715px !important;
+    }
+    
+    .THIS #bomdiv{
+        height:350px;
+    }
+    
+    .THIS #bomdialogdiv{
+        height: 450px !important;
+        width: 615px !important;
+        max-height: 450px !important;
+    }
+    
+    .THIS #bomsection{
+        height: 350px !important;
+        width: 715px !important;
+        max-height: 550px !important;
+        Right: 25%;
+        bottom: 25%;
+    }
+    
+    .THIS .divBladeCPQleft{
+        width: 45% !important;
+        margin-top:0 !important;
+        float:left;
+        font-size: 0.6rem !important;
+    }
+    
+    .THIS .divBladeCPQright{
+        width: 45% !important;        
+        margin-top:0 !important;
+        float:right;
+        font-size: 0.6rem !important;
+    }
+    
+    .THIS .divBladeCPQright > h2{
+        font-size: 0.72rem !important;
+        font-weight: bold !important;
+    }
+    
+    .THIS .OrderLineRow{
+        vertical-align:top !important;
+    }
+}
+
+/*@media screen and (min-width: 1024px) {*/
+@media screen and (min-height: 725px) {
+	.THIS .kadant-searchresults-head > tr > th{
+    	font-size: 0.72rem !important; 
+        vertical-align:bottom !important;
+	}
+	.THIS .kadant-searchresults-body > tr > td{
+   	 font-size: 0.72rem !important;    
+	}
+        
+    .THIS #bomdiv{
+        height:450px;
+    }
+    
+    .THIS #bomdialogdiv{
+        height: 550px !important;
+        width: 715px !important;
+        max-height: 550px !important;
+    }
+    
+    .THIS #bomsection{
+        height: 550px !important;
+        width: 915px !important;
+        max-height: 550px !important;
+        Right: 25%;
+        bottom: 25%;
+    }
+    
+    .THIS .SearchInput{
+        font-size: 0.8rem !important;
+        min-height:0.8rem !important;
+    } 
+    
+    .THIS .uiLabel-top{
+        font-size: 0.7rem !important;
+    }
+    
+    .THIS .OrderLineRow{
+        vertical-align:top !important;
+    }
+}

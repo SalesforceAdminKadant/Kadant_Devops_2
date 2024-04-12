@@ -1,0 +1,3 @@
+<apex:page standardController="Mfg_Cost_Price__c" standardStylesheets="false" showHeader="false">
+<XFILES:XfilesProBiSync />
+</apex:page>

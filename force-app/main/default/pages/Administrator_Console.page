@@ -1,0 +1,43 @@
+<apex:page lightningStylesheets="true" controller="AdministratorConsole" >
+
+    <script>
+        function InitializeForecast()
+        {
+            var r = confirm('Do you want to initialize the forecast?\nIf so, please remember to do the following:\n\n1) Change the labels on the Forecast Item object.');
+            if (r == true)
+            {
+                CallCreateForecast();
+            }
+        }
+    </script>
+    <apex:sectionHeader title="Administrator Console"/>
+    <apex:form >
+        <apex:commandButton value="Initialize Forecast" onclick="InitializeForecast() ;"/>
+        <br></br>
+        <hr></hr>
+        <apex:commandButton value="Update Machine Element Record Type" action="/flow/Update_Machine_Element_Record_Type?retURL=/lightning/page/home"/>
+        <br></br>
+        <hr></hr>
+        <apex:commandButton value="Merge Accounts" action="/merge/accmergewizard.jsp?retURL=/001"/>
+        <br></br>
+        <hr></hr>
+        <apex:commandButton value="Lock Record" action="/flow/Screen_Lock_Record?retURL=/lightning/n/Administrator_Console"/>
+        <br></br>
+        <hr></hr>
+        <apex:commandButton value="Unlock Record" action="/flow/Screen_Unlock_Record?retURL=/lightning/n/Administrator_Console"/>
+        <br></br>
+        <hr></hr>
+        <apex:commandButton value="Status of Integrations" action="/flow/Screen_Status_of_Integrations?retURL=/lightning/n/Administrator_Console"/>
+        <br></br>
+        <br></br>
+        <apex:commandButton value="Startup Integrations" action="/flow/Screen_Startup_Integrations?retURL=/lightning/n/Administrator_Console"/>
+        <br></br>
+        <br></br>
+        <apex:commandButton value="Shutdown Integrations" action="/flow/Screen_Shutdown_Integrations?retURL=/lightning/n/Administrator_Console"/>
+        <br></br>
+        <hr></hr>
+        <apex:actionFunction name="CallCreateForecast" action="{!CreateForecast}" onComplete="alert('Forecast is in the process of being initialized.  You will receive an e-mail when it is complete.') ;"/>
+        <apex:commandButton value="Divisional User License Report" action="/lightning/r/Report/00ONv000000MZ8nMAG/view?queryScope=userFolders"/>        
+        <hr></hr>
+    </apex:form>
+</apex:page>

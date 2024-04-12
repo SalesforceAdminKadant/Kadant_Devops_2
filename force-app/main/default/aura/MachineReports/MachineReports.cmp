@@ -1,0 +1,72 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global">
+    
+    <aura:attribute name="machineRecord" type="Object" />
+    <aura:attribute name="recordLoadError" type="String" />
+    
+    <!-- using RecordId go get the necessary fields available and adding them to the attribute machineRecord -->
+    <force:recordData aura:id="recordLoader"
+        recordId="{!v.recordId}"
+        fields="Name,Account_and_Site__c"
+        targetFields="{!v.machineRecord}"
+        targetError="{!v.recordLoadError}" />
+
+    <!-- Show error message on page -->
+     <aura:if isTrue="{!not(empty(v.recordLoadError))}">
+     <div class="recordError">
+     {!v.recordLoadError}</div>
+   	 </aura:if>
+    
+    <!-- Kadant Solutions Division (KSD) -->
+    <div style="font-size: 1rem;">Machine Reports</div>
+        <table style="width:100%">
+            <tr>
+                <th width="25%"><strong>Doctors</strong></th>
+                <th width="25%"><strong>C &amp; C</strong></th>
+                <th width="25%"><strong>Filtration</strong></th>
+                <th width="25%"><strong>Other</strong></th>
+            </tr>
+            <tr>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004hegc/view?fv1='+v.recordId+''}" target="_blank" label="Blades" /></td>
+                <!-- <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z0000051E4c/view?fv1='+v.recordId+''}" target="_blank" label="Nozzle Cabinets" /></td> -->
+                <td>• <lightning:formattedurl value="{!'/apex/SDOC__SDCreate1?id='+v.recordId+'&amp;Object=Machine__c&amp;doclist=a5b0z000002AKyY&amp;oneclick=true&amp;autoopen=1'}" target="_blank" label="Nozzle Cabinet" /></td>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004hemL/view?fv1='+v.recordId+''}" target="_blank" label="Filters" /></td>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005ElWREA0/view?fv1='+v.recordId+''}" target="_blank" label="Belt Clothing" /></td>
+            </tr>
+            <tr>
+                <td valign="top">• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004dzy3EAA/view?fv1='+v.recordId+''}" target="_blank" label="Holders" /></td>
+                <td valign="top">• <lightning:formattedurl value="{!'/lightning/r/Report/00O4W000008IbASUA0/view?fv1='+v.recordId+''}" target="_blank" label="Nozzle Cabinet GP by Part" /></td>
+                <td valign="top">• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z0000051HyY/view?fv1='+v.recordId+''}" target="_blank" label="Filters with Showers" /></td>
+                <td valign="top">• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004hemVEAQ/view?fv0=&quot;'+v.machineRecord.Account_and_Site__c+'&quot;'}" target="_blank" label="Rolls with Doctors" /></td>
+            </tr>
+            <tr>
+                <td valign="top">• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004hekU/view?fv1='+v.recordId+''}" target="_blank" label="Doctors" /></td>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z00000521t0EAA/view?fv1='+v.recordId+''}" target="_blank" label="Showers Data Collection" /></td>
+                <td>&nbsp;</td>
+                <td>• <lightning:formattedurl value="{!'/apex/ServiceReportAllOpenItems?id='+v.recordId+''}" target="_blank" label="All Open Service Items" /></td>
+            </tr>
+            <tr>
+                <td valign="top">• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004e00iEAA/view?fv1='+v.recordId+''}" target="_blank" label="Bearings" /></td>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000004heft/view?fv1='+v.recordId+''}" target="_blank" label="Showers" /></td>
+                <td>&nbsp;</td>
+                <td valign="top">• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005YRFoEAO/view?fv1='+v.recordId+''}" target="_blank" label="Drainage" /></td>
+            </tr>
+            <tr>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005EnrCEAS/view?fv1='+v.recordId+''}" target="_blank" label="Yankee" /></td>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005XnM6EAK/view?fv1='+v.recordId+''}" target="_blank" label="Shower Oscillators" /></td>
+                <td>&nbsp;</td>
+                <td valign="top">• <lightning:formattedurl value="{!'/lightning/r/Report/00O4W0000089hYOUAY/view?fv0='+v.recordId+''}" target="_blank" label="kConnect Blade Changes" /></td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z000005EjgyEAC/view?fv2='+v.recordId+''}" target="_blank" label="Uhle Box" /></td>
+                <td>&nbsp;</td>
+                <td valign="top">• <lightning:formattedurl value="{!'/lightning/r/Report/00O4W000008IUN5UAO/view?fv1='+v.recordId+''}" target="_blank" label="Blade Cabinet Inventory" /></td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td valign="top">• <lightning:formattedurl value="{!'/lightning/r/Report/00O4W000008IxADUA0/view?fv0=001300000000000&amp;fv1='+v.recordId+''}" target="_blank" label="Rotary Joints" /></td>
+            </tr>
+        </table>
+</aura:component>

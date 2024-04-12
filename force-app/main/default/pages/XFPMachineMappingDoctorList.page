@@ -1,0 +1,3 @@
+<apex:page standardController="Machine_Mapping_Doctor__c" showHeader="false">
+<XFILES:XFileList />
+</apex:page>

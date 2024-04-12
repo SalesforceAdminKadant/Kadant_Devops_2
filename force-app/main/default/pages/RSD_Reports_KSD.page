@@ -1,0 +1,58 @@
+<apex:page standardController="Region__c" lightningStyleSheets="true">
+        <table style="width:100%">
+            <tr>
+                <th width="50%"><strong>Sales</strong></th>
+                <th width="50%"><strong>Bookings</strong></th>
+            </tr>
+            <tr>
+                <td><a href='/apex/LaunchReport?Reportid=00O600000046lxV' target="_blank">3 Year Sales Summary - by Product Family</a></td>
+                <td><a href='/apex/LaunchReport?Reportid=00O60000004g1hj' target="_blank">YTD Bookings by Account</a></td>
+            </tr>
+            <tr>
+                <td><a href='/apex/LaunchReport?Reportid=00O600000046lyO' target="_blank">3 Year Sales Summary - by Industry</a></td>
+                <td><a href='/apex/LaunchReport?Reportid=00O60000003u3jE' target="_blank">YTD Bookings by Industry</a></td>
+            </tr>
+            <tr>
+                <td><a href='/apex/LaunchReport?Reportid=00O600000046iYw' target="_blank">3 Year Sales Summary - by Account</a></td>
+                <td><a href='/apex/LaunchReport?Reportid=00O60000003u2vx' target="_blank">YTD Bookings by Forecast Category and Industry</a></td>
+            </tr>
+            <tr>
+                <td><a href='/apex/LaunchReport?Reportid=00O60000003u3p2' target="_blank">3 Year Sales Summary - Blades only</a></td>
+                <td><a href='/apex/LaunchReport?Reportid=00O60000004g1hP' target="_blank">YTD Bookings by Forecast Category</a></td>
+            </tr>
+            <tr>
+                <td><a href='/apex/LaunchReport?Reportid=00O600000046rHQ' target="_blank">3 Year Sales Summary - by District</a></td>
+                <td><a href='/apex/LaunchReport?Reportid=00O0z0000051ICa' target="_blank">YTD Bookings by Product Family</a></td>
+            </tr>
+            <tr>
+                <td><a href='/apex/LaunchReport?Reportid=00O600000046hE3' target="_blank">Total Sales History</a></td>
+                <td><a href='/apex/LaunchReport?Reportid=00O60000003u3p7' target="_blank">YTD Bookings - Blades only</a></td>
+            </tr>
+        </table>
+        <table style="width:100%">
+            <tr>
+                <th width="50%"><strong>White Space &amp; Forecast</strong></th>
+                <th width="50%"><strong>Other Reports</strong></th>
+            </tr>
+            <tr>
+                <td><a href='/apex/LaunchReport?Reportid=00O0z0000051Ydh' target="_blank">White Space</a></td>
+                <td><a href='/apex/LaunchReport?Reportid=00O60000004cNfQ' target="_blank">Capital Orders Won MTD > 30k</a></td>
+            </tr>
+            <tr>
+                <td><a href='/apex/LaunchReport?Reportid=00O0z0000051YNo' target="_blank">White Space - Capital</a></td>
+                <td><a href='/apex/LaunchReport?Reportid=00O0z0000051mK0' target="_blank">Orders expected in next 90 days</a></td>
+            </tr>
+            <tr>
+                <td><a href='/apex/LaunchReport?Reportid=00O0z0000051OlR' target="_blank">White Space- Consumables</a></td>
+                <td><a href='/apex/LaunchReport?Reportid=00O0z0000051mJg' target="_blank">Significant Quotes Issued MTD >$25K</a></td>
+            </tr>
+            <tr>
+                <td><a href='/apex/LaunchReport?Reportid=00O60000004nkMB' target="_blank">Current Forecast vs. Actuals - Details</a></td>
+                <td><a href='/apex/LaunchReport?Reportid=00O0z0000051mJM' target="_blank">Open Quotes > 25K</a></td>
+            </tr>
+            <tr>
+                <td><a href='/apex/LaunchReport?Reportid=00O60000004nlo6' target="_blank">Current Forecast vs. Actuals - Summary</a></td>
+                <td><a href='/apex/LaunchReport?Reportid=00O0z000005a2Ux' target="_blank">Oscillator Rebuilds by Account</a></td>
+            </tr>
+        </table>
+</apex:page>

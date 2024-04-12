@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20.85pt" version="1.1" xmlns="http://www.w3.org/2000/svg" height="31.88pt" viewBox="0 0 20.85 31.88" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs>
+  <clipPath id="Clip0">
+   <path d="M0 31.8845 L20.8499 31.8845 L20.8499 0 L0 0 L0 31.8845 Z" transform="translate(0, 0)"/>
+  </clipPath>
+  <clipPath id="Clip1">
+   <path d="M0 31.8845 L20.8499 31.8845 L20.8499 0 L0 0 L0 31.8845 Z" transform="translate(0, 0)"/>
+  </clipPath>
+  <clipPath id="Clip2">
+   <path d="M0 31.8845 L20.8499 31.8845 L20.8499 6e-05 L0 6e-05 L0 31.8845 Z" transform="translate(0, 0)"/>
+  </clipPath>
+ </defs>
+ <g id="Background">
+  <g id="Group3" clip-path="url(#Clip0)">
+   <g id="Background" clip-path="url(#Clip1)">
+    <g id="Layer_1" clip-path="url(#Clip2)">
+     <path style="fill:none;stroke:#424244; stroke-width:1.20192; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:none;" d="M19.648 9.8312 C19.648 15.2552 15.2504 19.6536 9.8272 19.6536 C4.3992 19.6536 0 15.2552 0 9.8312 C0 4.4 4.3992 0 9.8272 0 C15.2504 0 19.648 4.4 19.648 9.8312 L19.648 9.8312 Z" transform="translate(0.60096, 0.60096)"/>
+     <path style="fill:#424244; fill-rule:evenodd;stroke:none;" d="M13.1 11.3472 L0 11.3472 L6.5504 0 L13.1 11.3472 Z" transform="translate(3.87696, 20.2538)"/>
+     <path style="fill:none;stroke:#424244; stroke-width:0.56696; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:none;" d="M0 0 L6.5496 11.3472 " transform="translate(10.4274, 20.2538)"/>
+     <path style="fill:none;stroke:#424244; stroke-width:0.56696; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:none;" d="M6.5504 0 L0 11.3472 " transform="translate(3.87696, 20.2538)"/>
+     <path style="fill:none;stroke:#424244; stroke-width:0.56696; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:none;" d="M0 0 L13.1 0 " transform="translate(3.87696, 31.034)"/>
+    </g>
+   </g>
+  </g>
+ </g>
+</svg>

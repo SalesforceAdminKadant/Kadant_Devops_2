@@ -1,0 +1,3 @@
+<apex:page standardController="Account" standardStylesheets="false" showHeader="false">
+<XFILES:XfilesProBiSync />
+</apex:page>

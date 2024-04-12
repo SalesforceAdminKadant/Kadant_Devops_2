@@ -1,0 +1,96 @@
+<apex:page lightningStyleSheets="true" label="none">
+
+<table>
+    <table style="width:100%">
+        <tr>
+            <th width="33%"><strong>Profile</strong></th> 
+            <th width="33%"><strong>General</strong></th>
+            <th width="33%"><strong>Chatter</strong></th>
+        </tr>
+        <tr>
+            <td><a href='https://kadant.lightning.force.com/lightning/o/Tutorial__c/list?filterName=00B0z0000085mD1EAI' target="_blank">Profile Settings</a></td>
+            <td><a href='https://kadant.lightning.force.com/lightning/r/a5o0z000000lFTyAAM/view' target="_blank">Login to Salesforce</a></td>
+            <td><a href='https://kadant.lightning.force.com/lightning/r/a5o0z000000lFTFAA2/view' target="_blank">Chatter Settings</a></td>
+        </tr>
+        <tr>
+            <td><a href='https://kadant.lightning.force.com/lightning/r/a5o0z000000lFTpAAM/view' target="_blank">Set Out of Office</a></td>
+            <td><a href='https://kadant.lightning.force.com/lightning/r/ContentDocument/0690z0000063utzAAA/view' target="_blank">Salesforce Golden Rules</a></td>
+            <td><a href='https://kadant.lightning.force.com/lightning/r/a5o0z000000lFTPAA2/view' target="_blank">Use Chatter in Salesforce</a></td>
+        </tr>
+        <tr>
+            <td><a href='https://kadant.lightning.force.com/lightning/r/a5o0z000000lFTUAA2/view' target="_blank">Change Email Footer in SF</a></td>
+            <td><a href='https://kadant.lightning.force.com/lightning/r/a5o0z000000GC7UAAW/view' target="_blank">Searching in Salesforce</a></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+</table>
+
+<br /><br />
+
+<table>
+    <table style="width:100%">
+        <tr>
+            <th width="33%"><strong>Collaboration</strong></th> 
+            <th width="33%"><strong>Pre-Sales</strong></th>
+            <th width="33%"><strong>Sales</strong></th>
+        </tr>
+        <tr>
+            <td><a href='https://kadant.lightning.force.com/lightning/r/a5o0z000000lFTtAAM/view' target="_blank">Attach a File to an Object</a></td>
+            <td><a href='https://kadant.lightning.force.com/lightning/r/a5o0z000000lFTeAAM/view' target="_blank">Find a Lead</a></td>
+            <td><a href='https://kadant.lightning.force.com/lightning/r/a5o0z000000lFToAAM/view' target="_blank">Quote / Selling History</a></td>
+        </tr>
+        <tr>
+            <td><a href='https://kadant.lightning.force.com/lightning/r/a5o0z000000lFTVAA2/view' target="_blank">Assign a Task to Someone Else</a></td>
+            <td><a href='https://kadant.lightning.force.com/lightning/r/a5o0z000000lFTqAAM/view' target="_blank">Create a Visit Report</a></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href='https://kadant.lightning.force.com/lightning/r/Tutorial__c/a5o0z000000lFU8AAM/view' target="_blank">Files Guidelines</a></td>
+            <td><a href='https://kadant.lightning.force.com/lightning/r/a5o0z000000lFTfAAM/view' target="_blank">Create a Standard Quote</a></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+</table>
+
+<br /><br />
+
+<table>
+    <table style="width:100%">
+        <tr>
+            <th width="33%"><strong>Office 365</strong></th> 
+            <th width="33%"><strong>Other</strong></th>
+            <th width="33%"><strong>Mobile</strong></th>
+        </tr>
+        <tr>
+            <td><a href='https://kadant.lightning.force.com/lightning/r/a5o0z000000lFTjAAM/view' target="_blank">Add Salesforce to Outlook</a></td>
+            <td><a href='https://kadant.lightning.force.com/lightning/r/a5o0z000000lFTKAA2/view' target="_blank">Print a Document to PDF</a></td>
+            <td><a href='https://kadant.lightning.force.com/lightning/r/a5o0z000000GC54AAG/view' target="_blank">Link Mobile contacts to Salesforce</a></td>
+        </tr>
+        <tr>
+            <td><a href='https://kadant.lightning.force.com/lightning/r/a5o0z000000lFTZAA2/view' target="_blank">Use Salesforce in Outlook</a></td>
+            <td><a href='https://kadant.lightning.force.com/lightning/r/Tutorial__c/a5o0z000000GC38AAG/view' target="_blank">Budget Explainer 2019</a></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+</table>
+</apex:page>

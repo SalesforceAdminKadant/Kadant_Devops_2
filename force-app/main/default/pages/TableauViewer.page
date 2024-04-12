@@ -1,0 +1,16 @@
+<apex:page showHeader="false" sidebar="false">
+    <apex:includeLightning />    
+    <apex:includeScript value="/lightning/lightning.out.js" />
+    <div id="tv_id" />    
+    <script>
+    $Lightning.use("c:TableauApplication", function() {
+        $Lightning.createComponent("c:TableauComponent",
+          { 
+          },
+          "tv_id",
+          function(cmp) {
+             console.log('Display Lightning component in visualforce page');
+          });
+    });
+    </script>
+</apex:page>

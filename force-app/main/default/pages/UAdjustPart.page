@@ -1,0 +1,445 @@
+<apex:page controller="MachineSectionMapController" tabStyle="Account" action="{!Init}">
+
+    <apex:includeScript value="{!URLFOR($Resource.jQueryUI, '/jquery-ui-1.12.1.custom/external/jquery/jquery.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.jQueryUI, '/jquery-ui-1.12.1.custom/jquery-ui.js')}" />
+    <apex:includeScript value="/soap/ajax/39.0/connection.js"/>
+    <apex:includeScript value="/canvas/sdk/js/publisher.js"/>
+    <apex:includeScript value="{!URLFOR($Resource.GoJS_1_7_10, '/GoJS/go-debug.js')}" />
+
+    <apex:stylesheet value="{!URLFOR($Resource.jQueryUI, '/jquery-ui-1.12.1.custom/jquery-ui.css')}" />
+
+    <script>
+        var j$ = jQuery.noConflict();
+        var g$ = go.GraphObject.make;
+
+        var diagram;
+
+        var scales;
+        var offsets;
+
+        var typeToPic;
+        var type;
+        var picNode;
+
+        var ROLL = 1;
+        var DOC = 2;
+
+
+        j$("#scale").keyup(function(event)
+        {
+            if (event.keyCode == 13)
+                event.preventDefault();
+        });
+
+        j$("#offx").keyup(function(event)
+        {
+            if (event.keyCode == 13)
+                event.preventDefault();
+        });
+
+        j$("#offy").keyup(function(event)
+        {
+            if (event.keyCode == 13)
+                event.preventDefault();
+        });
+
+
+
+        var defaultNodeTemplate =
+            g$(go.Node, "Horizontal",
+                {
+                    rotatable: true,
+                    locationObjectName: "SHAPE",
+                    toLinkable: false,
+                    fromLinkable: false,
+                    portId: "",
+                    movable: false,
+                    locationSpot: go.Spot.Center
+                },
+                new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
+                new go.Binding("angle", "rotate").makeTwoWay(),
+                new go.Binding("scale", "scale").makeTwoWay(),
+
+            g$(go.Picture,
+                {
+                    name: "SHAPE",
+                    //margin: 5
+                },
+                new go.Binding("source"),
+                new go.Binding("scale", "scale").makeTwoWay(),
+                new go.Binding("scale", "imageScale").makeTwoWay(),
+                new go.Binding("flip", "flip").makeTwoWay())
+        );
+
+        var rollTemplate =
+            g$(go.Node,
+            {
+                rotatable: false,
+                locationSpot: go.Spot.Center,
+                locationObjectName: "GUIDE",
+                resizable: true,
+                resizeObjectName: "GUIDE",
+                selectionAdorned: false,
+                toLinkable: false,
+                fromLinkable: false,
+                movable: true
+            },
+            new go.Binding("angle", "rotate").makeTwoWay(),
+            new go.Binding("scale", "scale").makeTwoWay(),
+            g$(go.Panel, "Spot",
+                g$(go.Shape, "Circle",
+                {
+                    name: "GUIDE",
+                    fill: "transparent",
+                    width: 50,
+                    height: 50,
+                    geometryStretch: go.GraphObject.Uniform
+                },
+                new go.Binding("scale").makeTwoWay(),
+                new go.Binding("scale", "imageScale").makeTwoWay(),
+                new go.Binding("width").makeTwoWay(),
+                new go.Binding("height").makeTwoWay())
+        ));
+
+
+
+        j$(document).ready(function()
+        {
+            typeToPic = new Object();
+
+            <apex:repeat value="{!DoctorTypes}" var="d">
+                typeToPic["{!d}"] = "{!$Resource[KeyToIconR[d]]}";
+            </apex:repeat>
+
+
+            scales = new Object();
+            <apex:repeat value="{!PartScales}" var="s">
+                scales['{!s}'] = {!PartScales[s]};
+            </apex:repeat>
+
+
+            var splits;
+            offsets = new Object();
+            <apex:repeat value="{!PartOffsets}" var="s">
+                splits = "{!PartOffsets[s]}".split(",");
+                offsets["{!s}"] = {x: Number(splits[0]), y: Number(splits[1])};
+            </apex:repeat>
+
+            go.licenseKey = "{!LicenseKey}";
+
+            diagram = g$(go.Diagram, "diagram",
+            {
+                "animationManager.isEnabled": false,
+                "undoManager.isEnabled": true,
+                "grid.visible": true,
+                initialContentAlignment: go.Spot.Center,
+                initialAutoScale: go.Diagram.Uniform,
+                "draggingTool.isGridSnapEnabled": true,
+                "resizingTool.isGridSnapEnabled": true,
+                "toolManager.mouseWheelBehavior": go.ToolManager.WheelZoom,
+                //rotatingTool: g$(TopRotatingTool),
+                "rotatingTool.rotate": function (newAngle)
+                {
+                    go.RotatingTool.prototype.rotate.call(this, newAngle); // .base()
+                    UpdatePositionReal();
+                },
+                "draggingTool.moveParts": function(parts, offset, check)
+                {
+                    go.DraggingTool.prototype.moveParts.call(this, parts, offset, check); // .base()
+                    UpdatePosition();
+                },
+                "resizingTool.resize": function (newR)
+                {
+                    go.ResizingTool.prototype.resize.call(this, newR); // .base()
+                    UpdatePosition();
+                }
+            });
+
+            var templateMap = new go.Map("string", go.Node);
+
+            templateMap.add("doc", defaultNodeTemplate);
+            templateMap.add("roll", rollTemplate);
+
+            diagram.nodeTemplateMap = templateMap;
+
+            var roll =
+            {
+                category: "roll",
+                loc: new go.Point (400, 250),
+                outside: false,
+                key: ROLL
+            };
+
+            diagram.startTransaction("add roll");
+            diagram.model.addNodeData(roll);
+            diagram.commitTransaction("add roll");
+
+            var newRoll = diagram.findNodeForKey(roll.key);
+
+            newRoll.data.name = "Roll";
+            newRoll.data.recordType = "Roll";
+            newRoll.data.source = "{!$Resource.Roll}";
+            newRoll.data.objectType = "Roll";
+            newRoll.data.snappedTo = null;
+            newRoll.data.snapChange = true;
+
+            var doc =
+            {
+                category: "doc",
+                snappedTo: 1,
+                key: DOC
+            };
+
+            diagram.startTransaction("add doctor");
+            diagram.model.addNodeData(doc);
+            diagram.commitTransaction("add doctor");
+
+            setTimeout (ChangeType, 1);
+        });
+
+
+        function ChangeType()
+        {
+            diagram.startTransaction("change type");
+
+            var to = j$("#selectList").val();
+
+            type = to;
+
+            var pic = typeToPic[to];
+            var scale = scales[to];
+            if (scale == null)
+                scale = scales["(default)"];
+
+            if (scale == null)
+                scale = 1;
+
+            var offsetX = 0;
+            var offsetY = 0;
+            var offset = offsets[to];
+            if (offset != null)
+            {
+                offsetX = offset.x;
+                offsetY = offset.y;
+            }
+
+            var doc = diagram.findNodeForKey(DOC);
+            var shape = doc.findObject("SHAPE");
+
+            shape.source = typeToPic[to];
+            shape.scale = scale;
+
+            j$("#scale").val(scale);
+            j$("#offx").val(offsetX);
+            j$("#offy").val(offsetY);
+
+            diagram.commitTransaction("change type");
+
+            console.log ("changed to " + to);
+
+            UpdatePosition();
+        }
+
+        function RotatePoint (p, center, degrees)
+        {
+            var rads = degrees * (Math.PI / 180);
+            var cosT = Math.cos(rads);
+            var sinT = Math.sin(rads);
+
+            var x = cosT * (p.x - center.x) - sinT * (p.y - center.y) + center.x;
+            var y = sinT * (p.x - center.x) + cosT * (p.y - center.y) + center.y;
+
+            return new go.Point (x, y);
+        }
+
+        function UpdatePosition()
+        {
+            setTimeout (UpdatePositionReal, 0);
+        }
+
+        function UpdatePositionReal()
+        {
+            var node = diagram.findNodeForKey(DOC);
+            var snapTo = diagram.findNodeForKey(ROLL);
+
+            var toDiam = snapTo.measuredBounds.width;
+            var toRadius = toDiam / 2;
+
+            var newLoc = snapTo.location.copy();
+
+            newLoc.x += toRadius;
+
+            var shape = node.findObject("SHAPE");
+
+            var docWidth = shape.measuredBounds.width * shape.scale;
+
+            newLoc.x += docWidth / 2;
+
+            var a = node.angle;
+
+            var offset = offsets[type];
+
+            if (offset == null)
+                offset = {x: 0, y:0};
+            else
+                offset = {x: offset.x, y: offset.y}; // copy!!
+
+            var extra = 0;
+
+            if (shape.flip == go.GraphObject.FlipVertical || shape.flip == go.GraphObject.Both)
+            {
+                // invert the Y offset if we're flipped
+                offset.y *= -1;
+            }
+
+            newLoc.x += offset.x;
+            newLoc.y += offset.y;
+
+            newLoc = RotatePoint (newLoc, snapTo.location, a);
+
+            j$("#angle").html(node.angle.toPrecision(5));
+
+            var s = toDiam.toPrecision(4) + " (" + (toDiam / 2).toPrecision(4) + '")';
+
+            j$("#size").html(s);
+            node.location = newLoc;
+        }
+
+
+        function SetScale(change)
+        {
+            var t = j$("#scale").val();
+            var a = t == null || t == "" ? 0 : Number(t);
+
+            a += change;
+
+            a = Math.round (a * 100) / 100;
+
+            j$("#scale").val(a);
+
+            scales[type] = a;
+
+            var node = diagram.findNodeForKey(DOC);
+
+            node.scale = a;
+
+            UpdatePosition();
+        }
+
+        function SetOffset (changeX, changeY)
+        {
+            var tx = j$("#offx").val();
+            var ty = j$("#offy").val();
+
+            var newX = tx != null && tx != "" ? Number(tx) : 0;
+            var newY = ty != null && ty != "" ? Number(ty) : 0;
+
+            newX += changeX;
+            newY += changeY;
+
+            offsets[type] = {x: newX, y: newY};
+
+            j$("#offx").val(newX);
+            j$("#offy").val(newY);
+
+            UpdatePosition();
+        }
+
+        function ChangeSnap()
+        {
+            var isChecked = j$("#cb_snap")[0].checked;
+
+            diagram.toolManager.draggingTool.isGridSnapEnabled = isChecked;
+            diagram.toolManager.resizingTool.isGridSnapEnabled = isChecked;
+        }
+
+        function ChangeFlip()
+        {
+            var isChecked = j$("#cb_flip")[0].checked;
+
+            var node = diagram.findNodeForKey(DOC);
+            var shape = node.findObject("SHAPE");
+
+            if (isChecked)
+                shape.flip = go.GraphObject.FlipVertical;
+            else
+                shape.flip = go.GraphObject.None;
+
+            UpdatePosition();
+        }
+
+    </script>
+
+    <apex:form >
+        <apex:pageblock >
+            <table>
+                <tr>
+                    <td>Part Type:</td>
+                    <td>
+                        <select id="selectList" onchange="ChangeType();">
+                            <apex:repeat value="{!PaletteGroupKeys}" var="pg">
+                                <apex:repeat value="{!PaletteEntries[pg]}" var="pe">
+                                    <apex:outputText rendered="{!pe.ObjectLabel = 'Doctor'}">
+                                        <option>{!pe.RecTypeLabel}</option>
+                                    </apex:outputText>
+                                </apex:repeat>
+                            </apex:repeat>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Scale: 
+                    </td>
+                    <td>
+                        <input type="text" id="scale" size="6" onchange="SetScale(0);return false;" />
+                        <button onclick="SetScale(-0.05);return false;">  -  </button>
+                        <button onclick="SetScale(0.05);return false;">  +  </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Offset X:</td>
+                    <td>
+                        <input type="text" id="offx" size="6" onchange="SetOffset(0,0);return false;" />
+                        <button onclick="SetOffset(-1, 0);return false;">  -  </button>
+                        <button onclick="SetOffset(1, 0);return false;">  +  </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Offset Y:</td>
+                    <td>
+                        <input type="text" id="offy" size="6" onchange="SetOffset(0, 0);return false;" />
+                        <button onclick="SetOffset(0, -1);return false;">  -  </button>
+                        <button onclick="SetOffset(0, 1);return false;">  +  </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>V Flip:</td>
+                    <td>
+                        <input type="checkbox" id="cb_flip" onchange="ChangeFlip(); return false;" />
+                    </td>
+                </tr>
+                <tr><td>&nbsp;</td></tr>
+                <tr>
+                    <td>Snap to Grid:</td>
+                    <td>
+                        <input type="checkbox" id="cb_snap" checked="checked" onchange="ChangeSnap(); return false;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Angle:</td>
+                    <td><span id="angle"></span></td>
+                </tr>
+                <tr>
+                    <td>Size:</td>
+                    <td><span id="size"></span></td>
+                </tr>
+            </table>
+        </apex:pageBlock>
+
+        <apex:pageBlock >
+            <div id="diagram" style="width: 100%; height: 600px; border: solid 1px black;">
+            </div>
+        </apex:pageblock>
+    </apex:form>
+</apex:page>

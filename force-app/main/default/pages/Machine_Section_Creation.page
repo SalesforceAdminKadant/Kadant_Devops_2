@@ -1,0 +1,3 @@
+<apex:page standardController="Machine_Section__c" extensions="MachineSectionControllerExtension" action="{!redirectPage}">
+   <apex:detail rendered="{!IsReadMode}" />
+</apex:page>

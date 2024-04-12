@@ -1,0 +1,20 @@
+<template>
+    <lightning-card>        
+        <lightning-layout multiple-rows="true">            
+            <lightning-layout-item size="12" padding="around-medium">
+                <div style="height: 200px;">
+                    <lightning-datatable
+                            columns={columns}
+                            data={topics}
+                            hide-checkbox-column="true"                        
+                            key-field="id"
+                            sorted-by={sortBy}
+                            sorted-direction={sortDirection}
+                            onsort={doSorting}>
+                    </lightning-datatable>
+                </div>
+            </lightning-layout-item>      
+            <span style="padding-left: 15px;"><button class="slds-button slds-button_brand" onclick={openActionItems} title="All Open Action Items">View All Open Action Items</button></span>
+        </lightning-layout>      
+    </lightning-card>
+</template>

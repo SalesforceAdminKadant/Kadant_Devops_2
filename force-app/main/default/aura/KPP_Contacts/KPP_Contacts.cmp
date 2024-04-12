@@ -1,0 +1,31 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" controller="KPP_Function_Library">
+	
+<aura:attribute name="DataSet" type="String" />
+<aura:handler name="init" value="{!this}" action="{!c.onLoad}"/> 
+<aura:attribute name="DocId" type="String" />
+    
+<table><tr><td class="MainScreen">   
+        
+<table class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Title</th>
+      <th>Phone</th>
+      <th>Email</th>
+      </tr>
+	</thead>
+    <tbody>
+       	<aura:iteration items="{!v.DataSet}" var="row"> 
+            <tr>
+				<td>{!row[1]}</td>
+            	<td>{!row[2]}</td>
+                <td><a href="{!'tel:'+row[3]}">{!row[3]}</a></td>
+                <td><a href="{!'mailto:'+row[4]}">{!row[4]}</a></td>            	
+        	</tr> 
+        </aura:iteration>
+	</tbody>
+    </table>
+</td></tr></table>
+    
+</aura:component>

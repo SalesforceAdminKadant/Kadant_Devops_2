@@ -1,0 +1,97 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global">
+    
+    <aura:attribute name="productRecord" type="Object" />
+    <aura:attribute name="recordLoadError" type="String"/>
+    
+    <!-- making RecordId and RecordType.Name, Name and Location__c available and adding them to the attribute productrecord -->
+    <force:recordData aura:id="recordLoader"
+    recordId="{!v.recordId}"
+    fields="Name,Location__c,RecordType.Name"
+    targetFields="{!v.productRecord}"
+    targetError="{!v.recordLoadError}"
+    />
+
+    <!-- Show error message on page -->
+     <aura:if isTrue="{!not(empty(v.recordLoadError))}">
+     <div class="recordError">
+     {!v.recordLoadError}</div>
+   	 </aura:if>
+
+    <!-- the aura:if below conditionally renders each table based on recordtypeId of the account -->
+
+    <!-- Process Solutions Group - Europe (PSG-E) / KL -->
+	<aura:if isTrue="{!or(v.productRecord.RecordType.Name=='PSG-E Product - Joint',v.productRecord.RecordType.Name=='PSG-E Product - Part',v.productRecord.RecordType.Name=='PSG-E Product - Blade',v.productRecord.RecordType.Name=='PSG-E Product')}">
+    	<table style="width:100%">
+            <tr>
+                <th width="50%"><strong>Sales</strong></th>
+            </tr>
+        	<tr>
+            	<td>• <!-- lightning:formattedurl renders an <a href=""></a> tag. Change the ID below for the report and 
+					the fvX for the filter position 0 = first, 1 = second filter etc. -->
+                    <lightning:formattedurl value="{!'/lightning/r/Report/00O4W000007xBjrUAE/view?fv0='+v.recordId+''}" target="_blank" label= "Product Selling History (3 Years)" />
+               </td>
+            </tr>
+                    	<tr>
+            	<td>• <!-- lightning:formattedurl renders an <a href=""></a> tag. Change the ID below for the report and 
+					the fvX for the filter position 0 = first, 1 = second filter etc. -->
+                    <lightning:formattedurl value="{!'/lightning/r/Report/00O4W000008IfagUAC/view?fv0='+v.productRecord.Name+''}" target="_blank" label= "Product Quote History" />
+               </td>
+            </tr>
+        </table>
+	</aura:if>
+        <!-- NML -->
+	<aura:if isTrue="{!v.productRecord.Location__c == 'NML'}">
+    	<table style="width:100%">
+            <tr>
+                <th width="50%"><strong>Sales</strong></th>
+            </tr>
+        	<tr>
+            	<td>• <!-- lightning:formattedurl renders an <a href=""></a> tag. Change the ID below for the report and 
+					the fvX for the filter position 0 = first, 1 = second filter etc. -->
+                    <lightning:formattedurl value="{!'/lightning/r/Report/00O4W000007xBjrUAE/view?fv0='+v.recordId+''}" target="_blank" label= "Product Selling History (3 Years)" />
+               </td>
+            </tr>
+        </table>
+    </aura:if>
+    <!-- KBC -->
+    <aura:if isTrue="{!v.productRecord.Location__c == 'KBC'}">
+    	<table style="width:100%">
+            <tr>
+                <th width="50%"><strong>Sales</strong></th>
+            </tr>
+        	<tr>
+            	<td>• <!-- lightning:formattedurl renders an <a href=""></a> tag. Change the ID below for the report and 
+					the fvX for the filter position 0 = first, 1 = second filter etc. -->
+                    <lightning:formattedurl value="{!'/lightning/r/Report/00O4W000007xBjrUAE/view?fv0='+v.recordId+''}" target="_blank" label= "Product Selling History (3 Years)" />
+               </td>
+            </tr>
+                    	<tr>
+            	<td>• <!-- lightning:formattedurl renders an <a href=""></a> tag. Change the ID below for the report and 
+					the fvX for the filter position 0 = first, 1 = second filter etc. -->
+                    <lightning:formattedurl value="{!'/lightning/r/Report/00O4W000008IfagUAC/view?fv0='+v.productRecord.Name+''}" target="_blank" label= "Product Quote History" />
+               </td>
+            </tr>
+        </table>
+	</aura:if>
+    <!-- KSD -->
+	<aura:if isTrue="{!or(v.productRecord.Location__c == 'KSD',v.productRecord.Location__c == 'Solutions')}">
+    	<table style="width:100%">
+            <tr>
+                <th width="50%"><strong>Sales</strong></th>
+            </tr>
+           	<tr>
+            	<td>• <!-- lightning:formattedurl renders an <a href=""></a> tag. Change the ID below for the report and 
+					the fvX for the filter position 0 = first, 1 = second filter etc. -->
+                    <lightning:formattedurl value="{!'/lightning/r/Report/00O4W000008J5xyUAC/view?fv3='+v.productRecord.Name+''}" target="_blank" label= "Booking History by Product Number" />
+               </td>
+            </tr>
+            <tr>
+            	<td>• <!-- lightning:formattedurl renders an <a href=""></a> tag. Change the ID below for the report and 
+					the fvX for the filter position 0 = first, 1 = second filter etc. -->
+                    <lightning:formattedurl value="{!'/lightning/r/Report/00ONv000000atcHMAQ/view?fv3='+v.productRecord.Name+''}" target="_blank" label= "Product sales history by parent customer" />
+               </td>
+            </tr>
+        </table>
+	</aura:if>
+
+</aura:component>

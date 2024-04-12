@@ -1,0 +1,57 @@
+<aura:component controller="KPP_Function_Library" implements="force:lightningQuickActionWithoutHeader,force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes" >
+	
+    <aura:attribute name="DocObjectName" type="String" default="Account"/> 
+    <aura:attribute name="accountId" type="String" /> 
+    <aura:attribute name="currentUser" type="User"/>
+    
+    <aura:attribute name="accountlist" type="Account[]"></aura:attribute>
+    <aura:attribute name="center" type="Object" />
+    <aura:handler name="init" value="{!this}" action="{!c.onInit}"></aura:handler>
+    <aura:attribute name="accountRecord" type="Object" />
+    <aura:attribute name="recordLoadError" type="String"/>
+    <aura:attribute name="UnitToggle" type="boolean" default="false"/>
+    <aura:attribute name="PriorityRankingToggle" type="boolean" default="false"/>
+    <aura:attribute name="X8020Toggle" type="boolean" default="false"/>
+    <aura:attribute name="OwnerToggle" type="boolean" default="false"/>
+    <aura:attribute name="LeadsToggle" type="boolean" default="false"/>
+    <aura:attribute name="Distance" type="String" default="50"/>
+    <aura:attribute name="mapMarkers" type="Object"/>
+    <aura:attribute name="selectedMarkerValue" type="String" default="{!v.accountId}" />
+    
+    <aura:attribute name="listView" type="String" />
+        
+        <lightning:card title="Nearby Locations">
+         <table><tr style="padding: 1px;"><td style="padding: 5px;">
+             <lightning:input type="toggle" messageToggleActive="Metric" messageToggleInactive="Imperial" label="UOM" checked="{!v.UnitToggle}" aura:id="UnitToggle" onchange="{!c.onChangeToggle}" /></td>
+
+             	<td> <lightning:input type="toggle" messageToggleActive="Priority" messageToggleInactive="All" label="Rating" checked="{!v.PriorityRankingToggle}" aura:id="PriorityRankingToggle" onchange="{!c.onChangeToggle}" /></td>
+            	<td> <lightning:input type="toggle" messageToggleActive="Priority" messageToggleInactive="All" label="80/20 Rank" checked="{!v.X8020Toggle}" aura:id="X8020Toggle" onchange="{!c.onChangeToggle}" /></td>
+
+   			<td> <lightning:input type="toggle" messageToggleActive="Yes" messageToggleInactive="No" label="My Locations?" checked="{!v.OwnerToggle}" aura:id="OwnerToggle" onchange="{!c.onChangeToggle}" /></td>
+ <td> <lightning:input type="toggle" messageToggleActive="Yes" messageToggleInactive="No" label="Leads?" checked="{!v.LeadsToggle}" aura:id="LeadsToggle" onchange="{!c.onChangeToggle}" /></td>
+           <td style="padding: 5px;"><lightning:select
+                label="Distance (km/mi)"
+                value="{!v.Distance}"
+                aura:id="DistanceInput"   
+                onchange="{!c.onChangeToggle}">
+               <option value="10">10</option> 
+               <option value="25">25</option>              
+               <option value="50">50</option>
+               <option value="100">100</option>
+               <option value="250">250</option>
+               <option value="500">500</option>
+               <option value="1000">1000</option>
+               </lightning:select>
+            </td></tr>
+            </table>
+            <div aura:id="AccMap">
+        	<lightning:map 
+                       mapMarkers="{!v.mapMarkers}" 
+                       center="{!v.center}"
+                       listView="hidden"
+                       onmarkerselect="{!c.OpenAccount}"
+                       selectedMarkerValue="{!v.selectedMarkerValue}"
+                        />
+            </div>
+    </lightning:card> 
+</aura:component>

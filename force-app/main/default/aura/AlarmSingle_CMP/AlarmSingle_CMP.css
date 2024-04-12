@@ -1,0 +1,124 @@
+.THIS {
+}
+.THIS .slds-icon {
+    width: 4rem !important;
+    height: 4rem !important;
+}
+.THIS h4{
+    font-size: 1.2rem;
+}
+.THIS .bodyFont{
+    font-size: 1.2rem !important;
+}
+.THIS .bodyFont2{
+    font-size: 1rem !important;
+}
+.THIS .tabClass{
+    height:150px; 
+    width: 300px; 
+    border: #c5c4c4 solid 0.5px; 
+    border-radius: 5px;
+    height:100px;
+    /*width:100% !important; 
+    height:40% !important;*/
+}
+.THIS .paddingClass2{
+    padding-top:10px; 
+    padding-left: 5px; 
+    padding-right: 5px; 
+    padding-bottom:10px
+}
+@media (max-width:1024px){
+    .THIS .tabClass{
+        height:50px; 
+        width: 100px; 
+        border: #c5c4c4 solid 0.5px; 
+        border-radius: 5px;
+        height:75px !important;
+        /*width:100% !important; 
+        height:30% !important;*/
+    }
+    .THIS .bodyFont{
+        font-size: 1rem !important;
+        font-weight: 600;
+    }
+    .THIS .bodyFont2{
+        /*padding-bottom: 1%;
+        /*font-size: 8px;
+        /*font-weight: 600;*/
+        font-size: 1rem !important;
+        font-weight: 400;
+    }
+    .THIS .ruleNameFont{
+        /*font-size: 14px;*/
+    }
+    .THIS h4{
+        font-size: 1rem !important;
+    }
+    .THIS .paddingClass2{
+        padding-top:10px; 
+        padding-left: 5px; 
+        padding-right: 5px; 
+        padding-bottom:10px
+    }
+    
+}
+@media (max-width : 780px)
+{
+    .THIS .tabClass{
+        /*height:40px; 
+        width: 100px;*/ 
+        border: #c5c4c4 solid 0.5px; 
+        border-radius: 5px;
+        /*height:75px !important;
+        /*width:100% !important; 
+        height:20% !important;*/
+    }
+    .THIS .bodyFont{
+        font-size: 1rem !important;
+        font-weight: 600;
+    }
+    .THIS .bodyFont2{
+        font-size: 1rem !important;
+        font-weight: 400;
+    }
+    .THIS h4{
+        font-size: 1rem !important;
+    }
+    .THIS .paddingClass2{
+        padding-top:10px; 
+        padding-left: 5px; 
+        padding-right: 5px; 
+        padding-bottom:10px
+    }
+}
+@media (max-width : 767px)
+{
+    .THIS .tabClass{
+        height:50px; 
+        width: 100px; 
+        border: #c5c4c4 solid 0.5px; 
+        border-radius: 5px;
+        height:75px !important;
+        /*width:100% !important; 
+        height:20% !important;*/
+    }
+    .THIS .bodyFont{
+        font-size: 1.4rem !important;
+        font-weight: 600;
+    }
+    .THIS .bodyFont2{
+        font-size: 1rem !important;
+        font-weight: 400;
+    }
+    .THIS h4{
+        font-size: 1rem !important;
+    }
+    .THIS .paddingClass2{
+        padding-top:10px; 
+        padding-left: 5px; 
+        padding-right: 5px; 
+        padding-bottom:10px
+    }
+        
+}

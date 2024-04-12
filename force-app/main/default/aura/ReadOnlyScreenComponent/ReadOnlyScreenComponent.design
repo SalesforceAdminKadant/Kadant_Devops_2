@@ -1,0 +1,7 @@
+<design:component>
+    
+<design:attribute name="value" label="Value" description="Make sure that it matches the data type that you entered."/>
+<design:attribute name="label" label="Label" />
+<design:attribute name="dataType" label="Data Type (string,integer,checkbox,date,datetime)" description="Valid values: string, integer, checkbox, date, datetime"/>
+
+</design:component>

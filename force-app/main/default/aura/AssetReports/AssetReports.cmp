@@ -1,0 +1,26 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global">
+	<aura:attribute name="assetRecord" type="Object" />
+    <aura:attribute name="recordLoadError" type="String"/>
+    <!-- making RecordId and RecordType.Name, Name and Site available and adding them to the attribute accountrecord -->
+    <force:recordData aura:id="recordLoader"
+    recordId="{!v.recordId}"
+    fields="Name,RecordType.Name"
+    targetFields="{!v.assetRecord}"
+    targetError="{!v.recordLoadError}"
+    />
+
+    <!-- Show error message on page -->
+     <aura:if isTrue="{!not(empty(v.recordLoadError))}">
+     <div class="recordError">
+     {!v.recordLoadError}</div>
+   	 </aura:if>
+
+		<table style="width:100%">
+            <tr>
+                <th><strong>Asset</strong></th>
+            </tr>
+        	<tr>
+            	<td>• <lightning:formattedurl value="{!'/lightning/r/Report/00ONv000001CR8kMAG/view?fv0='+v.assetRecord.Name+''}" target="_blank" label= "Asset Products" /></td>
+			</tr>
+        </table>    
+</aura:component>

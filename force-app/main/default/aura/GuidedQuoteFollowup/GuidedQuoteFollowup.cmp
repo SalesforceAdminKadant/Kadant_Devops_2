@@ -1,0 +1,205 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" controller="GuidedQuoteFollowUp" >
+    <aura:attribute name="quote" type="List"></aura:attribute>
+    <aura:attribute name="quote2" type="List"></aura:attribute>
+    <aura:attribute name="DocRecordId" type="String" default="{!v.recordId}"/>
+    <aura:attribute name="isOpen" type="boolean" default="false"/>
+    <aura:attribute name="isOpen2" type="boolean" default="false"/>
+   <aura:handler name="init" value="{!this}" action="{!c.doInit}"></aura:handler>
+
+    <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--fixed-layout">
+        <thead>
+            <tr class="slds-text-heading-small" >
+                <th scope="row" colspan="5">Guided Quote Followup - First followup - Sorted by Quote Date</th>
+                <th scope="row" colspan="3" ><div style="text-align:right;"><lightning:button name="ViewButton" label="View All" variant="neutral" onclick="{!c.openPopup}"></lightning:button>
+                    <lightning:button name="FirstButton" label="Remove Selected" iconName="utility:close" iconPosition="left" variant="neutral" onclick="{!c.removeSlctd}"></lightning:button>
+                    <lightning:button name="FirstButton" label="Email Selected" iconName="utility:check" iconPosition="left" variant="neutral" onclick="{!c.emailSlctd}"></lightning:button></div>
+                </th></tr>
+                	<tr class="slds-text-title">
+                <th scope="row" style="width: 15px;" class="slds-text-align--right"><ui:inputCheckbox aura:id="cbox" class="cBox" change="{!c.selectAll}"/></th>
+                <th scope="row"><div class="slds-truncate" title="Account">Account</div></th>
+                <th scope="row"><div class="slds-truncate" title="Quote Number">Quote Number</div></th>
+                <th scope="row"><div class="slds-truncate" title="Name">Name</div></th>
+                <th scope="row"><div class="slds-truncate" title="Value">Value</div></th>
+                <th scope="row"><div class="slds-truncate" title="Quote Date">Quote Date</div></th>
+                <th scope="row"><div class="slds-truncate" title="Contact">Email</div></th>
+                <th scope="row"><div class="slds-truncate" title="2nd Follow-up">2nd follow up</div></th>
+            </tr>
+        </thead>
+        <tbody>
+            <aura:iteration items="{!v.quote}" var="a" start="0" end ="3">
+            	<tr>
+                    <td>
+                        <ui:inputCheckbox aura:id="cboxRow" name="first" text="{!a.Id}" class="cBox" change="{!c.changeSelectAll}" />
+						</td>
+                    <td><div class="slds-truncate"><lightning:formattedurl value="{!'/lightning/r/Account/'+a.AccountId+'/view'}" tabindex="-1" target="_blank" label="{!a.Account.Name}" /></div></td>
+                    <td><div class="slds-truncate"><lightning:formattedurl value="{!'/lightning/r/Quote/'+a.Id+'/view'}" tabindex="-1" target="_blank" label="{!a.Quote_Number__c}" /></div></td>
+                    <td><div class="slds-truncate">{!a.Name}</div></td>
+                    <td><div class="slds-truncate"><lightning:formattedNumber value="{!a.Quote_Total__c}" style="currency" currencyCode="{!a.CurrencyIsoCode}" /></div></td>
+                    <td><div class="slds-truncate">{!a.Quote_Date__c}</div></td>
+                    <td><div class="slds-truncate" aura:id="contactRow">{!a.Contact.Email}</div></td>
+                    <td><div class="slds-truncate">
+                    	<aura:if isTrue="{!a.SecondFollowUpInitiated__c}">
+                        	<lightning:icon iconName="utility:success" alternativeText="Done!" variant="Success" title="done" size="x-small" />
+                        <aura:set attribute="else">
+      						<lightning:icon iconName="utility:warning" alternativeText="Work to do!" variant="warning" title="Work to do!" size="x-small" />
+   					</aura:set></aura:if></div></td>
+                </tr>
+            </aura:iteration>
+        </tbody>
+    </table>
+    <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--fixed-layout">
+          <thead>
+            <tr class="slds-text-heading-small" >
+                <th scope="row" colspan="5"><div style="text-align:left;">Guided Quote Followup - Second followup - Sorted by Expiry Date</div></th>
+                <th scope="row" colspan="3"><div style="text-align:right;"><lightning:button name="ViewButton" label="View All" variant="neutral" onclick="{!c.openPopup2}"></lightning:button>
+                    <lightning:button name="SecondButton" label="Remove Selected" iconName="utility:close" iconPosition="left" variant="neutral" onclick="{!c.removeSlctd}"></lightning:button>
+                    <lightning:button name="SecondButton" label="Email Selected" iconName="utility:check" iconPosition="left" variant="neutral" onclick="{!c.emailSlctd}"></lightning:button></div>
+                </th></tr>
+               	<tr class="slds-text-title">
+                <th scope="row" style="width: 15px;" class="slds-text-align--right"><ui:inputCheckbox aura:id="cbox2" name="second" class="cBox2" change="{!c.selectAll}"/></th>
+                <th scope="row"><div class="slds-truncate" title="Account">Account</div></th>
+                <th scope="row"><div class="slds-truncate" title="Quote Number">Quote Number</div></th>
+                <th scope="row"><div class="slds-truncate" title="Name">Name</div></th>
+                <th scope="row"><div class="slds-truncate" title="Value">Value</div></th>
+                <th scope="row"><div class="slds-truncate" title="Expiry Date">Expiry Date</div></th>
+                <th scope="row"><div class="slds-truncate" title="Contact">Email</div></th>
+                <th scope="row"><div class="slds-truncate" title="1st Follow-up">1st follow up</div></th>
+           </tr>
+        </thead>
+        <tbody>
+            <aura:iteration items="{!v.quote2}" var="a" start="0" end ="3">
+            	<tr>
+                    <td>
+                        <ui:inputCheckbox aura:id="cboxRow2" name="second" text="{!a.Id}" class="cBox2" change="{!c.changeSelectAll}" />
+						</td>
+                    <td><div class="slds-truncate"><lightning:formattedurl value="{!'/lightning/r/Account/'+a.AccountId+'/view'}" tabindex="-1" target="_blank" label="{!a.Account.Name}" /></div></td>
+                    <td><div class="slds-truncate"><lightning:formattedurl value="{!'/lightning/r/Quote/'+a.Id+'/view'}" tabindex="-1" target="_blank" label="{!a.Quote_Number__c}" /></div></td>
+                    <td><div class="slds-truncate">{!a.Name}</div></td>
+                    <td><div class="slds-truncate"><lightning:formattedNumber value="{!a.Quote_Total__c}" style="currency" currencyCode="{!a.CurrencyIsoCode}" /></div></td>
+                    <td><div class="slds-truncate">{!a.ExpirationDate}</div></td>
+                    <td><div class="slds-truncate" aura:id="contactRow">{!a.Contact.Email}</div></td>
+                    <td><div class="slds-truncate">
+                        <aura:if isTrue="{!a.FirstFollowUpInitiated__c}">
+                        	<lightning:icon iconName="utility:success" alternativeText="Done!" variant="Success" title="done" size="x-small" />
+                        <aura:set attribute="else">
+      						<lightning:icon iconName="utility:warning" alternativeText="Work to do!" variant="warning" title="Work to do!" size="x-small" />
+   					</aura:set></aura:if></div></td>
+                </tr>
+            </aura:iteration>
+        </tbody>
+    </table>
+    
+    <!--Popout screen 1-->   
+	<aura:if isTrue="{!v.isOpen}">
+        	<div role="dialog" tabindex="-1" aria-labelledby="header99" class="slds-modal slds-fade-in-open slds-modal_large slds-list-builder" aria-modal="true">
+	<div class="slds-modal__container" style="margin-top:-4px;max-width: 120rem !important;">
+			  <div class="slds-modal__content">
+        <table class="slds-table slds-table_bordered  slds-table--cell-buffer">
+        <thead>
+            <tr class="slds-text-heading-small" >
+                <th scope="row" colspan="3">First followup</th>
+                <th scope="row" colspan="5" ><div style="text-align:right;">
+                    <lightning:button name="FirstButton" label="Remove Selected" iconName="utility:close" iconPosition="left" variant="neutral" onclick="{!c.removeSlctd}"></lightning:button>
+                    <lightning:button name="FirstButton" label="Email Selected" iconName="utility:check" iconPosition="left" variant="brand" onclick="{!c.emailSlctd}"></lightning:button>
+                    </div>
+                </th></tr>
+            <tr><th scope="row" colspan="8"><div class="slds-page-header__name-meta">All items • Sorted by Quote Date</div></th></tr>
+        	<tr class="slds-text-title">
+                <th scope="row" style="width: 15px;" class="slds-text-align--right"><ui:inputCheckbox name="first" aura:id="cbox" class="cBox" change="{!c.selectAll}"/></th>
+                <th scope="row"><div class="slds-truncate" title="Account">Account</div></th>
+                <th scope="row"><div class="slds-truncate" title="Quote Number">Quote Number</div></th>
+                <th scope="row"><div class="slds-truncate" title="Name">Name</div></th>
+                <th scope="row"><div class="slds-truncate" title="Value">Value</div></th>
+                <th scope="row"><div class="slds-truncate" title="Quote Date">Quote Date</div></th>
+                <th scope="row"><div class="slds-truncate" title="Contact">Email</div></th>
+                <th scope="row"><div class="slds-truncate" title="2nd Follow-up">2nd follow up</div></th>
+            </tr>
+        </thead>
+            
+        <tbody>
+            <aura:iteration items="{!v.quote}" var="a">
+            	<tr>
+                    <td>
+                        <ui:inputCheckbox aura:id="cboxRow" text="{!a.Id}" name="first" class="cBox" change="{!c.changeSelectAll}" />
+						</td>
+                    <td><div class="slds-truncate"><lightning:formattedurl value="{!'/lightning/r/Account/'+a.AccountId+'/view'}" tabindex="-1" target="_blank" label="{!a.Account.Name}" /></div></td>
+                    <td><div class="slds-truncate"><lightning:formattedurl value="{!'/lightning/r/Quote/'+a.Id+'/view'}" tabindex="-1" target="_blank" label="{!a.Quote_Number__c}" /></div></td>
+                    <td><div class="slds-truncate">{!a.Name}</div></td>
+                    <td><div class="slds-truncate"><lightning:formattedNumber value="{!a.Quote_Total__c}" style="currency" currencyCode="{!a.CurrencyIsoCode}" /></div></td>
+                    <td><div class="slds-truncate">{!a.Quote_Date__c}</div></td>
+                    <td><div class="slds-truncate" aura:id="contactRow">{!a.Contact.Email}</div></td>
+                    <td><div class="slds-truncate">
+                    	<aura:if isTrue="{!a.SecondFollowUpInitiated__c}">
+                        	<lightning:icon iconName="utility:success" alternativeText="Done!" variant="Success" title="done" size="x-small" />
+                        <aura:set attribute="else">
+      						<lightning:icon iconName="utility:warning" alternativeText="Work to do!" variant="warning" title="Work to do!" size="x-small" />
+   					</aura:set></aura:if></div></td>
+                </tr>
+            </aura:iteration>
+          </tbody>
+    </table>
+        </div>
+        <footer>
+        	<div class="slds-modal__footer">
+          	<lightning:button name="CloseButton" label="Close" class="slds-button_stretch" variant="neutral" onclick="{!c.closePopup}"></lightning:button>
+        	</div>
+      		</footer>
+		 </div></div>
+    </aura:if>
+    <!-- Popup2 -->
+    <aura:if isTrue="{!v.isOpen2}">
+        	<div role="dialog" tabindex="-1" aria-labelledby="header99" class="slds-modal slds-fade-in-open slds-modal_large slds-list-builder" aria-modal="true">
+	<div class="slds-modal__container" style="margin-top:-4px;max-width: 120rem !important;">
+			 <div class="slds-modal__content">
+            <table class="slds-table slds-table_bordered  slds-table--cell-buffer">
+          	<thead>
+            <tr class="slds-text-heading-small" >
+                <th scope="row" colspan="3"><div>Second followup</div></th>
+                <th scope="row" colspan="5" ><div style="text-align:right;">
+                    <lightning:button name="SecondButton" label="Remove Selected" iconName="utility:close" iconPosition="left" variant="neutral" onclick="{!c.removeSlctd}"></lightning:button>
+                    <lightning:button name="SecondButton" label="Email Selected" iconName="utility:check" iconPosition="left" variant="brand" onclick="{!c.emailSlctd}"></lightning:button></div>
+                </th></tr>
+              <tr><th scope="row" colspan="8"><div class="slds-page-header__name-meta">All items • Sorted by Expiry Date</div></th> </tr>
+            <tr class="slds-text-title">
+                <th scope="row" style="width: 15px;" class="slds-text-align--right"><ui:inputCheckbox name="second" aura:id="cbox2" class="cBox2" change="{!c.selectAll}"/></th>
+                <th scope="row"><div class="slds-truncate" title="Account">Account</div></th>
+                <th scope="row"><div class="slds-truncate" title="Quote Number">Quote Number</div></th>
+                <th scope="row"><div class="slds-truncate" title="Name">Name</div></th>
+                <th scope="row"><div class="slds-truncate" title="Value">Value</div></th>
+                <th scope="row"><div class="slds-truncate" title="Expiry Date">Expiry Date</div></th>
+                <th scope="row"><div class="slds-truncate" title="Contact">Email</div></th>
+                <th scope="row"><div class="slds-truncate" title="1st Follow-up">1st follow up</div></th>
+           </tr>
+                </thead>
+         <tbody>
+            <aura:iteration items="{!v.quote2}" var="a">
+            	<tr>
+                    <td>
+                        <ui:inputCheckbox aura:id="cboxRow2" name="second" text="{!a.Id}" class="cBox" change="{!c.changeSelectAll}" />
+						</td>
+                    <td><div class="slds-truncate"><lightning:formattedurl value="{!'/lightning/r/Account/'+a.AccountId+'/view'}" tabindex="-1" target="_blank" label="{!a.Account.Name}" /></div></td>
+                    <td><div class="slds-truncate"><lightning:formattedurl value="{!'/lightning/r/Quote/'+a.Id+'/view'}" tabindex="-1" target="_blank" label="{!a.Quote_Number__c}" /></div></td>
+                    <td><div class="slds-truncate">{!a.Name}</div></td>
+                    <td><div class="slds-truncate"><lightning:formattedNumber value="{!a.Quote_Total__c}" style="currency" currencyCode="{!a.CurrencyIsoCode}" /></div></td>
+                    <td><div class="slds-truncate">{!a.ExpirationDate}</div></td>
+                    <td><div class="slds-truncate" aura:id="contactRow">{!a.Contact.Email}</div></td>
+                    <td><div class="slds-truncate">
+                        <aura:if isTrue="{!a.FirstFollowUpInitiated__c}">
+                        	<lightning:icon iconName="utility:success" alternativeText="Done!" variant="Success" title="done" size="x-small" />
+                        <aura:set attribute="else">
+      						<lightning:icon iconName="utility:warning" alternativeText="Work to do!" variant="warning" title="Work to do!" size="x-small" />
+   					</aura:set></aura:if></div></td>
+                </tr>
+            </aura:iteration>
+     	</tbody>
+    </table>    
+      </div>
+        <footer>
+        	<div class="slds-modal__footer">
+          	<lightning:button name="CloseButton" label="Close" class="slds-button_stretch" variant="neutral" onclick="{!c.closePopup}"></lightning:button>
+        	</div>
+      		</footer>
+		</div></div>
+    </aura:if>
+    
+</aura:component>

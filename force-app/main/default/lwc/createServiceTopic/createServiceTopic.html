@@ -1,0 +1,83 @@
+<template>
+    <div class="slds-modal__container">        
+        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+            <div class="slds-m-around_medium">
+                <div class="slds-text-heading_small slds-text-align_left">
+                    Machine Category: {machine_cat}
+                </div>
+                <div>
+                    <lightning-combobox label="Topic" 
+                                        name="topic"
+                                        onchange={handleTopicChange} 
+                                        options={topicValues} 
+                                        placeholder="--None--" 
+                                        value={selectedTopic}
+                                        disabled={isEmpty}
+                                        message-when-value-missing="Please select a Topic"
+                                        required></lightning-combobox><br/>
+                </div>
+                <template if:true={isMclean}>
+                    <div>
+                        <lightning-combobox label="Component" 
+                                            name="component"
+                                            onchange={handleComponentChange} 
+                                            options={componentValues} 
+                                            placeholder="--None--" 
+                                            value={selectedComponent}
+                                            disabled={disableComponent}></lightning-combobox><br/>
+                    </div>
+                    <div>
+                        <lightning-combobox label="Inspection Status" 
+                                            name="inspection"
+                                            onchange={handleInspectionChange}
+                                            options={inspectionValues} 
+                                            placeholder="--None--" 
+                                            value={selectedInspection}
+                                            disabled={disableInspection}></lightning-combobox><br/>
+                    </div>                
+                </template>
+                <div>
+                    <lightning-input label="Customer Action Summary" onchange={handleCasChange} class="slds-m-bottom_x-small"></lightning-input>
+                </div>
+                <div>
+                    <lightning-combobox label="Priority" 
+                                        name="priority"
+                                        onchange={handlePriorityChange}
+                                        options={priorityValues} 
+                                        placeholder="--None--" 
+                                        value={selectedPriority}
+                                        message-when-value-missing="You must set the Priority field with a value."
+                                        required></lightning-combobox><br/>
+                </div>
+                <div>
+                    <lightning-combobox label="Status" 
+                                        name="status"
+                                        onchange={handleStatusChange}
+                                        options={statusValues} 
+                                        placeholder="--None--" 
+                                        value={selectedStatus}
+                                        message-when-value-missing="Please select a Status for this Topic."
+                                        required></lightning-combobox><br/>
+                </div>
+                <div>
+                    <lightning-combobox label="Image Size(%)" 
+                                        name="image"
+                                        onchange={handleImageChange}
+                                        options={imageValues} 
+                                        placeholder="--None--"                                         
+                                        value={selectedImage}></lightning-combobox><br/>
+                </div>
+                <div>
+                    Summary:<br />
+                    <textarea id="txtareaSummary" rows=15 cols=45 onchange={handleSummaryChange} class="slds-m-bottom_x-small"></textarea>
+                </div>
+                <div>
+                    <lightning-button label="Create Topic" variant="brand" onclick={createTopic}></lightning-button>
+                </div>
+            </div>  
+            <template if:true={error}>
+                <p>{error}</p>
+            </template>  
+        </div>
+    </div>
+</template>

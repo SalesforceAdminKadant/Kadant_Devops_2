@@ -1,0 +1,10 @@
+<template>    
+    <lightning-breadcrumbs style="background-color: white;">
+        <lightning-breadcrumb label="Service Report" name="sr" id="sr" onclick={navigateToSr}></lightning-breadcrumb>
+        <lightning-breadcrumb label="Service Report Item" name="sri" id="sri" onclick={navigateToSri}></lightning-breadcrumb>
+        <template if:true={boolVisible}>
+            <lightning-breadcrumb label="Service Topic" name="sti" id="sti"></lightning-breadcrumb>
+        </template>
+        <p style="color: white;">{the_srid}--{the_sri_id}--{the_sr_id}</p>
+    </lightning-breadcrumbs>
+</template>

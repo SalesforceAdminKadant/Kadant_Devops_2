@@ -1,0 +1,5 @@
+<apex:page lightningStylesheets="true" standardController="Price_Agreement__c" >
+    <script type="text/javascript">
+        sforce.one.navigateToURL('/flow/Clone_a_price_agreement?PriceAgreementId={!Price_Agreement__c.Id}&retURL={!Price_Agreement__c.Account__c}');
+    </script>
+</apex:page>

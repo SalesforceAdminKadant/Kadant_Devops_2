@@ -1,0 +1,18 @@
+<aura:component  implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" controller="KPP_Function_Library">
+	<aura:attribute name="DocumentDetail" type="String"/>
+	<aura:handler name="init" value="{!this}" action="{!c.getDocumentDetail}"/>   
+
+    
+    
+<table><tr><td class="RightScreen">  
+        
+    <b><lightning:formattedText value="{!v.DocumentDetail[0][1]}" /></b>
+    <br/>
+    <lightning:formattedText value="{!v.DocumentDetail[0][2]}" />
+    <br/>
+    <lightning:formattedText value="{!v.DocumentDetail[0][3]}" />  
+
+    
+</td></tr></table>
+    
+</aura:component>

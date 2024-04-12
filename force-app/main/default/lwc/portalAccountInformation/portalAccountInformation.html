@@ -1,0 +1,43 @@
+<template>
+    <lightning-card>
+        <template if:true={objUser}>            
+            <div class="slds-grid slds-wrap slds-gutters">
+                <div class="slds-col slds-size_1-of-1">
+                    <h1 class="slds-text-heading_small">Hello, {objUser.FirstName}!</h1>
+                    <h1 style="color:white;">{acctId} - {dsmId}</h1>
+                </div> 
+                <div class="slds-col slds-size_1-of-1">
+                    <span>District Sales Manager</span>
+                </div>
+                <div class="slds-col slds-size_1-of-1">
+                    <lightning-formatted-text value={dsmName}></lightning-formatted-text><br />
+                    <lightning-formatted-phone value={dsmPhone}></lightning-formatted-phone><br />
+                    <lightning-formatted-email value={dsmEmail}></lightning-formatted-email><br />
+                    <h1 style="color:white;">_</h1>
+                </div>               
+                <div class="slds-col slds-size_1-of-1">
+                    <span>Shipping Address</span>
+                </div>
+                <div class="slds-col slds-size_1-of-1">
+                    <lightning-formatted-address
+                        street={street}
+                        city={city}
+                        country={country}
+                        province={state}
+                        postal-code={zip}></lightning-formatted-address>
+                    <h1 style="color:white;">_</h1>
+                </div>
+                <div class="slds-col slds-size_1-of-1">
+                    <span style="align-items: center;">Select Account</span>
+                </div>
+                <div class="slds-col slds-size_1-of-1">
+                    <lightning-combobox
+                            variant="label-hidden"
+                            value={selectedAccountId}
+                            options={allRelatedAccounts}
+                            onchange={handleAccountSelection} ></lightning-combobox>
+                </div>
+            </div>            
+        </template>
+    </lightning-card>
+</template>

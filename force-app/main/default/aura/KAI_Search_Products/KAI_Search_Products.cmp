@@ -1,0 +1,556 @@
+<aura:component access="global" implements="force:hasRecordId,force:hasSObjectName,force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes"  controller="KAI_Search_Products_Engine">
+
+<aura:attribute name="objInfo" type="product2" default="{sobjectType : 'Product2'}" />    
+<aura:attribute name="searchText" type="String" default=""/>
+<aura:attribute name="SearchResults" type="String" />
+<aura:attribute name="SelectedPartListContainer" type="Map" default="{}"/>
+<aura:attribute name="SelectedPartList" type="List"/>    
+<aura:attribute name="PicklistValueCollection" type="List"/>    
+<aura:attribute name="SearchFilterMap" type="Map" default="{}"/>
+<aura:attribute name="SearchFilterMapTest" type="String" default=""/>
+<aura:attribute name="SearchFilterSQL" type="String" default=""/>
+<aura:attribute name="SelectedTab" type="String" default="tab-ALL"/>    
+<aura:attribute name="SelectedSubTab" type="String" default="tab-SERVICES-GEN"/>
+<aura:attribute name="SelectedDivisionsContainer" type="Map" default="{}"/> 
+<aura:attribute name="SelectedDivisions" type="List" /> 
+<aura:attribute name="DefaultProductDivision" type="String" />
+<aura:attribute name="divPSGE" type="Boolean" default="false"/>
+<aura:attribute name="divKGT" type="Boolean" default="false"/>
+<aura:attribute name="divKSD" type="Boolean" default="false"/>
+<aura:attribute name="divKCC" type="Boolean" default="false"/>
+<aura:attribute name="divKJ" type="Boolean" default="false"/>
+<aura:attribute name="divKL" type="Boolean" default="false"/>
+<aura:attribute name="divKCD" type="Boolean" default="false"/>
+<aura:attribute name="divNML" type="Boolean" default="false"/>    
+<aura:attribute name="Portal" type="String" default="N"/>   
+
+<aura:handler name="init" value="{!this}" action="{!c.openPage1}"/>
+
+<!--###### MODAL BOX HEADER Part Start From Here ######-->
+<div class="slds-modal__header">
+   
+    <div class="slds-form-element slds-lookup" data-select="single">
+    <div class="slds-form-element__control">
+
+        <TABLE><TR>
+        <td style="width:70% !important">
+            <div class="slds-input-has-icon slds-input-has-icon--right" >
+            <lightning:buttonIcon iconName="utility:search" variant="bare" onclick="{!c.searchParts}" alternativeText="Search" class="slds-input__icon" />
+            <ui:inputText value="{!v.searchText}" class="slds-lookup__search-input slds-input" placeholder="Enter any search text here (minimum 3 characters)" keyup="{!c.searchOnEnter}"/>
+        	</div>
+        </td>
+        <TD>&nbsp;</TD>
+		<TD><ui:inputCheckbox aura:id="checkbox" label="PSGE" change="{!c.toggleDivision}" value="{!v.divPSGE}"/></TD>
+        <TD><ui:inputCheckbox aura:id="checkbox" label="KGT" change="{!c.toggleDivision}" value="{!v.divKGT}"/></TD>
+		<TD><ui:inputCheckbox aura:id="checkbox" label="KSD" change="{!c.toggleDivision}" value="{!v.divKSD}"/></TD>
+        <TD><ui:inputCheckbox aura:id="checkbox" label="KCC" change="{!c.toggleDivision}" value="{!v.divKCC}"/></TD>
+		<TD><ui:inputCheckbox aura:id="checkbox" label="KJ" change="{!c.toggleDivision}" value="{!v.divKJ}"/></TD>
+        <TD><ui:inputCheckbox aura:id="checkbox" label="KL" change="{!c.toggleDivision}" value="{!v.divKL}"/></TD>
+        <TD><ui:inputCheckbox aura:id="checkbox" label="KCD" change="{!c.toggleDivision}" value="{!v.divKCD}"/></TD>
+        <TD><ui:inputCheckbox aura:id="checkbox" label="NML" change="{!c.toggleDivision}" value="{!v.divNML}"/></TD>
+        <TD><ui:inputCheckbox aura:id="checkbox" label="KPG" change="{!c.toggleDivision}" value="{!v.divKPG}"/></TD>
+        <TD><ui:inputCheckbox aura:id="checkbox" label="VK" change="{!c.toggleDivision}" value="{!v.divVK}"/></TD>
+       	</TR></TABLE>
+    </div>
+  </div>
+
+</div>
+
+<!--###### SEARCH FILTER TABS ######-->
+<lightning:tabset class="FilterTabsClass" selectedTabId="{!v.SelectedTab}" onselect="{!c.clearSearchExceptGlobal}">
+ 
+    	<lightning:tab label="DUMMIES/SERVICES" id="tab-DUMMIES">
+            <lightning:tabset class="FilterTabsClass" selectedTabId="{!v.SelectedSubTab}" onselect="{!c.switchSubTab}">
+                <lightning:tab label="GENERAL" id="tab-SERVICES-GEN"></lightning:tab>
+                <lightning:tab label="FLUID HANDLING" id="tab-SERVICES-FH"></lightning:tab>
+                <lightning:tab label="DCF" id="tab-SERVICES-DCF"></lightning:tab>
+            </lightning:tabset>
+            <table cellpadding="0" cellspacing="0">
+            <tr>
+                <td style="width:5px;"></td>
+               <td><lightning:select label="Location" aura:id="Location__c" name="Location__c" onchange="{!c.addFilters}">
+                <aura:iteration items="{!v.PicklistValueCollection}" var="option">
+                    <aura:if isTrue="{!option.key=='Location__c'}"><option value="{!option.label}">{!option.label}</option></aura:if>
+        		</aura:iteration>
+            	</lightning:select></td>
+                <td><lightning:select label="Product Line" aura:id="Product_Line__c" name="Product_Line__c" onchange="{!c.addFilters}">
+                    <OPTION VALUE="--All--">--All--</OPTION>
+               		<aura:if isTrue="{!v.SelectedSubTab=='tab-SERVICES-FH'}">
+						<OPTION VALUE="FH - Joints">FH - Joints</OPTION>
+						<OPTION VALUE="FH - Syphons">FH - Syphons</OPTION>
+						<OPTION VALUE="FH - Spare Parts">FH - Spare Parts</OPTION>
+						<OPTION VALUE="Jet devices">Jet devices</OPTION>
+						<OPTION VALUE="Steam systems">Steam Systems</OPTION>
+						<OPTION VALUE="FH - Installation">FH - Service and Installation</OPTION>
+						<OPTION VALUE="FH - Repairs">FH - Repairs/Returns</OPTION>
+						<OPTION VALUE="FH - Turbulator bars">FH - Turbulator Bars</OPTION>
+                    </aura:if>
+                    <aura:if isTrue="{!v.SelectedSubTab=='tab-SERVICES-DCF'}">
+						<OPTION VALUE="Blades">Blades</OPTION>
+						<OPTION VALUE="Doctoring systems">Doctoring systems</OPTION>
+						<OPTION VALUE="Holders">Holders</OPTION>
+						<OPTION VALUE="Doctor spare parts">Doctor spare parts</OPTION>
+						<OPTION VALUE="Filtration">Filtration</OPTION>
+						<OPTION VALUE="Showers">Showers</OPTION>
+						<OPTION VALUE="Formation">Formation</OPTION>
+						<OPTION VALUE="Water management parts">Water management parts</OPTION>
+						<OPTION VALUE="DCF Installation">DCF Service and Installation (excl. M-Clean)</OPTION>
+						<OPTION VALUE="DCF Repairs (excl. M-Clean)">DCF Repairs (excl. M-Clean)</OPTION>
+						<OPTION VALUE="M-Clean Systems">M-Clean Systems</OPTION>
+						<OPTION VALUE="M-Clean Spare Parts">M-Clean Spare Parts</OPTION>
+						<OPTION VALUE="M-Clean Service">M-Clean Service</OPTION>
+						<OPTION VALUE="M-Clean Repairs">M-Clean Repairs</OPTION>
+                    </aura:if>
+            		</lightning:select>
+                </td>
+                </tr>
+            </table>
+        </lightning:tab>
+ <!-- <aura:if isTrue="{!v.divPSGE}">  -->
+        <lightning:tab label="JOINTS" id="tab-JOINTS">
+			<table cellpadding="0" cellspacing="0">
+            <tr>
+                <td style="width:5px;"></td>
+               <td><lightning:select label="Type" aura:id="ProductCode" name="ProductCode" onchange="{!c.addFilters}">
+                 	<OPTION VALUE="--All--">--All--</OPTION>
+					<OPTION VALUE="RJ - 5000">RJ - 5000</OPTION>
+					<OPTION VALUE="RJ - BCI">RJ - BCI</OPTION>
+					<OPTION VALUE="RJ - BCIM">RJ - BCIM</OPTION>
+					<OPTION VALUE="RJ - CCAST">RJ - CCAST</OPTION>
+					<OPTION VALUE="RJ - ELS">RJ - ELS</OPTION>
+					<OPTION VALUE="RJ - ELSN">RJ - ELSN</OPTION>
+					<OPTION VALUE="RJ - G">RJ - G</OPTION>
+					<OPTION VALUE="RJ - GM">RJ - GM</OPTION>
+					<OPTION VALUE="RJ - IC">RJ - IC</OPTION>
+					<OPTION VALUE="RJ - LJ">RJ - LJ</OPTION>
+					<OPTION VALUE="RJ - LN">RJ - LN</OPTION>
+					<OPTION VALUE="RJ - MP">RJ - MP</OPTION>
+					<OPTION VALUE="RJ - OTS">RJ - OTS</OPTION>
+					<OPTION VALUE="RJ - PT">RJ - PT</OPTION>
+                    <OPTION VALUE="RJ - PTX">RJ - PTX</OPTION>
+					<OPTION VALUE="RJ - R">RJ - R</OPTION>
+					<OPTION VALUE="RJ - RX">RJ - RX</OPTION>
+					<OPTION VALUE="RJ - S">RJ - S</OPTION>
+					<OPTION VALUE="RJ - SN">RJ - SN</OPTION>
+                    <OPTION VALUE="RJ - SNX">RJ - SNX</OPTION>
+                   	<OPTION VALUE="RJ - SX">RJ - SX</OPTION>
+					<OPTION VALUE="RJ - WH">RJ - WH</OPTION>
+					<OPTION VALUE="RJ - WR">RJ - WR</OPTION>
+                    <OPTION VALUE="RJ - WX">RJ - WX</OPTION>
+					<OPTION VALUE="RJ - X">RJ - X</OPTION>
+					<OPTION VALUE="RJ - Z">RJ - Z</OPTION>
+            		</lightning:select></td>
+                
+            	<td><lightning:select label="Media" aura:id="Joint_Media__c" name="Joint_Media__c" onchange="{!c.addFilters}">
+                	<OPTION VALUE="--All--">--All--</OPTION>
+                    <OPTION VALUE="Air">Air</OPTION>
+                	<OPTION VALUE="Oil">Oil</OPTION>
+                	<OPTION VALUE="Oil / Air">Oil / Air</OPTION>
+                	<OPTION VALUE="Oil/Water/Glycol/Nitrogen">Oil/Water/Glycol/Nitrogen</OPTION>
+                	<OPTION VALUE="Steam">Steam</OPTION>
+                	<OPTION VALUE="Water">Water</OPTION>
+                	<OPTION VALUE="Water &lt; 110C">Water &lt; 110C</OPTION>
+                	<OPTION VALUE="Water &gt; 110C">Water &gt; 110C</OPTION>
+                	<OPTION VALUE="Water/air/steam">Water/air/steam</OPTION>
+                	</lightning:select></td>
+                
+                <td><lightning:select label="Seal Material" aura:id="Joint_Seal_Material__c" name="Joint_Seal_Material__c" onchange="{!c.addFilters}">
+                	<OPTION VALUE="--All--">--All--</OPTION>
+                	<OPTION VALUE="A6">A6</OPTION>
+                    <OPTION VALUE="Antimony">Antimony</OPTION>
+                	<OPTION VALUE="B3">B3</OPTION>
+                	<OPTION VALUE="B4">B4</OPTION>
+                	<OPTION VALUE="Banded G.S.">Banded G.S.</OPTION>
+                	<OPTION VALUE="Banded Silver Streak">Banded Silver Streak</OPTION>
+                	<OPTION VALUE="Bronze">Bronze</OPTION>
+                	<OPTION VALUE="C3">C3</OPTION>
+                	<OPTION VALUE="Carbon Graphite">Carbon Graphite</OPTION>
+                	<OPTION VALUE="Green Streak">Green Streak</OPTION>
+                	<OPTION VALUE="K22/K22">K22/K22</OPTION>
+                	<OPTION VALUE="K22/Z11">K22/Z11</OPTION>
+                	<OPTION VALUE="K22/Z12">K22/Z12</OPTION>
+                	<OPTION VALUE="M4">M4</OPTION>
+                    <OPTION VALUE="Nitrile">Nitrile</OPTION>
+                	<OPTION VALUE="Other">Other</OPTION>
+                	<OPTION VALUE="Q5/B">Q5/B</OPTION>
+                	<OPTION VALUE="Q5/Z11">Q5/Z11</OPTION>
+                	<OPTION VALUE="Silicon Carbide">Silicon Carbide</OPTION>
+                	<OPTION VALUE="Silver Streak">Silver Streak</OPTION>
+                	<OPTION VALUE="T4">T4</OPTION>
+                	<OPTION VALUE="Z12/U31">Z12/U31</OPTION>
+                	<OPTION VALUE="Z12/U41">Z12/U41</OPTION>
+                	<OPTION VALUE="Z12/Y1"></OPTION>
+                	</lightning:select></td>
+            
+            	<td><lightning:select label="Flow" aura:id="Joint_Flow__c" name="Joint_Flow__c" onchange="{!c.addFilters}">
+                	<aura:iteration items="{!v.PicklistValueCollection}" var="option">
+                    <aura:if isTrue="{!option.key=='Joint_Flow__c'}"><option value="{!option.label}">{!option.label}</option></aura:if>
+        			</aura:iteration>
+                	</lightning:select></td>
+                
+                <td><ui:inputText label="Nip.Size" labelClass="uiLabel-top" required="false" aura:id="Joint_Nipple_Size__c" keyup="{!c.addFiltersFromInput}" updateOn="keyup"/></td>
+                <td><ui:inputText label="M-Size" labelClass="uiLabel-top" required="false" aura:id="Joint_M_Size__c" keyup="{!c.addFiltersFromInput}" updateOn="keyup"/></td>
+                <td><ui:inputText label="P-Size" labelClass="uiLabel-top" required="false" aura:id="Joint_P_Size__c" keyup="{!c.addFiltersFromInput}" updateOn="keyup"/></td>
+                <td><ui:inputText label="S-Size" labelClass="uiLabel-top" required="false" aura:id="Joint_S_Size__c" keyup="{!c.addFiltersFromInput}" updateOn="keyup"/></td>
+                <td><ui:inputText label="N-Size" labelClass="uiLabel-top" required="false" aura:id="Joint_N_Size__c" keyup="{!c.addFiltersFromInput}" updateOn="keyup"/></td>
+                <td><ui:inputText label="O-Size" labelClass="uiLabel-top" required="false" aura:id="Joint_O_Size__c" keyup="{!c.addFiltersFromInput}" updateOn="keyup"/></td>
+			</tr>
+            </table>
+        </lightning:tab>
+    
+        <lightning:tab label="SYPHONS" id="tab-SYPHONS">
+            Syphon filters
+        </lightning:tab>
+        
+        <lightning:tab label="BLADES" id="tab-BLADES">
+            
+            <table  cellpadding="0" cellspacing="0">
+            <tr>
+            	<td>
+                <lightning:select label="Material" aura:id="BLD_Material__c" name="BLD_Material__c" onchange="{!c.addFilters}">
+                <OPTION VALUE="--All--">--All--</OPTION>
+                <OPTION VALUE="2016-24 MRC">2016-24 MRC</OPTION>
+                <OPTION VALUE="316 St St">316 St St</OPTION>
+                <OPTION VALUE="3D (RD2017-3)">3D (RD2017-3)</OPTION>
+                <OPTION VALUE="Abrasifine">Abrasifine</OPTION>
+                <OPTION VALUE="Abrasilite">Abrasilite</OPTION>
+                <OPTION VALUE="Abrasitek">Abrasitek</OPTION>
+                <OPTION VALUE="Abrasitek Y">Abrasitek Y</OPTION>
+                <OPTION VALUE="Airset B">Airset B</OPTION>
+                <OPTION VALUE="Airset B Poly">Airset B Poly</OPTION>
+                <OPTION VALUE="Biovick">Biovick</OPTION>
+                <OPTION VALUE="Biovick Super">Biovick Super</OPTION>
+                <OPTION VALUE="Black Epoflex">Black Epoflex</OPTION>
+                <OPTION VALUE="Black Neoprene">Black Neoprene</OPTION>
+                <OPTION VALUE="Bronze">Bronze</OPTION>
+                <OPTION VALUE="Bronzeflex">Bronzeflex</OPTION>
+                <OPTION VALUE="Bronze Non-Stick Coated">Bronze Non-Stick Coated</OPTION>
+                <OPTION VALUE="Carboflex">Carboflex</OPTION>
+                <OPTION VALUE="Carbon Steel">Carbon Steel</OPTION>
+                <OPTION VALUE="Carbon Steel (1.2067 Grade)">Carbon Steel (1.2067 Grade)</OPTION>
+                <OPTION VALUE="Carbon Steel Creping">Carbon Steel Creping</OPTION>
+                <OPTION VALUE="Carbon Steel Teflon Coated">Carbon Steel Teflon Coated</OPTION>
+                <OPTION VALUE="Carbotek">Carbotek</OPTION>
+                <OPTION VALUE="Carbotek 100">Carbotek 100</OPTION>
+                <OPTION VALUE="Carbotek 100A">Carbotek 100A</OPTION>
+                <OPTION VALUE="Carbotek 100HT">Carbotek 100HT</OPTION>
+                <OPTION VALUE="Carbotek 100L">Carbotek 100L</OPTION>
+                <OPTION VALUE="Carbotek 21">Carbotek 21</OPTION>
+                <OPTION VALUE="Carbotek 4">Carbotek 4</OPTION>
+                <OPTION VALUE="Carbotek 4HT">Carbotek 4HT</OPTION>
+                <OPTION VALUE="Carbotek 4 HT">Carbotek 4 HT</OPTION>
+                <OPTION VALUE="Carbovick">Carbovick</OPTION>
+                <OPTION VALUE="Carbovik">Carbovik</OPTION>
+                <OPTION VALUE="Celotek">Celotek</OPTION>
+                <OPTION VALUE="CeraEdge Creping Ceramic">CeraEdge Creping Ceramic</OPTION>
+                <OPTION VALUE="CeraEdge Creping Ceramic Blade">CeraEdge Creping Ceramic Blade</OPTION>
+                <OPTION VALUE="Cleantek">Cleantek</OPTION>
+                <OPTION VALUE="Cleantek S">Cleantek S</OPTION>
+                <OPTION VALUE="Dritek Bronze">Dritek Bronze</OPTION>
+                <OPTION VALUE="Dritek C">Dritek C</OPTION>
+                <OPTION VALUE="Dritek Steel">Dritek Steel</OPTION>
+                <OPTION VALUE="Epoflex">Epoflex</OPTION>
+                <OPTION VALUE="Fiberflex">Fiberflex</OPTION>
+                <OPTION VALUE="Grafgrit">Grafgrit</OPTION>
+                <OPTION VALUE="Grafgrit 200">Grafgrit 200</OPTION>
+                <OPTION VALUE="Grafgrit Fine">Grafgrit Fine</OPTION>
+                <OPTION VALUE="Graflex">Graflex</OPTION>
+                <OPTION VALUE="Graftek">Graftek</OPTION>
+                <OPTION VALUE="GrafTek Doctor Blade">GrafTek Doctor Blade</OPTION>
+                <OPTION VALUE="HCRSS">HCRSS</OPTION>
+                <OPTION VALUE="HCRSS Backing Blade">HCRSS Backing Blade</OPTION>
+                <OPTION VALUE="HDP">HDP</OPTION>
+                <OPTION VALUE="HDP Doctor Blade">HDP Doctor Blade</OPTION>
+                <OPTION VALUE="HT Grafgrit">HT Grafgrit</OPTION>
+                <OPTION VALUE="HTSS">HTSS</OPTION>
+                <OPTION VALUE="Kleenslip">Kleenslip</OPTION>
+                <OPTION VALUE="Lamflex">Lamflex</OPTION>
+                <OPTION VALUE="Lexan">Lexan</OPTION>
+                <OPTION VALUE="Lexan Wiper Blade">Lexan Wiper Blade</OPTION>
+                <OPTION VALUE="Monel">Monel</OPTION>
+                <OPTION VALUE="MRC RD2017-2">MRC RD2017-2</OPTION>
+                <OPTION VALUE="MultiTek">MultiTek</OPTION>
+                <OPTION VALUE="MultiTek C">MultiTek C</OPTION>
+                <OPTION VALUE="MultiTek Plus">MultiTek Plus</OPTION>
+                <OPTION VALUE="nClean">nClean</OPTION>
+                <OPTION VALUE="nClean with Plustek Backing Blade">nClean with Plustek Backing Blade</OPTION>
+                <OPTION VALUE="nDure">nDure</OPTION>
+                <OPTION VALUE="nForce">nForce</OPTION>
+                <OPTION VALUE="nForce (RD2017-2)">nForce (RD2017-2)</OPTION>
+                <OPTION VALUE="nForce RD2017-2">nForce RD2017-2</OPTION>
+                <OPTION VALUE="Non-Stick Bronze">Non-Stick Bronze</OPTION>
+                <OPTION VALUE="Non-Stick Carbon Steel">Non-Stick Carbon Steel</OPTION>
+                <OPTION VALUE="Non-Stick ProClean">Non-Stick ProClean</OPTION>
+                <OPTION VALUE="Non stick Proflake">Non stick Proflake</OPTION>
+                <OPTION VALUE="nRepel">nRepel</OPTION>
+                <OPTION VALUE="nSlip">nSlip</OPTION>
+                <OPTION VALUE="nTek">nTek</OPTION>
+                <OPTION VALUE="nTek with PlusTek B/Blade">nTek with PlusTek B/Blade</OPTION>
+                <OPTION VALUE="Nyflex">Nyflex</OPTION>
+                <OPTION VALUE="Nylon 66 Natural">Nylon 66 Natural</OPTION>
+                <OPTION VALUE="PE 1000 Natural">PE 1000 Natural</OPTION>
+                <OPTION VALUE="PEEK">PEEK</OPTION>
+                <OPTION VALUE="PET-P Natural">PET-P Natural</OPTION>
+                <OPTION VALUE="Phosphur Bronze">Phosphur Bronze</OPTION>
+                <OPTION VALUE="PlusTek">PlusTek</OPTION>
+                <OPTION VALUE="PlusTek C">PlusTek C</OPTION>
+                <OPTION VALUE="Poly">Poly</OPTION>
+                <OPTION VALUE="Polyester">Polyester</OPTION>
+                <OPTION VALUE="Polyflex">Polyflex</OPTION>
+                <OPTION VALUE="Presstek CSC">Presstek CSC</OPTION>
+                <OPTION VALUE="Presstek Plus">Presstek Plus</OPTION>
+                <OPTION VALUE="Presstek SSC">Presstek SSC</OPTION>
+                <OPTION VALUE="ProClean">ProClean</OPTION>
+                <OPTION VALUE="ProCrepe">ProCrepe</OPTION>
+                <OPTION VALUE="ProFlake">ProFlake</OPTION>
+                <OPTION VALUE="ProFood T">ProFood T</OPTION>
+                <OPTION VALUE="RnD nForce">RnD nForce</OPTION>
+                <OPTION VALUE="RD20015-6">RD20015-6</OPTION>
+                <OPTION VALUE="RD2010-10">RD2010-10</OPTION>
+                <OPTION VALUE="RD2011-1">RD2011-1</OPTION>
+                <OPTION VALUE="RD2011-10">RD2011-10</OPTION>
+                <OPTION VALUE="RD2011-17">RD2011-17</OPTION>
+                <OPTION VALUE="RD2011-18">RD2011-18</OPTION>
+                <OPTION VALUE="RD2011-19">RD2011-19</OPTION>
+                <OPTION VALUE="RD2013-5 with PlusTek B/Blade">RD2013-5 with PlusTek B/Blade</OPTION>
+                <OPTION VALUE="RD2015-13 Low Energy nClean">RD2015-13 Low Energy nClean</OPTION>
+                <OPTION VALUE="RD2015-14 Low Energy nClean">RD2015-14 Low Energy nClean</OPTION>
+                <OPTION VALUE="RD2015-1 Non Sparking">RD2015-1 Non Sparking</OPTION>
+                <OPTION VALUE="RD2015-28">RD2015-28</OPTION>
+                <OPTION VALUE="RD2015-28 HT nTek">RD2015-28 HT nTek</OPTION>
+                <OPTION VALUE="RD2015-28 Long Life nTek">RD2015-28 Long Life nTek</OPTION>
+                <OPTION VALUE="RD2015-6">RD2015-6</OPTION>
+                <OPTION VALUE="RD2015-6 Black">RD2015-6 Black</OPTION>
+                <OPTION VALUE="RD2015-6 RepelTek">RD2015-6 RepelTek</OPTION>
+                <OPTION VALUE="RD2015-6 Stickie Resistant">RD2015-6 Stickie Resistant</OPTION>
+                <OPTION VALUE="RD2015-6 Stickie Resistant Black">RD2015-6 Stickie Resistant Black</OPTION>
+                <OPTION VALUE="RD2015-6 Stickie Resistant Blade">RD2015-6 Stickie Resistant Blade</OPTION>
+                <OPTION VALUE="RD2015-6 Stickie Resistant Doctor Blade">RD2015-6 Stickie Resistant Doctor Blade</OPTION>
+                <OPTION VALUE="RD2015-6 Stickie Resistant Yellow">RD2015-6 Stickie Resistant Yellow</OPTION>
+                <OPTION VALUE="RD2015-6 Yellow">RD2015-6 Yellow</OPTION>
+                <OPTION VALUE="RD2016-21 Homogeneous Blade">RD2016-21 Homogeneous Blade</OPTION>
+                <OPTION VALUE="RD2016-24">RD2016-24</OPTION>
+                <OPTION VALUE="RD2016-24(SS)">RD2016-24(SS)</OPTION>
+                <OPTION VALUE="RD2016-24 MRC">RD2016-24 MRC</OPTION>
+                <OPTION VALUE="RD2016-24-MRC3">RD2016-24-MRC3</OPTION>
+                <OPTION VALUE="RD2016-25 (Softek Plus)">RD2016-25 (Softek Plus)</OPTION>
+                <OPTION VALUE="RD2016-26">RD2016-26</OPTION>
+                <OPTION VALUE="RD2016-28">RD2016-28</OPTION>
+                <OPTION VALUE="RD2016-3">RD2016-3</OPTION>
+                <OPTION VALUE="RD2016-33">RD2016-33</OPTION>
+                <OPTION VALUE="RD2016-5">RD2016-5</OPTION>
+                <OPTION VALUE="RD2017-1">RD2017-1</OPTION>
+                <OPTION VALUE="RD2017-1 (nForce)">RD2017-1 (nForce)</OPTION>
+                <OPTION VALUE="RD2017-3">RD2017-3</OPTION>
+                <OPTION VALUE="Red Epoflex">Red Epoflex</OPTION>
+                <OPTION VALUE="Regrind Micrex Creping">Regrind Micrex Creping</OPTION>
+                <OPTION VALUE="RepelTek">RepelTek</OPTION>
+                <OPTION VALUE="Softek">Softek</OPTION>
+                <OPTION VALUE="Special Green">Special Green</OPTION>
+                <OPTION VALUE="St.St.">St.St.</OPTION>
+                <OPTION VALUE="St. St.">St. St.</OPTION>
+                <OPTION VALUE="St.St. Backing Blade">St.St. Backing Blade</OPTION>
+                <OPTION VALUE="St.St. Buffer Strip">St.St. Buffer Strip</OPTION>
+                <OPTION VALUE="St.St. Keep Plate">St.St. Keep Plate</OPTION>
+                <OPTION VALUE="St.St. Packer">St.St. Packer</OPTION>
+                <OPTION VALUE="St.St. Pressure Plate">St.St. Pressure Plate</OPTION>
+                <OPTION VALUE="St.St. Step Up Strip">St.St. Step Up Strip</OPTION>
+                <OPTION VALUE="St.St. Step Up Strips">St.St. Step Up Strips</OPTION>
+                <OPTION VALUE="St.St Backing Blade">St.St Backing Blade</OPTION>
+                <OPTION VALUE="Stainlessflex">Stainlessflex</OPTION>
+                <OPTION VALUE="Stainless Steel">Stainless Steel</OPTION>
+                <OPTION VALUE="Stainless Steel 400 Series">Stainless Steel 400 Series</OPTION>
+                <OPTION VALUE="Stainless Steel Creping">Stainless Steel Creping</OPTION>
+                <OPTION VALUE="Stainless Steel Creping Doctor Blade">Stainless Steel Creping Doctor Blade</OPTION>
+                <OPTION VALUE="Steel Creping">Steel Creping</OPTION>
+                <OPTION VALUE="Steelflex">Steelflex</OPTION>
+                <OPTION VALUE="Steelflex Backing Blade">Steelflex Backing Blade</OPTION>
+                <OPTION VALUE="St St">St St</OPTION>
+                <OPTION VALUE="St St Backing Blade">St St Backing Blade</OPTION>
+                <OPTION VALUE="Supervick">Supervick</OPTION>
+                <OPTION VALUE="Syntec 2">Syntec 2</OPTION>
+                <OPTION VALUE="SynTek 2">SynTek 2</OPTION>
+                <OPTION VALUE="SynTek 2 (Orange)">SynTek 2 (Orange)</OPTION>
+                <OPTION VALUE="SynTek 2 Green">SynTek 2 Green</OPTION>
+                <OPTION VALUE="SynTek 2 Orange">SynTek 2 Orange</OPTION>
+                <OPTION VALUE="Syntek2 Plus">Syntek2 Plus</OPTION>
+                <OPTION VALUE="SynTek 2 Plus">SynTek 2 Plus</OPTION>
+                <OPTION VALUE="SynTek 5">SynTek 5</OPTION>
+                <OPTION VALUE="SynTek 5 Green">SynTek 5 Green</OPTION>
+                <OPTION VALUE="SynTek 5 Plus">SynTek 5 Plus</OPTION>
+                <OPTION VALUE="SynTek C">SynTek C</OPTION>
+                <OPTION VALUE="Teflon">Teflon</OPTION>
+                <OPTION VALUE="Teflon Coated Carbon Steel">Teflon Coated Carbon Steel</OPTION>
+                <OPTION VALUE="TemTek">TemTek</OPTION>
+                <OPTION VALUE="UHMWPE">UHMWPE</OPTION>
+                <OPTION VALUE="UHMW PE1000 Natural">UHMW PE1000 Natural</OPTION>
+                <OPTION VALUE="UHMWPE Doctor Blade">UHMWPE Doctor Blade</OPTION>
+                <OPTION VALUE="Ultakleen">Ultakleen</OPTION>
+                <OPTION VALUE="Ultra C">Ultra C</OPTION>
+                <OPTION VALUE="Ultra G">Ultra G</OPTION>
+                <OPTION VALUE="Ultrakleen">Ultrakleen</OPTION>
+                <OPTION VALUE="Ultravick">Ultravick</OPTION>
+                <OPTION VALUE="Ultravick Fine">Ultravick Fine</OPTION>
+                <OPTION VALUE="Ultravick Superfine">Ultravick Superfine</OPTION>
+                <OPTION VALUE="Ultrkleen">Ultrkleen</OPTION>
+                <OPTION VALUE="Uni-Directional Carbon Fibre Top Plate">Uni-Directional Carbon Fibre Top Plate</OPTION>
+                <OPTION VALUE="Uni-Directional Composite Top Plate">Uni-Directional Composite Top Plate</OPTION>
+                <OPTION VALUE="Unitek">Unitek</OPTION>
+                <OPTION VALUE="VeriSlip">VeriSlip</OPTION>
+                <OPTION VALUE="VeriTek">VeriTek</OPTION>
+                <OPTION VALUE="VeriTek DACC Lamella Tip">VeriTek DACC Lamella Tip</OPTION>
+                <OPTION VALUE="VeriTek Doctor Blade with Lamella Tip">VeriTek Doctor Blade with Lamella Tip</OPTION>
+                <OPTION VALUE="White Teflon Blade">White Teflon Blade</OPTION>
+	            </lightning:select></td>
+            
+                <td><ui:inputText label="Width" labelClass="uiLabel-top" required="false" aura:id="BLD_Width__c" keyup="{!c.addFiltersFromInputTXT}" updateOn="keyup"/></td>
+                <td><ui:inputText label="Length" labelClass="uiLabel-top" required="false" aura:id="BLD_Length__c" keyup="{!c.addFiltersFromInputTXT}" updateOn="keyup"/></td>
+                <td><ui:inputText label="Thickness" labelClass="uiLabel-top" required="false" aura:id="BLD_Thickness__c" keyup="{!c.addFiltersFromInputTXT}" updateOn="keyup"/></td>
+                <td><ui:inputText label="Bevel angle" labelClass="uiLabel-top" required="false" aura:id="BLD_Bevel_Angle__c" keyup="{!c.addFiltersFromInputTXT}" updateOn="keyup"/></td>
+            </tr>
+            </table>
+            
+        </lightning:tab>
+<!-- </aura:if> -->
+        <lightning:tab label="ALL" id="tab-ALL">
+            <table  cellpadding="0" cellspacing="0">
+                <tr>
+                    <td>
+                        <lightning:select class="SearchFieldStyle" label="Product type" aura:id="Product_Type__c" name="Product_Type__c" onchange="{!c.addFilters}">
+                        <aura:iteration items="{!v.PicklistValueCollection}" var="option">
+                        <aura:if isTrue="{!option.key=='Product_Type__c'}"><option value="{!option.label}">{!option.label}</option></aura:if>
+                        </aura:iteration>
+                        </lightning:select>
+                    </td>
+                    <td>
+                        <lightning:select class="SearchFieldStyle" label="Location" aura:id="Location__c" name="Location__c" onchange="{!c.addFilters}">
+                        <aura:iteration items="{!v.PicklistValueCollection}" var="option">
+                        <aura:if isTrue="{!option.key=='Location__c'}"><option value="{!option.label}">{!option.label}</option></aura:if>
+                        </aura:iteration>
+                        </lightning:select>
+                    </td>
+                    <td>&nbsp;
+                        <!--
+                            <lightning:select class="SearchFieldStyle" label="Product code" aura:id="Product_Code_Picklist__c" name="Product_Code_Picklist__c" onchange="{!c.addFilters}">
+                            <aura:iteration items="{!v.PicklistValueCollection}" var="option">
+                            <aura:if isTrue="{!option.key=='Product_Code_Picklist__c'}"><option value="{!option.label}">{!option.label}</option></aura:if>
+                            </aura:iteration>
+                            </lightning:select>
+                        -->
+                    </td>				
+                </tr>
+            </table>
+        </lightning:tab>
+</lightning:tabset>    
+
+<!--###### MODAL BOX BODY Part Start From Here ######-->
+
+<aura:if isTrue="{!1==1}">
+<div class="slds-table--header-fixed_container" style="clear:left !important;margin-top:0px;height:calc(100vh - 25vh) !important;">
+<div class="slds-scrollable" style="width: 99% !important; height:100% !important;overflow:auto !important;">
+
+<table class="slds-table slds-table_bordered  slds-table_cell-buffer slds-table--header-fixed">    
+<thead class="kadant-searchresults-head">
+           <tr class="slds-line-height_reset">
+               <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="ID">ID</div><a id="anchor_ScrollToX">&nbsp;</a></th>
+                <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Description">Description</div></th>
+                <!--th scope="col" style="width: 3rem;"><div class="slds-cell-fixed" title="Product Code">Code</div></th-->
+               
+                <!--###### DYNAMIC COLUMNS FOR TAB JOINTS ######-->
+				<aura:if isTrue="{!v.SelectedTab=='tab-JOINTS'}">
+                    <th scope="col" style="width: 3rem;"><div class="slds-cell-fixed" title="M-Size">M-Size</div></th>
+                    <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="N-Size">N-Size</div></th>
+                    <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="O-Size">O-Size</div></th>
+                    <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="P-Size">P-Size</div></th>
+                    <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="S-Size">S-Size</div></th>
+                    <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Temp">Temp.</div></th>
+                    <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Pressure">Press.</div></th>
+                    <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Seal">Seal</div></th>
+                </aura:if>
+
+               	<!--###### DYNAMIC COLUMNS FOR TAB SYPHONS ######-->
+				<aura:if isTrue="{!v.SelectedTab=='tab-SYPHONS'}">
+                	<th scope="col" style="width: 3rem;"><div class="slds-cell-fixed" title="Product Code">Code</div></th>
+                	<th scope="col" style="width: 3rem;"><div class="slds-cell-fixed" title="List Price">List Price</div></th>
+                </aura:if>
+               
+                <!--###### DYNAMIC COLUMNS FOR TAB ALL ######-->
+				<aura:if isTrue="{!v.SelectedTab=='tab-ALL'}">
+                	<th scope="col" style="width: 3rem;"><div class="slds-cell-fixed" title="Product Code">Code</div></th>
+                    <th scope="col" style="width: 3rem;"><div class="slds-cell-fixed" title="List Price">List Price</div></th>
+                </aura:if>
+               
+				<!--###### DYNAMIC COLUMNS FOR TAB BLADES ######-->
+				<aura:if isTrue="{!v.SelectedTab=='tab-BLADES'}">
+                    <th scope="col" style="width: 3rem;"><div class="slds-cell-fixed" title="Product Code">Code</div></th>
+                    <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Width">Width</div></th>
+                    <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Length">Length</div></th>
+                    <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Thickness">Thickness</div></th>
+                    <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Bevel">Bevel</div></th>
+                    <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Material">Material</div></th>
+                </aura:if>
+                              
+                <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Width">MFG grp</div></th>
+
+         </tr>
+</thead>
+<tbody class="kadant-searchresults-body"  stylex="overflow:auto !important;">
+	<aura:iteration items="{!v.SearchResults}" var="item"> 
+		<tr>
+		<td>
+            <div class="slds-truncate" title="Analytics">                
+                <aura:if isTrue="{!v.Portal=='N'}">
+                    <a href="{!'&#47;lightning&#47;r&#47;'+item.id+'&#47;view'}" id="{!item.id}" title="{!item.name}" aura:id="bomassy" target="_blank">{!item.name}</a>
+                </aura:if>
+                
+                <aura:if isTrue="{!v.Portal=='Y'}">
+				    <a href="{!'&#47;psgeagent&#47;s&#47;product-details?pid='+item.id+'&amp;pnum='+item.name}" id="{!item.id}" title="{!item.name}" aura:id="bomassy" target="_blank">{!item.name}</a>
+                </aura:if>
+            </div>
+		</td>
+		<td>
+			<div class="slds-truncate" >{!item.description}</div>
+		</td>
+		<!--td-->
+			<!--div title="Product code">{!item.productCode}</div-->
+		<!--/td-->
+
+    	<aura:if isTrue="{!v.SelectedTab=='tab-JOINTS'}">
+            <td><div title="M">{!item.jointM}</div></td>
+            <td><div title="N">{!item.jointN}</div></td>
+        	<td><div title="O">{!item.jointO}</div></td>
+        	<td><div title="P">{!item.jointP}</div></td>
+        	<td><div title="S">{!item.jointS}</div></td>
+            <td><div title="Temp">{!item.jointTemperature}</div></td>
+            <td><div title="Press">{!item.jointPressure}</div></td>
+            <td><div title="Seal">{!item.jointSeal}</div></td>
+    	</aura:if>
+		<aura:if isTrue="{!v.SelectedTab=='tab-SYPHONS'}">
+             <td><div title="Product code">{!item.productCode}</div></td>
+             <td><div title="List Price">{!item.listPrice}</div></td>
+        </aura:if>
+		<aura:if isTrue="{!v.SelectedTab=='tab-ALL'}">
+             <td><div title="Product code">{!item.productCode}</div></td>
+             <td><div title="List Price">{!item.listPrice}</div></td>
+        </aura:if>
+    	<aura:if isTrue="{!v.SelectedTab=='tab-BLADES'}">
+            <td><div title="Width">{!item.bladeWidth}</div></td>
+        	<td><div title="Length">{!item.bladeLength}</div></td>
+        	<td><div title="Thickness">{!item.bladeThickness}</div></td>
+            <td><div title="Bevel">{!item.bladeBevel}</div></td>
+            <td><div title="Material">{!item.bladeMaterial}</div></td>
+    	</aura:if>
+        <td><div title="MFG Group">{!item.productDivision}</div></td>
+		</tr>
+	</aura:iteration>
+</tbody>
+</table>
+</div>
+</div>
+
+<div class="slds-modal__footer" style="margin-bottom:1px !important;">
+<button class="slds-button slds-button--brand" onclick="{!c.clearSearch}">Clear</button>
+</div>
+    
+</aura:if>   
+</aura:component>

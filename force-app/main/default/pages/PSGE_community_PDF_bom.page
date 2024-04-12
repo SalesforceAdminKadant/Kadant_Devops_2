@@ -1,0 +1,93 @@
+<apex:page renderAs="pdf" showHeader="false" sidebar="false" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false" Controller="KAI_Search_Products_Engine"  action="{!PDFprint}">
+    <html>
+    <head>
+        <style>
+                div.header {
+                display: block; 
+                position: running(header); 
+                }
+        
+            @page {
+                size: letter;
+                margin: 25mm;
+                @top-center {
+                    content: "Sample";
+                }
+                @bottom-center {
+                    content: "Page " counter(page) " of " counter(pages);
+                }
+            }
+            .page-break {
+                display:block;
+                page-break-after:always;
+            }
+            body {
+                font-family: Arial Unicode MS;
+            }
+            
+            .DrawingPage{
+    width: 100%;
+    height: 100%;
+    -ms-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    transform: rotate(90deg);
+            }
+            
+            .DrawingPage2{
+            position:fixed;background-repeat:repeat;left: -6cm; top:0cm; z-index:-1;transform: rotate(-20deg);-webkit-transform: rotate(20deg);
+            }
+        </style>
+    </head>
+    <body>
+    
+    
+    
+    <div class="header" >
+           <table width="100%">
+           <tr>
+           <td>
+           <img src="{!$Resource.KadantLogo}" width= "256px" height="46px"/>
+           </td>
+           <td align="right" valign="top">
+           </td>
+           </tr>
+           </table>
+           <table style="width:100%;" class="tabel">
+            <tr>
+                <td style="font-family:Arial Unicode MS;font-size:16px;"><u><b>Quote request - {!'xxxx'}</b></u></td>
+                <td align="right" style="font-family:Arial Unicode MS;font-size:11px;">Date Printed: {!YEAR(TODAY())}-{!MONTH(TODAY())}-{!DAY(TODAY())}</td>
+            </tr>
+            </table>
+   </div>
+   
+    <div class="page-break">{!$CurrentPage.parameters.pid}
+<br/>
+<apex:form >
+<apex:pageBlock >
+<apex:pageBlockTable value="{!PDFbomList}" var="app">
+<apex:column value="{!app[2]}"/>
+<apex:column value="{!app[3]}"/>
+<apex:column value="{!app[4]}"/>
+<apex:column value="{!app[5]}"/>
+</apex:pageBlockTable>
+</apex:pageBlock>
+</apex:form>
+    
+    
+    </div>
+    <div class="page-break">
+
+    <apex:image styleclass="DrawingPage" url="{!'https://kadantportal.force.com/psgeagent/sfc/servlet.shepherd/version/renditionDownload?rendition=THUMB720BY480&versionId='+PDFdrawing}"/>
+   </div>
+
+ 
+    <div>
+    <!--apex:image styleclass="DrawingPage" url="{!'https://kadantportal.force.com/psgeagent/sfc/servlet.shepherd/version/renditionDownload?rendition=SVGZ&versionId='+PDFdrawing}"/-->
+    <img style="position:absolute;transform: rotate(90deg);-webkit-transform: rotate(90deg);" src="{!'https://kadantportal.force.com/psgeagent/sfc/servlet.shepherd/version/renditionDownload?rendition=THUMB720BY480&versionId='+PDFdrawing}"/>
+ 
+    </div>
+    
+    </body>
+   </html>
+</apex:page>

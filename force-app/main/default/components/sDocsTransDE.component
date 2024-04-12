@@ -1,0 +1,8 @@
+<apex:component >
+    <apex:variable var="LabelDoc" value="Rechnung"/>
+    <apex:variable var="LabelDate" value="Datei"/>
+    <apex:variable var="LabelQty" value="Anshal"/>
+    <apex:variable var="LabelDesc" value="Omschrijbung"/>
+    <apex:variable var="LabelUnit" value="Unit price"/>
+    <apex:variable var="LabelSub" value="Line total"/>
+</apex:component>

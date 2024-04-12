@@ -1,0 +1,1232 @@
+<aura:component access="global" implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader,lightning:availableForFlowScreens" controller="KPP_Function_Library">
+
+<aura:handler name="init" value="{!this}" action="{!c.init}"/>
+<aura:attribute name="DocRecordId" type="String" />
+<aura:attribute name="DocCustomerId" type="String" />
+<aura:attribute name="DocObjectName" type="String" default="Quote"/> 
+
+
+<aura:attribute name="quoteRecord" type="String" />
+
+    
+<aura:attribute name="objInfo" type="product2" default="{sobjectType : 'Product2'}" />
+<!--use boolean to toggle open and close screen1 and 2 -->
+<aura:attribute name="isOpen" type="boolean" default="false"/>
+<aura:attribute name="isOpen2" type="boolean" default="false"/>
+<aura:attribute name="showExtendedTabset" type ="boolean" default = "true"/>
+<aura:attribute name="searchText" type="String" default=""/>
+<aura:attribute name="SearchResults" type="String" />
+
+<aura:attribute name="SelectedPartListContainer" type="Map" default="{}"/>
+<aura:attribute name="SelectedPartList" type="List"/>
+<aura:attribute name="SelectedPartListContainerQty" type="Map" default="{}"/>
+<aura:attribute name="SelectedPartListQty" type="List"/>
+<aura:attribute name="SelectedPartListContainerUP" type="Map" default="{}"/>
+<aura:attribute name="SelectedPartListUP" type="List"/>
+<aura:attribute name="SelectedPartListContainerSPEC" type="Map" default="{}"/>
+<aura:attribute name="SelectedPartListSPEC" type="List"/>
+
+<aura:attribute name="PicklistValueCollection" type="List"/>
+    
+<aura:attribute name="SearchFilterMap" type="Map" default="{}"/>
+<aura:attribute name="SearchFilterMapTest" type="String" default=""/>
+<aura:attribute name="SearchFilterSQL" type="String" default=""/>
+<aura:attribute name="SelectedTab" type="String" default="tab-HISTORY"/>
+<aura:attribute name="SelectedSubTab" type="String" default="tab-SERVICES-GEN"/>
+<aura:attribute name="SelectedHisTab" type="String" default="tab-HISTORY-ALL"/>
+<aura:attribute name="SelectedCPQTab" type="String" default="tab-CPQ-BLADE"/>
+    
+<aura:attribute name="QuoteLineList" type="String" />
+<aura:attribute name="QuotePricingList" type="String" />
+<aura:attribute name="QuotePriceBook" type="String" default="{!v.quoteRecord[0][2]}"/>
+<aura:attribute name="QuoteCurrency" type="String" default="{!v.quoteRecord[0][3]}"/>
+<aura:attribute name="QuoteRecordType" type="String" default="{!v.quoteRecord[0][0]}"/>
+<aura:attribute name="QuoteCountryID" type="String" default="{!v.quoteRecord[0][9]}"/>
+<aura:attribute name="QuoteSalesOffice" type="String" default="{!v.quoteRecord[0][7]}"/>  
+    
+<aura:attribute name="TmpField" type="String" /> 
+<aura:attribute name="ShowBomDialog" type="boolean" default="false"/>
+<aura:attribute name="BomAssembly" type="String" default=""/>    
+<aura:attribute name="BomParts" type="String" />
+<aura:attribute name="SectionWithContent" type="String" default="0"/>
+<aura:attribute name="ShowQtyWarning" type="boolean" default="false"/>
+    
+<!--Blade CPQ fields -->
+<aura:attribute name="BldConfigUP" type="String" default=""/>    
+<aura:attribute name="BldConfigICP" type="String" default=""/>
+<aura:attribute name="BldConfigCURR" type="String" default=""/>
+<aura:attribute name="BldConfigMATID" type="String" default=""/>
+<aura:attribute name="BldConfigMAT" type="String" default=""/> 
+<aura:attribute name="BldConfigWIDTH" type="String" default=""/> 
+<aura:attribute name="BldConfigTHICK" type="String" default=""/>
+<aura:attribute name="BldConfigBEVEL" type="String" default=""/>
+<aura:attribute name="BldConfigLEN" type="String" default=""/>
+<aura:attribute name="BldConfigSURFIN" type="String" default=""/>
+<aura:attribute name="BldConfigSURFINcost" type="String" default=""/>
+<aura:attribute name="BldConfigSURPACKcost" type="String" default=""/>
+<aura:attribute name="BldConfigRATECOST" type="String" default="1"/>
+<aura:attribute name="BldConfigRATE" type="String" default="1.4"/>
+<aura:attribute name="BldConfigMATGROUP" type="String" default=""/>
+    
+<aura:attribute name="BldLineID" type="String" default="01t0z000007kVOxAAM"/>
+<aura:attribute name="BldLineQTY" type="String" default="1"/>
+<aura:attribute name="BldLineSPEC" type="List"/>
+<aura:attribute name="BldLineICP" type="String" default=""/>
+<aura:attribute name="BldLineUP" type="String" default=""/>
+<aura:attribute name="BldLineUPpm" type="String" default=""/>
+<aura:attribute name="BldLineCOST" type="String" default=""/>
+<aura:attribute name="BldLineCOSTpm" type="String" default=""/>
+<aura:attribute name="BldLineADDED"  type="boolean" default="false"/> 
+<aura:attribute name="BldLineMARGIN" type="String" default=""/> 
+<aura:attribute name="BldLineMARGINPCT" type="String" default=""/> 
+
+
+<aura:attribute name="BladeDetailsRecordType" type="String" default="0120z000000cYI2AAM"/>
+<aura:attribute name="BladeDetails" type="String" default=""/>
+<aura:attribute name="BladeMaterialsList" type="List"/>
+<aura:attribute name="BladeWidthList" type="List"/>
+<aura:attribute name="BladeThicknessList" type="List"/>
+    
+<!--Blade CPQ historical price screen-->
+<aura:attribute name="BladePriceAll" type="String" /> 
+<aura:attribute name="BladePriceCountry" type="String"/> 
+<aura:attribute name="BladePriceMarket" type="String"/>
+    
+<!--Button above quote line screen--> 
+<div class="slds-m-around--xx-small" style="width:100%;height:15px;">
+    <lightning:button class="ActionButton" variant="brand" label="Add products" iconName="utility:edit" iconPosition="left" title="Add products" onclick="{! c.openPage1 }"/>
+</div>
+
+    
+<!--Screen1 Advanced part search screen -->   
+<aura:if isTrue="{!v.isOpen}">
+    
+<!--###### MODAL BOX Start From Here  slds-modal slds-fade-in-open ######--> 
+<div role="dialog" tabindex="-1" aria-labelledby="header99" class="slds-modal slds-fade-in-open slds-modal_large slds-list-builder" aria-modal="true">
+<div class="slds-modal__container" style="margin-top:-4px;max-width: 120rem !important;width:90% !important;height:98% !important;min-height:85% !important;">
+    
+<!--###### MODAL BOX HEADER Part Start From Here ######-->
+<div class="slds-modal__header">
+<button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" onclick="{!c.cancelPages}">
+X
+<span class="slds-assistive-text">Close</span>
+</button>
+<h2 id="header99" class="slds-text-heading--medium">Search products</h2>
+  <div class="slds-form-element slds-lookup" data-select="single">
+    <div class="slds-form-element__control">
+        <div class="slds-input-has-icon slds-input-has-icon--right">
+            <lightning:buttonIcon iconName="utility:search" variant="bare" onclick="{!c.searchParts}" alternativeText="Search" class="slds-input__icon" />
+            <ui:inputText value="{!v.searchText}" class="slds-lookup__search-input slds-input" placeholder="Search" keyup="{!c.searchOnEnter}"/>
+        </div>
+    </div>
+  </div>
+	<aura:iteration items="{!v.SelectedPartList}" indexVar="key" var="item"> 
+    	<lightning:pill media="" title="{!'pil'+item.key}" label="{!item.value+' ('+item.qty+')'}" onremove="{! c.deselectPart }" onclick="{! c.changeQty }">
+            <aura:set attribute="media"><lightning:icon iconName="standard:product"  alternativeText="Selected"/>
+        </aura:set>
+        </lightning:pill>
+	</aura:iteration>
+</div>
+
+<!--###### SEARCH FILTER TABS ######-->
+<lightning:tabset class="MainTabs" selectedTabId="{!v.SelectedTab}" onselect="{!c.switchMainTab}">
+    	<lightning:tab class="MainTab" label="HISTORY" id="tab-HISTORY">
+			<table  cellpadding="0" cellspacing="0">
+            <tr>
+               <td style="width:30%">
+                   <ui:inputText label="Customer Part ID" labelClass="uiLabel-top" required="false" aura:id="Customer_Item_Number__c" keyup="{!c.addFiltersFromInputTXT}" updateOn="keyup"/>
+			   </td>
+               <td style="width:5%">&nbsp;</td>
+               <td style="width:60%;align:right;">
+                  
+            		<div style="padding:5px;"><lightning:icon iconName="utility:info" size="xx-small" alternativeText="Reorder"/> The following list contains all parts that have been sold to this customer before. Note - this list only shows the most recent order for each part.</div>
+          			
+                </td>
+                <td style="width:5%">&nbsp;</td>
+            </tr>
+            </table>
+            <lightning:tabset class="SubTabs" selectedTabId="{!v.SelectedHisTab}" onselect="{!c.switchSubTab}">
+                <lightning:tab  class="MainTab" label="ALL" id="tab-HISTORY-ALL"></lightning:tab>
+                <aura:if isTrue="{!v.showExtendedTabset}">
+                	<lightning:tab  class="MainTab" label="FLUID HANDLING" id="tab-HISTORY-FH"></lightning:tab>
+                    <lightning:tab  class="MainTab" label="DCF" id="tab-HISTORY-DCF"></lightning:tab>
+                </aura:if>
+            </lightning:tabset>
+    
+    	</lightning:tab>
+ 
+    	<lightning:tab class="MainTab" label="DUMMIES/SERVICES" id="tab-DUMMIES">
+            
+            <lightning:tabset class="SubTabs" selectedTabId="{!v.SelectedSubTab}" onselect="{!c.switchSubTab}">
+                <lightning:tab class="MainTab" label="GENERAL" id="tab-SERVICES-GEN"></lightning:tab>
+                <aura:if isTrue="{!v.showExtendedTabset}">
+                <lightning:tab class="MainTab" label="FLUID HANDLING" id="tab-SERVICES-FH"></lightning:tab>
+                <lightning:tab class="MainTab" label="DCF" id="tab-SERVICES-DCF"></lightning:tab>
+                <lightning:tab class="MainTab" label="FIBERLINE" id="tab-SERVICES-FL"></lightning:tab>
+                <lightning:tab class="MainTab" label="DO NOT USE" id="tab-SERVICES-DEV"></lightning:tab>
+                </aura:if>
+                <aura:if isTrue="{!v.quoteRecord[0][1]=='0120z000000UQ3gAAG'}">
+                <lightning:tab class="MainTab" label="KCD-SERVICES" id="tab-SERVICES-WP"></lightning:tab>
+                </aura:if>
+                <aura:if isTrue="{!v.quoteRecord[0][1]=='0124W0000016T0IQAU'}">
+                <lightning:tab class="MainTab" label="NML-DUMMIES" id="tab-SERVICES-NML"></lightning:tab>
+                </aura:if>
+                <aura:if isTrue="{!v.quoteRecord[0][1]=='0120z000000UQ5wAAG'}">
+                <lightning:tab class="MainTab" label="KJTR-DUMMIES" id="tab-SERVICES-KJTR"></lightning:tab>
+                </aura:if>
+                <aura:if isTrue="{!v.quoteRecord[0][1]=='0124W0000015fSfQAI'}">
+                <lightning:tab class="MainTab" label="SERVIÇOS" id="tab-SERVICES-KSASER"></lightning:tab>
+                <lightning:tab class="MainTab" label="PRODUTOS" id="tab-SERVICES-KSAPRD"></lightning:tab>    
+                </aura:if>    
+            </lightning:tabset>
+            <aura:if isTrue="{!1==2}">
+              <lightning:select class="SearchFieldStyle" label="Location" aura:id="Location__c" name="Location__c" onchange="{!c.addFilters}">
+                <aura:iteration items="{!v.PicklistValueCollection}" var="option">
+                    <aura:if isTrue="{!option.key=='Location__c'}"><option value="{!option.label}">{!option.label}</option></aura:if>
+        		</aura:iteration>
+              </lightning:select>
+            </aura:if>
+            <lightning:select class="SearchFieldStyle" label="Product Line" aura:id="Product_Line__c" name="Product_Line__c" onchange="{!c.addFilters}">
+                    <OPTION VALUE="--All--">--All--</OPTION>
+               		<aura:if isTrue="{!v.SelectedSubTab=='tab-SERVICES-FH'}">
+						<OPTION VALUE="FH - Joints">FH - Joints</OPTION>
+						<OPTION VALUE="FH - Syphons">FH - Syphons</OPTION>
+						<OPTION VALUE="FH - Spare Parts">FH - Spare Parts</OPTION>
+						<OPTION VALUE="Jet devices">Jet devices</OPTION>
+						<OPTION VALUE="Steam systems">Steam Systems</OPTION>
+						<OPTION VALUE="FH - Service and Installation">FH - Service and Installation</OPTION>
+						<OPTION VALUE="FH - Repairs">FH - Repairs/Returns</OPTION>
+						<OPTION VALUE="FH - Turbulator bars">FH - Turbulator Bars</OPTION>
+                    </aura:if>
+                    <aura:if isTrue="{!v.SelectedSubTab=='tab-SERVICES-DCF'}">
+						<OPTION VALUE="Blades">Blades</OPTION>
+						<OPTION VALUE="Doctoring systems">Doctoring systems</OPTION>
+						<OPTION VALUE="Holders">Holders</OPTION>
+						<OPTION VALUE="Doctor spare parts">Doctor spare parts</OPTION>
+						<OPTION VALUE="Filtration">Filtration</OPTION>
+						<OPTION VALUE="Shower">Showers</OPTION>
+						<OPTION VALUE="Formation">Formation</OPTION>
+						<OPTION VALUE="Water Management Parts">Water management parts</OPTION>
+						<OPTION VALUE="DCF Installation">DCF Service and Installation (excl. M-Clean)</OPTION>
+						<OPTION VALUE="DCF Repairs">DCF Repairs (excl. M-Clean)</OPTION>
+						<OPTION VALUE="M-Clean">M-Clean Systems</OPTION>
+						<OPTION VALUE="M-Clean Spare Parts">M-Clean Spare Parts</OPTION>
+						<OPTION VALUE="M-Clean Service">M-Clean Service</OPTION>
+						<OPTION VALUE="M-Clean Repairs">M-Clean Repairs</OPTION>
+                    </aura:if>
+            </lightning:select>
+        </lightning:tab>
+    	<aura:if isTrue="{!v.showExtendedTabset}">
+        <lightning:tab class="MainTab" label="JOINTS" id="tab-JOINTS">
+			<table  cellpadding="0" cellspacing="0">
+            <tr style="vertical-align:bottom;">
+               <td><lightning:select label="Type" aura:id="ProductCode" name="ProductCode" onchange="{!c.addFilters}">
+                 	<OPTION VALUE="--All--">--All--</OPTION>
+					<OPTION VALUE="RJ - 5000">RJ - 5000</OPTION>
+					<OPTION VALUE="RJ - 7000">RJ - 7000</OPTION>
+					<OPTION VALUE="RJ - BCI">RJ - BCI</OPTION>
+					<OPTION VALUE="RJ - BCIM">RJ - BCIM</OPTION>
+					<OPTION VALUE="RJ - BS">RJ - BS</OPTION>
+					<OPTION VALUE="RJ - CCAST">RJ - CCAST</OPTION>
+					<OPTION VALUE="RJ - ELS">RJ - ELS</OPTION>
+					<OPTION VALUE="RJ - ELSN">RJ - ELSN</OPTION>
+					<OPTION VALUE="RJ - G">RJ - G</OPTION>
+					<OPTION VALUE="RJ - GM">RJ - GM</OPTION>
+					<OPTION VALUE="RJ - IC">RJ - IC</OPTION>
+					<OPTION VALUE="RJ - LJ">RJ - LJ</OPTION>
+					<OPTION VALUE="RJ - LN">RJ - LN</OPTION>
+					<OPTION VALUE="RJ - MP">RJ - MP</OPTION>
+					<OPTION VALUE="RJ - OTS">RJ - OTS</OPTION>
+					<OPTION VALUE="RJ - PT">RJ - PT</OPTION>
+                    <OPTION VALUE="RJ - R">RJ - R</OPTION>
+					<OPTION VALUE="RJ - RX">RJ - RX</OPTION>
+					<OPTION VALUE="RJ - S">RJ - S</OPTION>
+					<OPTION VALUE="RJ - SN">RJ - SN</OPTION>
+                   	<OPTION VALUE="RJ - SX">RJ - SX</OPTION>
+					<OPTION VALUE="RJ - V">RJ - V</OPTION>
+					<OPTION VALUE="RJ - WH">RJ - WH</OPTION>
+					<OPTION VALUE="RJ - WR">RJ - WR</OPTION>
+					<OPTION VALUE="RJ - X">RJ - X</OPTION>
+					<OPTION VALUE="RJ - Z">RJ - Z</OPTION>
+            		</lightning:select></td>
+                
+            	<td><lightning:select label="Media" aura:id="Joint_Media__c" name="Joint_Media__c" onchange="{!c.addFilters}">
+                	<OPTION VALUE="--All--">--All--</OPTION>
+                    <OPTION VALUE="Air">Air</OPTION>
+                	<OPTION VALUE="Oil">Oil</OPTION>
+                	<OPTION VALUE="Oil / Air">Oil / Air</OPTION>
+                	<OPTION VALUE="Oil/Water/Glycol/Nitrogen">Oil/Water/Glycol/Nitrogen</OPTION>
+                	<OPTION VALUE="Steam">Steam</OPTION>
+                	<OPTION VALUE="Water">Water</OPTION>
+                	<OPTION VALUE="Water &lt; 110C">Water &lt; 110C</OPTION>
+                	<OPTION VALUE="Water &gt; 110C">Water &gt; 110C</OPTION>
+                	<OPTION VALUE="Water/air/steam">Water/air/steam</OPTION>
+                	</lightning:select></td>
+                
+                <td><lightning:select label="Seal Material" aura:id="Joint_Seal_Material__c" name="Joint_Seal_Material__c" onchange="{!c.addFilters}">
+                	<OPTION VALUE="--All--">--All--</OPTION>
+                	<OPTION VALUE="A6">A6</OPTION>
+                    <OPTION VALUE="Antimony">Antimony</OPTION>
+                	<OPTION VALUE="B3">B3</OPTION>
+                	<OPTION VALUE="B4">B4</OPTION>
+                	<OPTION VALUE="Banded G.S.">Banded G.S.</OPTION>
+                	<OPTION VALUE="Banded Silver Streak">Banded Silver Streak</OPTION>
+                	<OPTION VALUE="Bronze">Bronze</OPTION>
+                	<OPTION VALUE="C3">C3</OPTION>
+                	<OPTION VALUE="Carbon Graphite">Carbon Graphite</OPTION>
+                	<OPTION VALUE="Green Streak">Green Streak</OPTION>
+                	<OPTION VALUE="K22/K22">K22/K22</OPTION>
+                	<OPTION VALUE="K22/Z11">K22/Z11</OPTION>
+                	<OPTION VALUE="K22/Z12">K22/Z12</OPTION>
+                	<OPTION VALUE="M4">M4</OPTION>
+                	<OPTION VALUE="Other">Other</OPTION>
+                	<OPTION VALUE="Q5/B">Q5/B</OPTION>
+                	<OPTION VALUE="Q5/Z11">Q5/Z11</OPTION>
+                	<OPTION VALUE="Silicon Carbide">Silicon Carbide</OPTION>
+                	<OPTION VALUE="Silver Streak">Silver Streak</OPTION>
+                	<OPTION VALUE="T4">T4</OPTION>
+                	<OPTION VALUE="Z12/U31">Z12/U31</OPTION>
+                	<OPTION VALUE="Z12/U41">Z12/U41</OPTION>
+                	<OPTION VALUE="Z12/Y1"></OPTION>
+                	</lightning:select></td>
+            
+            	<td><lightning:select label="Flow" aura:id="Joint_Flow__c" name="Joint_Flow__c" onchange="{!c.addFilters}">
+                	<aura:iteration items="{!v.PicklistValueCollection}" var="option">
+                    <aura:if isTrue="{!option.key=='Joint_Flow__c'}"><option value="{!option.label}">{!option.label}</option></aura:if>
+        			</aura:iteration>
+                	</lightning:select></td>
+                
+                <td><ui:inputText class="SearchInput" label="Nip.Size" labelClass="uiLabel-top" required="false" aura:id="Joint_Nipple_Size__c" keyup="{!c.addFiltersFromInput}" updateOn="keyup"/></td>
+                <td><ui:inputText class="SearchInput" label="M-Size" labelClass="uiLabel-top" required="false" aura:id="Joint_M_Size__c" keyup="{!c.addFiltersFromInput}" updateOn="keyup"/></td>
+                <td><ui:inputText class="SearchInput" label="P-Size" labelClass="uiLabel-top" required="false" aura:id="Joint_P_Size__c" keyup="{!c.addFiltersFromInput}" updateOn="keyup"/></td>
+                <td><ui:inputText class="SearchInput" label="S-Size" labelClass="uiLabel-top" required="false" aura:id="Joint_S_Size__c" keyup="{!c.addFiltersFromInput}" updateOn="keyup"/></td>
+                <td><ui:inputText class="SearchInput" label="N-Size" labelClass="uiLabel-top" required="false" aura:id="Joint_N_Size__c" keyup="{!c.addFiltersFromInput}" updateOn="keyup"/></td>
+                <td><ui:inputText class="SearchInput" label="O-Size" labelClass="uiLabel-top" required="false" aura:id="Joint_O_Size__c" keyup="{!c.addFiltersFromInput}" updateOn="keyup"/></td>
+			</tr>
+            </table>
+        </lightning:tab>
+    
+        <lightning:tab class="MainTab" label="SYPHONS" id="tab-SYPHONS">
+            Syphons
+        </lightning:tab>
+    
+    	<lightning:tab class="MainTab" label="DOCTORS" id="tab-DOCTORS">
+            Doctor systems
+		</lightning:tab>
+
+        <lightning:tab class="MainTab" label="PSGE-PARTS" id="tab-PARTS">
+            <lightning:select class="SearchFieldStyle" label="Product type" aura:id="Product_Type__c" name="Product_Type__c" onchange="{!c.addFilters}">
+                <aura:iteration items="{!v.PicklistValueCollection}" var="option">
+                    <aura:if isTrue="{!option.key=='Product_Type__c'}"><option value="{!option.label}">{!option.label}</option></aura:if>
+        		</aura:iteration>
+            </lightning:select>
+            &nbsp;&nbsp;&nbsp;
+                       <lightning:select class="SearchFieldStyle" label="Product code" aura:id="Product_Code_Picklist__c" name="Product_Code_Picklist__c" onchange="{!c.addFilters}">
+                <aura:iteration items="{!v.PicklistValueCollection}" var="option">
+                    <aura:if isTrue="{!option.key=='Product_Code_Picklist__c'}"><option value="{!option.label}">{!option.label}</option></aura:if>
+        		</aura:iteration>
+            </lightning:select>
+            &nbsp;&nbsp;&nbsp;
+
+             <lightning:select class="SearchFieldStyle" label="Location" aura:id="Location__c" name="Location__c" onchange="{!c.addFilters}">
+                <aura:iteration items="{!v.PicklistValueCollection}" var="option">
+                    <aura:if isTrue="{!option.key=='Location__c'}"><option value="{!option.label}">{!option.label}</option></aura:if>
+        		</aura:iteration>
+            </lightning:select>
+        </lightning:tab>
+    
+        <lightning:tab class="MainTab" label="KL-PARTS" id="tab-KLPARTS">
+        			<table  cellpadding="0" cellspacing="0">
+            <tr>
+               <td><lightning:select label="Business line" aura:id="Product_Code_Description__c" name="Product_Code_Description__c" onchange="{!c.addFilters}">
+                 	<OPTION VALUE="--All--">--All--</OPTION>
+					<OPTION VALUE="PL">Process solutions</OPTION>
+					<OPTION VALUE="FL">Fiber processing</OPTION>
+            		</lightning:select>
+                </td>
+              <td>
+               <ui:inputText class="SearchInput" label="Drawing" labelClass="uiLabel-top" required="false" aura:id="Drawing_Number__c" keyup="{!c.addFiltersFromInputTXT}" updateOn="keyup"/>
+			   </td>
+               <td>
+               <ui:inputText class="SearchInput" label="Search Word" labelClass="uiLabel-top" required="false" aura:id="SearchWord__c" keyup="{!c.addFiltersFromInputTXT}" updateOn="keyup"/>
+			   </td>
+            </tr>
+            </table>
+        </lightning:tab>
+    
+        <lightning:tab class="MainTab" label="BLADES" id="tab-BLADES">
+            <table  cellpadding="0" cellspacing="0">
+            <tr>
+            	<td>
+                <lightning:select label="Material" aura:id="BLD_Material__c" name="BLD_Material__c" onchange="{!c.addFilters}">
+                <OPTION VALUE="--All--">--All--</OPTION>
+                <OPTION VALUE="2016-24 MRC">2016-24 MRC</OPTION>
+                <OPTION VALUE="316 St St">316 St St</OPTION>
+                <OPTION VALUE="3D (RD2017-3)">3D (RD2017-3)</OPTION>
+                <OPTION VALUE="Abrasifine">Abrasifine</OPTION>
+                <OPTION VALUE="Abrasilite">Abrasilite</OPTION>
+                <OPTION VALUE="Abrasitek">Abrasitek</OPTION>
+                <OPTION VALUE="Abrasitek Y">Abrasitek Y</OPTION>
+                <OPTION VALUE="Airset B">Airset B</OPTION>
+                <OPTION VALUE="Airset B Poly">Airset B Poly</OPTION>
+                <OPTION VALUE="Biovick">Biovick</OPTION>
+                <OPTION VALUE="Biovick Super">Biovick Super</OPTION>
+                <OPTION VALUE="Black Epoflex">Black Epoflex</OPTION>
+                <OPTION VALUE="Black Neoprene">Black Neoprene</OPTION>
+                <OPTION VALUE="Bronze">Bronze</OPTION>
+                <OPTION VALUE="Bronzeflex">Bronzeflex</OPTION>
+                <OPTION VALUE="Bronze Non-Stick Coated">Bronze Non-Stick Coated</OPTION>
+                <OPTION VALUE="Carboflex">Carboflex</OPTION>
+                <OPTION VALUE="Carbon Steel">Carbon Steel</OPTION>
+                <OPTION VALUE="Carbon Steel (1.2067 Grade)">Carbon Steel (1.2067 Grade)</OPTION>
+                <OPTION VALUE="Carbon Steel Creping">Carbon Steel Creping</OPTION>
+                <OPTION VALUE="Carbon Steel Teflon Coated">Carbon Steel Teflon Coated</OPTION>
+                <OPTION VALUE="Carbotek">Carbotek</OPTION>
+                <OPTION VALUE="Carbotek 100">Carbotek 100</OPTION>
+                <OPTION VALUE="Carbotek 100A">Carbotek 100A</OPTION>
+                <OPTION VALUE="Carbotek 100HT">Carbotek 100HT</OPTION>
+                <OPTION VALUE="Carbotek 100L">Carbotek 100L</OPTION>
+                <OPTION VALUE="Carbotek 21">Carbotek 21</OPTION>
+                <OPTION VALUE="Carbotek 4">Carbotek 4</OPTION>
+                <OPTION VALUE="Carbotek 4HT">Carbotek 4HT</OPTION>
+                <OPTION VALUE="Carbotek 4 HT">Carbotek 4 HT</OPTION>
+                <OPTION VALUE="Carbovick">Carbovick</OPTION>
+                <OPTION VALUE="Carbovik">Carbovik</OPTION>
+                <OPTION VALUE="Celotek">Celotek</OPTION>
+                <OPTION VALUE="CeraEdge Creping Ceramic">CeraEdge Creping Ceramic</OPTION>
+                <OPTION VALUE="CeraEdge Creping Ceramic Blade">CeraEdge Creping Ceramic Blade</OPTION>
+                <OPTION VALUE="Cleantek">Cleantek</OPTION>
+                <OPTION VALUE="Cleantek S">Cleantek S</OPTION>
+                <OPTION VALUE="Dritek Bronze">Dritek Bronze</OPTION>
+                <OPTION VALUE="Dritek C">Dritek C</OPTION>
+                <OPTION VALUE="Dritek Steel">Dritek Steel</OPTION>
+                <OPTION VALUE="Epoflex">Epoflex</OPTION>
+                <OPTION VALUE="Fiberflex">Fiberflex</OPTION>
+                <OPTION VALUE="Grafgrit">Grafgrit</OPTION>
+                <OPTION VALUE="Grafgrit 200">Grafgrit 200</OPTION>
+                <OPTION VALUE="Grafgrit Fine">Grafgrit Fine</OPTION>
+                <OPTION VALUE="Graflex">Graflex</OPTION>
+                <OPTION VALUE="Graftek">Graftek</OPTION>
+                <OPTION VALUE="GrafTek Doctor Blade">GrafTek Doctor Blade</OPTION>
+                <OPTION VALUE="HCRSS">HCRSS</OPTION>
+                <OPTION VALUE="HCRSS Backing Blade">HCRSS Backing Blade</OPTION>
+                <OPTION VALUE="HDP">HDP</OPTION>
+                <OPTION VALUE="HDP Doctor Blade">HDP Doctor Blade</OPTION>
+                <OPTION VALUE="HT Grafgrit">HT Grafgrit</OPTION>
+                <OPTION VALUE="HTSS">HTSS</OPTION>
+                <OPTION VALUE="Kleenslip">Kleenslip</OPTION>
+                <OPTION VALUE="Lamflex">Lamflex</OPTION>
+                <OPTION VALUE="Lexan">Lexan</OPTION>
+                <OPTION VALUE="Lexan Wiper Blade">Lexan Wiper Blade</OPTION>
+                <OPTION VALUE="Monel">Monel</OPTION>
+                <OPTION VALUE="MRC RD2017-2">MRC RD2017-2</OPTION>
+                <OPTION VALUE="MultiTek">MultiTek</OPTION>
+                <OPTION VALUE="MultiTek C">MultiTek C</OPTION>
+                <OPTION VALUE="MultiTek Plus">MultiTek Plus</OPTION>
+                <OPTION VALUE="nClean">nClean</OPTION>
+                <OPTION VALUE="nClean with Plustek Backing Blade">nClean with Plustek Backing Blade</OPTION>
+                <OPTION VALUE="nDure">nDure</OPTION>
+                <OPTION VALUE="nForce">nForce</OPTION>
+                <OPTION VALUE="nForce (RD2017-2)">nForce (RD2017-2)</OPTION>
+                <OPTION VALUE="nForce RD2017-2">nForce RD2017-2</OPTION>
+                <OPTION VALUE="Non-Stick Bronze">Non-Stick Bronze</OPTION>
+                <OPTION VALUE="Non-Stick Carbon Steel">Non-Stick Carbon Steel</OPTION>
+                <OPTION VALUE="Non-Stick ProClean">Non-Stick ProClean</OPTION>
+                <OPTION VALUE="Non stick Proflake">Non stick Proflake</OPTION>
+                <OPTION VALUE="nRepel">nRepel</OPTION>
+                <OPTION VALUE="nSlip">nSlip</OPTION>
+                <OPTION VALUE="nTek">nTek</OPTION>
+                <OPTION VALUE="nTek with PlusTek B/Blade">nTek with PlusTek B/Blade</OPTION>
+                <OPTION VALUE="Nyflex">Nyflex</OPTION>
+                <OPTION VALUE="Nylon 66 Natural">Nylon 66 Natural</OPTION>
+                <OPTION VALUE="PE 1000 Natural">PE 1000 Natural</OPTION>
+                <OPTION VALUE="PEEK">PEEK</OPTION>
+                <OPTION VALUE="PET-P Natural">PET-P Natural</OPTION>
+                <OPTION VALUE="Phosphur Bronze">Phosphur Bronze</OPTION>
+                <OPTION VALUE="PlusTek">PlusTek</OPTION>
+                <OPTION VALUE="PlusTek C">PlusTek C</OPTION>
+                <OPTION VALUE="Poly">Poly</OPTION>
+                <OPTION VALUE="Polyester">Polyester</OPTION>
+                <OPTION VALUE="Polyflex">Polyflex</OPTION>
+                <OPTION VALUE="Presstek CSC">Presstek CSC</OPTION>
+                <OPTION VALUE="Presstek Plus">Presstek Plus</OPTION>
+                <OPTION VALUE="Presstek SSC">Presstek SSC</OPTION>
+                <OPTION VALUE="ProClean">ProClean</OPTION>
+                <OPTION VALUE="ProCrepe">ProCrepe</OPTION>
+                <OPTION VALUE="ProFlake">ProFlake</OPTION>
+                <OPTION VALUE="ProFood T">ProFood T</OPTION>
+                <OPTION VALUE="RnD nForce">RnD nForce</OPTION>
+                <OPTION VALUE="RD20015-6">RD20015-6</OPTION>
+                <OPTION VALUE="RD2010-10">RD2010-10</OPTION>
+                <OPTION VALUE="RD2011-1">RD2011-1</OPTION>
+                <OPTION VALUE="RD2011-10">RD2011-10</OPTION>
+                <OPTION VALUE="RD2011-17">RD2011-17</OPTION>
+                <OPTION VALUE="RD2011-18">RD2011-18</OPTION>
+                <OPTION VALUE="RD2011-19">RD2011-19</OPTION>
+                <OPTION VALUE="RD2013-5 with PlusTek B/Blade">RD2013-5 with PlusTek B/Blade</OPTION>
+                <OPTION VALUE="RD2015-13 Low Energy nClean">RD2015-13 Low Energy nClean</OPTION>
+                <OPTION VALUE="RD2015-14 Low Energy nClean">RD2015-14 Low Energy nClean</OPTION>
+                <OPTION VALUE="RD2015-1 Non Sparking">RD2015-1 Non Sparking</OPTION>
+                <OPTION VALUE="RD2015-28">RD2015-28</OPTION>
+                <OPTION VALUE="RD2015-28 HT nTek">RD2015-28 HT nTek</OPTION>
+                <OPTION VALUE="RD2015-28 Long Life nTek">RD2015-28 Long Life nTek</OPTION>
+                <OPTION VALUE="RD2015-6">RD2015-6</OPTION>
+                <OPTION VALUE="RD2015-6 Black">RD2015-6 Black</OPTION>
+                <OPTION VALUE="RD2015-6 RepelTek">RD2015-6 RepelTek</OPTION>
+                <OPTION VALUE="RD2015-6 Stickie Resistant">RD2015-6 Stickie Resistant</OPTION>
+                <OPTION VALUE="RD2015-6 Stickie Resistant Black">RD2015-6 Stickie Resistant Black</OPTION>
+                <OPTION VALUE="RD2015-6 Stickie Resistant Blade">RD2015-6 Stickie Resistant Blade</OPTION>
+                <OPTION VALUE="RD2015-6 Stickie Resistant Doctor Blade">RD2015-6 Stickie Resistant Doctor Blade</OPTION>
+                <OPTION VALUE="RD2015-6 Stickie Resistant Yellow">RD2015-6 Stickie Resistant Yellow</OPTION>
+                <OPTION VALUE="RD2015-6 Yellow">RD2015-6 Yellow</OPTION>
+                <OPTION VALUE="RD2016-21 Homogeneous Blade">RD2016-21 Homogeneous Blade</OPTION>
+                <OPTION VALUE="RD2016-24">RD2016-24</OPTION>
+                <OPTION VALUE="RD2016-24(SS)">RD2016-24(SS)</OPTION>
+                <OPTION VALUE="RD2016-24 MRC">RD2016-24 MRC</OPTION>
+                <OPTION VALUE="RD2016-24-MRC3">RD2016-24-MRC3</OPTION>
+                <OPTION VALUE="RD2016-25 (Softek Plus)">RD2016-25 (Softek Plus)</OPTION>
+                <OPTION VALUE="RD2016-26">RD2016-26</OPTION>
+                <OPTION VALUE="RD2016-28">RD2016-28</OPTION>
+                <OPTION VALUE="RD2016-3">RD2016-3</OPTION>
+                <OPTION VALUE="RD2016-33">RD2016-33</OPTION>
+                <OPTION VALUE="RD2016-5">RD2016-5</OPTION>
+                <OPTION VALUE="RD2017-1">RD2017-1</OPTION>
+                <OPTION VALUE="RD2017-1 (nForce)">RD2017-1 (nForce)</OPTION>
+                <OPTION VALUE="RD2017-3">RD2017-3</OPTION>
+                <OPTION VALUE="Red Epoflex">Red Epoflex</OPTION>
+                <OPTION VALUE="Regrind Micrex Creping">Regrind Micrex Creping</OPTION>
+                <OPTION VALUE="RepelTek">RepelTek</OPTION>
+                <OPTION VALUE="Softek">Softek</OPTION>
+                <OPTION VALUE="Special Green">Special Green</OPTION>
+                <OPTION VALUE="St.St.">St.St.</OPTION>
+                <OPTION VALUE="St. St.">St. St.</OPTION>
+                <OPTION VALUE="St.St. Backing Blade">St.St. Backing Blade</OPTION>
+                <OPTION VALUE="St.St. Buffer Strip">St.St. Buffer Strip</OPTION>
+                <OPTION VALUE="St.St. Keep Plate">St.St. Keep Plate</OPTION>
+                <OPTION VALUE="St.St. Packer">St.St. Packer</OPTION>
+                <OPTION VALUE="St.St. Pressure Plate">St.St. Pressure Plate</OPTION>
+                <OPTION VALUE="St.St. Step Up Strip">St.St. Step Up Strip</OPTION>
+                <OPTION VALUE="St.St. Step Up Strips">St.St. Step Up Strips</OPTION>
+                <OPTION VALUE="St.St Backing Blade">St.St Backing Blade</OPTION>
+                <OPTION VALUE="Stainlessflex">Stainlessflex</OPTION>
+                <OPTION VALUE="Stainless Steel">Stainless Steel</OPTION>
+                <OPTION VALUE="Stainless Steel 400 Series">Stainless Steel 400 Series</OPTION>
+                <OPTION VALUE="Stainless Steel Creping">Stainless Steel Creping</OPTION>
+                <OPTION VALUE="Stainless Steel Creping Doctor Blade">Stainless Steel Creping Doctor Blade</OPTION>
+                <OPTION VALUE="Steel Creping">Steel Creping</OPTION>
+                <OPTION VALUE="Steelflex">Steelflex</OPTION>
+                <OPTION VALUE="Steelflex Backing Blade">Steelflex Backing Blade</OPTION>
+                <OPTION VALUE="St St">St St</OPTION>
+                <OPTION VALUE="St St Backing Blade">St St Backing Blade</OPTION>
+                <OPTION VALUE="Supervick">Supervick</OPTION>
+                <OPTION VALUE="Syntec 2">Syntec 2</OPTION>
+                <OPTION VALUE="SynTek 2">SynTek 2</OPTION>
+                <OPTION VALUE="SynTek 2 (Orange)">SynTek 2 (Orange)</OPTION>
+                <OPTION VALUE="SynTek 2 Green">SynTek 2 Green</OPTION>
+                <OPTION VALUE="SynTek 2 Orange">SynTek 2 Orange</OPTION>
+                <OPTION VALUE="Syntek2 Plus">Syntek2 Plus</OPTION>
+                <OPTION VALUE="SynTek 2 Plus">SynTek 2 Plus</OPTION>
+                <OPTION VALUE="SynTek 5">SynTek 5</OPTION>
+                <OPTION VALUE="SynTek 5 Green">SynTek 5 Green</OPTION>
+                <OPTION VALUE="SynTek 5 Plus">SynTek 5 Plus</OPTION>
+                <OPTION VALUE="SynTek C">SynTek C</OPTION>
+                <OPTION VALUE="Teflon">Teflon</OPTION>
+                <OPTION VALUE="Teflon Coated Carbon Steel">Teflon Coated Carbon Steel</OPTION>
+                <OPTION VALUE="TemTek">TemTek</OPTION>
+                <OPTION VALUE="UHMWPE">UHMWPE</OPTION>
+                <OPTION VALUE="UHMW PE1000 Natural">UHMW PE1000 Natural</OPTION>
+                <OPTION VALUE="UHMWPE Doctor Blade">UHMWPE Doctor Blade</OPTION>
+                <OPTION VALUE="Ultakleen">Ultakleen</OPTION>
+                <OPTION VALUE="Ultra C">Ultra C</OPTION>
+                <OPTION VALUE="Ultra G">Ultra G</OPTION>
+                <OPTION VALUE="Ultrakleen">Ultrakleen</OPTION>
+                <OPTION VALUE="Ultravick">Ultravick</OPTION>
+                <OPTION VALUE="Ultravick Fine">Ultravick Fine</OPTION>
+                <OPTION VALUE="Ultravick Superfine">Ultravick Superfine</OPTION>
+                <OPTION VALUE="Ultrkleen">Ultrkleen</OPTION>
+                <OPTION VALUE="Uni-Directional Carbon Fibre Top Plate">Uni-Directional Carbon Fibre Top Plate</OPTION>
+                <OPTION VALUE="Uni-Directional Composite Top Plate">Uni-Directional Composite Top Plate</OPTION>
+                <OPTION VALUE="Unitek">Unitek</OPTION>
+                <OPTION VALUE="VeriSlip">VeriSlip</OPTION>
+                <OPTION VALUE="VeriTek">VeriTek</OPTION>
+                <OPTION VALUE="VeriTek DACC Lamella Tip">VeriTek DACC Lamella Tip</OPTION>
+                <OPTION VALUE="VeriTek Doctor Blade with Lamella Tip">VeriTek Doctor Blade with Lamella Tip</OPTION>
+                <OPTION VALUE="White Teflon Blade">White Teflon Blade</OPTION>
+	            </lightning:select></td>
+            
+                <td><ui:inputText label="Width" labelClass="uiLabel-top" required="false" aura:id="BLD_Width__c" keyup="{!c.addFiltersFromInputTXT}" updateOn="keyup"/></td>
+                <td><ui:inputText label="Length" labelClass="uiLabel-top" required="false" aura:id="BLD_Length__c" keyup="{!c.addFiltersFromInputTXT}" updateOn="keyup"/></td>
+                <td><ui:inputText label="Thickness" labelClass="uiLabel-top" required="false" aura:id="BLD_Thickness__c" keyup="{!c.addFiltersFromInputTXT}" updateOn="keyup"/></td>
+                <td><ui:inputText label="Bevel angle" labelClass="uiLabel-top" required="false" aura:id="BLD_Bevel_Angle__c" keyup="{!c.addFiltersFromInputTXT}" updateOn="keyup"/></td>
+            </tr>
+            </table>
+            
+        </lightning:tab>
+    	<!--aura:if isTrue="{!v.DocRecordId=='0Q00z000001qByjCAE'}"-->
+            
+        <lightning:tab class="MainTab" label="CPQ" id="tab-CPQ" >
+      
+            <lightning:tabset class="SubTabs" selectedTabId="{!v.SelectedCPQTab}" onselect="{!c.switchSubTab}">
+ 
+                <lightning:tab class="MainTab" label="BLADE CPQ" id="tab-CPQ-BLADE">
+
+                <lightning:accordion aura:id="accordionBLD" activeSectionName="A">
+			
+        		<lightning:accordionSection label="Configure new blade" name="A" class="AccordionSection">
+                
+               <table><tr>
+                   
+                <td class="BLDconfig">
+                <lightning:select label="Blade Material" aura:id="BldCFGmaterialList" name="BldCFGmaterialList" onchange="{!c.configBlade}">
+                    <OPTION VALUE="--Choose--">--Not selected--</OPTION>
+                    <aura:iteration items="{!v.BladeMaterialsList}" var="item">
+                        <OPTION VALUE="{!item.key}">{!item.value}</OPTION>
+                    </aura:iteration>
+            	</lightning:select> 
+                
+            	<lightning:select label="Blade Width" aura:id="BldCFGwidthList" name="BldCFGwidthList" onchange="{!c.configBlade}">
+                    <OPTION VALUE="--Choose--">--Not selected--</OPTION>
+                    <aura:iteration items="{!v.BladeWidthList}" var="item">                       
+                        	<OPTION VALUE="{!item.key}">{!item.value}</OPTION>
+                    </aura:iteration>
+            	</lightning:select>
+                
+                <lightning:select label="Blade Thickness" aura:id="BldCFGthicknessList" name="BldCFGthicknessList" onchange="{!c.configBlade}">
+                    <OPTION VALUE="--Choose--">--Not selected--</OPTION>
+                    <aura:iteration items="{!v.BladeThicknessList}" var="item">                       
+                        	<OPTION VALUE="{!item.key}">{!item.value}</OPTION>
+                    </aura:iteration>
+            	</lightning:select>
+                
+                <ui:inputText label="Length in MM" labelClass="uiLabel-top" required="false" aura:id="BldCFGlengthInput" keyup="{!c.configBlade}" updateOn="keyup" class="SearchInput"/>
+
+                <lightning:select label="Finishing" aura:id="BldFinishingList" name="BldFinishingList" onchange="{!c.configBlade}">
+                    <OPTION VALUE="--Choose--">--Not selected--</OPTION>
+					<OPTION VALUE="Plain">Plain finishing</OPTION>
+                    <aura:if isTrue="{!v.BldConfigMATGROUP!='HDP/Polyflex'}">
+                    	<OPTION VALUE="Full">Full finishing</OPTION>
+                    </aura:if>
+            	</lightning:select>
+                <ui:inputText label="Bevel Angle" labelClass="uiLabel-top" required="false" aura:id="BldCFGbevelList" value="{!v.BldConfigBEVEL}" class="SearchInput" />
+				<ui:inputText label="Selling exchange rate" labelClass="uiLabel-top" required="false" aura:id="BldCFGrateInput" keyup="{!c.configBlade}" updateOn="keyup" value="{!v.BldConfigRATE}" class="SearchInput"/>
+ 
+                </td>
+                <td>&nbsp;</td>
+                        
+            	<td class="BLDconfig">
+            	<h2><b>SPECIFICATIONS</b></h2>
+            	<p>Material = {!v.BldConfigMAT}</p>
+            	<p>Width = {!v.BldConfigWIDTH}</p>
+            	<p>Thickness = {!v.BldConfigTHICK}</p>
+            	<p>Bevel angle = {!v.BldConfigBEVEL}</p>
+            	<p>Length = {!v.BldConfigLEN}MM</p>
+                <p>Finishing = {!v.BldConfigSURFIN}</p>
+            	<p>&nbsp;</p>
+            	<h2><b>PRICING</b></h2>
+                <!--p>ICP price = {!v.BldConfigICP} GBP</p>
+                <p>Finishing = {!v.BldConfigSURFINcost} GBP</p>
+                <p>Packing&nbsp;&nbsp;&nbsp;= {!v.BldConfigSURPACKcost} GBP</p-->            
+                <p>Total ICP&nbsp;&nbsp;= {!v.BldLineCOST}&nbsp;{!v.QuoteCurrency}&nbsp;<lightning:helptext
+                 content="{!v.BldConfigLEN+'MM * ('+v.BldConfigICP+' + '+v.BldConfigSURFINcost+' + '+v.BldConfigSURPACKcost+')/1000 * '+v.BldConfigRATECOST+' * 1.25 = '+v.BldLineCOST}"
+    			 /> (p/m = {!v.BldLineCOSTpm})</p>
+               
+                <p>Selling price = {!v.BldLineUP}&nbsp;{!v.QuoteCurrency}&nbsp;<lightning:helptext
+                 content="{!v.BldConfigLEN+'MM * ('+v.BldConfigICP+' + '+v.BldConfigSURFINcost+' + '+v.BldConfigSURPACKcost+')/1000 * 2 * '+v.BldConfigRATE+' = '+v.BldLineUP}"
+                 /> (p/m = {!v.BldLineUPpm})</p>
+                    
+                <p>Sales office margin&nbsp;&nbsp;&nbsp;= {!v.BldLineMARGINPCT}%&nbsp;<lightning:helptext
+                content="{!'(('+v.BldLineUP+' - '+v.BldLineCOST+') / '+v.BldLineUP+') * 100 = '+v.BldLineMARGINPCT+'%'}"
+    			/></p>
+            	
+                <p>&nbsp;</p>
+             	<aura:if isTrue="{!v.BldLineADDED==false}">
+                 	<aura:if isTrue="{!v.BldLineUP==''}">
+            		<p><lightning:button variant="brand" label="Add blade to quote" title="Add blade to quote" disabled="true"/></p>
+            		</aura:if>
+            		<aura:if isTrue="{!v.BldLineUP!=''}">
+            		<p><lightning:button variant="brand" label="Add blade to quote" title="Add blade to quote" onclick="{!c.selectPart}" /></p>
+            		</aura:if>
+            	</aura:if>
+            	<aura:if isTrue="{!v.BldLineADDED==true}">
+            		<p><lightning:button variant="brand" label="Remove blade from quote" title="{!v.BldLineID}" onclick="{!c.deselectPart}" /></p>
+            	</aura:if>
+                    
+            	</td>
+                </tr></table>
+                  
+                </lightning:accordionSection>
+
+                <lightning:accordionSection label="Most recent orders in selling country in price P/M" name="B">
+                		<p><b>SELECTED SPECS:</b>&nbsp;&nbsp;&nbsp;Material: {!v.BldConfigMAT}&nbsp;&nbsp;|&nbsp;&nbsp;Width: {!v.BldConfigWIDTH}&nbsp;&nbsp;|&nbsp;&nbsp;Thickness: {!v.BldConfigTHICK}</p>
+                		<p>&nbsp;</p>
+                    	<table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                        <thead>
+                        <tr>
+                        	<th>Ordered</th>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Part</th>
+                            <th>Qty</th>
+                            <th>Length</th>
+                            <th>Country</th>
+                            <th>UP</th>
+                            <th>UP p/m</th>
+                            <th>Cur</th>
+                        </tr>
+                        </thead>
+                        <tbody  style="min-height:200px;">
+                            <aura:iteration items="{!v.BladePriceCountry}" var="item"> 
+                                <tr>
+                        			<td>{!item[3]}</td>
+                        			<td><lightning:formattedurl value="{!'/lightning/r/ContentDocument/'+item[0]+'/view'}" target="_blank" label= "{!item[4]}" /></td>
+                            		<td>{!item[8]}</td>
+                        			<td>{!item[1]}</td>
+                            		<td>{!item[6]}</td>
+                        			<td>{!item[2]}</td>
+                                    <td>{!item[11]}</td>
+                                    <td><lightning:formattednumber value="{!item[7]}" format-style="decimal" maximumFractionDigits="2" /></td>
+                                	<td><lightning:formattednumber value="{!item[9]}" format-style="decimal" maximumFractionDigits="2" /></td>
+                        			<td>{!item[5]}</td>
+                                </tr>
+                            </aura:iteration>
+                        </tbody>
+                    	</table>
+                    </lightning:accordionSection>
+                    
+                    <lightning:accordionSection label="Most recent orders in all countries in price P/M" name="C">
+                    <p><b>SELECTED SPECS:</b>&nbsp;&nbsp;&nbsp;Material: {!v.BldConfigMAT}&nbsp;&nbsp;|&nbsp;&nbsp;Width: {!v.BldConfigWIDTH}&nbsp;&nbsp;|&nbsp;&nbsp;Thickness: {!v.BldConfigTHICK}</p>
+                        <p>&nbsp;</p>
+                    	<table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                        <thead>
+                        <tr>
+                        	<th>Ordered</th>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Part</th>
+                            <th>Qty</th>
+                            <th>Length</th>
+                            <th>Country</th>
+                            <th>UP</th>
+                            <th>UP p/m</th>
+                            <th>Cur</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <aura:iteration items="{!v.BladePriceAll}" var="item"> 
+                                <tr>
+                        			<td>{!item[3]}</td>
+                        			<td><lightning:formattedurl value="{!'/lightning/r/ContentDocument/'+item[0]+'/view'}" target="_blank" label= "{!item[4]}" /></td>
+                            		<td>{!item[8]}</td>
+                        			<td>{!item[1]}</td>
+                            		<td>{!item[6]}</td>
+                        			<td>{!item[2]}</td>
+                                    <td>{!item[11]}</td>
+                                    <td><lightning:formattednumber value="{!item[7]}" format-style="decimal" maximumFractionDigits="2" /></td>
+                                	<td><lightning:formattednumber value="{!item[9]}" format-style="decimal" maximumFractionDigits="2" /></td>
+                        			<td>{!item[5]}</td>
+                                </tr>
+                            </aura:iteration>
+                        </tbody>
+                    	</table>                        
+           		    </lightning:accordionSection>
+          
+                </lightning:accordion>  
+                </lightning:tab>
+            
+                <lightning:tab class="MainTab" label="HOLDERS CPQ" id="tab-CPQ-HOLDER"></lightning:tab>
+            	</lightning:tabset>
+                    
+        </lightning:tab>
+    	</aura:if>
+        <aura:if isTrue="{!v.quoteRecord[0][1]=='0120z000000UQ3gAAG'}">
+    	<lightning:tab class="MainTab" label="KCD-PARTS" id="tab-KCDPARTS">
+        	<table  cellpadding="0" cellspacing="0">
+            <tr>
+               <td>
+               <ui:inputText class="SearchInput" label="Search Word" labelClass="uiLabel-top" required="false" aura:id="SearchWord__c" keyup="{!c.addFiltersFromInputTXT}" updateOn="keyup"/>
+			   </td>
+            </tr>
+            </table>
+		</lightning:tab>
+    	</aura:if>
+    	<aura:if isTrue="{!v.quoteRecord[0][1]=='0124W0000015fSfQAI'}">
+    	<lightning:tab class="MainTab" label="KSA-PARTS" id="tab-KSAPARTS">
+            KSA parts
+		</lightning:tab>
+    	</aura:if>
+    	<aura:if isTrue="{!v.quoteRecord[0][1]=='0124W0000016T0IQAU'}">
+         <lightning:tab class="MainTab" label="NML-PARTS" id="tab-NMLPARTS">
+            Nicholson Manufacturing parts
+		</lightning:tab>
+    	</aura:if>
+    	<aura:if isTrue="{!v.quoteRecord[0][1]=='0120z000000UQ5wAAG'}">
+         <lightning:tab class="MainTab" label="KJ-PARTS" id="tab-KJPARTS">
+            Kadant Johnson parts
+		</lightning:tab>
+    	</aura:if>
+    	<aura:if isTrue="{!v.quoteRecord.RecordTypeId=='0124W000001AitLQAS'}">
+         <lightning:tab class="MainTab" label="VK-PARTS" id="tab-VKPARTS">
+            ValonKone parts
+		</lightning:tab>
+    	</aura:if>
+</lightning:tabset>
+    
+
+<!--###### MODAL BOX BODY Part Start From Here ######-->
+<aura:if isTrue="{!v.SelectedTab!='tab-CPQ'}">  
+<div class="slds-table--header-fixed_container" style="height:100%;">
+<div class="slds-scrollable" style="height:100%;">
+
+<table class="slds-table slds-table_bordered  slds-table_cell-buffer slds-table--header-fixed">    
+<thead class="kadant-searchresults-head">
+           <tr  style="vertical-align:bottom;">
+                <th><div class="slds-truncate slds-cell-fixed" title="IDsel">&nbsp;</div></th>
+                <th scope="col" style="width: 3rem;"><div class="slds-cell-fixed" title="ID">ID</div><a id="anchor_ScrollTo">&nbsp;</a></th>
+                <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Description">Description</div></th>
+                <!--th scope="col" style="width: 3rem;"><div class="slds-cell-fixed" title="Product Code">Code</div></th-->
+
+                <!--###### DYNAMIC COLUMNS FOR TAB HISTORY ######-->
+				<aura:if isTrue="{!v.SelectedTab=='tab-HISTORY'}">
+                <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Customer part">Customer part</div></th>
+                <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Product Code">Code</div></th>
+                <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Order">Order</div></th>
+                <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Date">Date</div></th>
+                <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Unit price">UP</div></th>
+                
+                	<aura:if isTrue="{!v.SelectedHisTab=='tab-HISTORY-FH'}">
+            		<th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Nipple">Nipp</div></th>
+                	<th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="M-Size">M</div></th>
+                	<th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="P-Size">P</div></th>
+                	<th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="S-Size">S</div></th>
+    				</aura:if>
+                    
+        			<aura:if isTrue="{!v.SelectedHisTab=='tab-HISTORY-DCF'}">
+                    <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Material">Mat</div></th>
+                	<th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Width">Wid</div></th>
+                	<th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Length">Len</div></th>
+                	<th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Thickness">Thick</div></th>
+                	<th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Bevel">Bev</div></th>            
+    				</aura:if>
+                    
+               	</aura:if>
+               
+                <!--###### DYNAMIC COLUMNS FOR TAB JOINTS ######-->
+				<aura:if isTrue="{!v.SelectedTab=='tab-JOINTS'}">
+                <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Nipple">Nipple</div></th>
+                <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="M-Size">M-Size</div></th>
+                <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="P-Size">P-Size</div></th>
+                <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="S-Size">S-Size</div></th>
+                <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Temp">Temp.</div></th>
+                <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Pressure">Press.</div></th>
+                <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Seal">Seal</div></th>
+                </aura:if>
+
+               	<!--###### DYNAMIC COLUMNS FOR TAB SYPHONS ######-->
+				<aura:if isTrue="{!v.SelectedTab=='tab-SYPHONS'}">
+                <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Product Code">Code</div></th>
+                </aura:if>
+
+                <!--###### DYNAMIC COLUMNS FOR TAB DOCTORS ######-->
+				<aura:if isTrue="{!v.SelectedTab=='tab-DOCTORS'}">
+                <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Product Code">Code</div></th>
+                </aura:if>
+               
+               	<!--###### DYNAMIC COLUMNS FOR TAB PSGE PARTS ######-->
+				<aura:if isTrue="{!v.SelectedTab=='tab-PARTS'}">
+                <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Product Code">Code</div></th>
+   				<th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Drawing No">Drawing</div></th>
+               </aura:if>
+
+               	<!--###### DYNAMIC COLUMNS FOR TAB KL PARTS ######-->
+				<aura:if isTrue="{!v.SelectedTab=='tab-KLPARTS'}">
+                <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Product Code">Code</div></th>
+				<th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Drawing No">Drawing</div></th>
+                </aura:if>
+               
+                <!--###### DYNAMIC COLUMNS FOR TAB KCD PARTS ######-->
+				<aura:if isTrue="{!v.SelectedTab=='tab-KCDPARTS'}">
+                <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="UOM">UOM</div></th>
+                <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Product Code">ProductCode</div></th>
+                </aura:if>
+               	<!--###### DYNAMIC COLUMNS FOR TAB KJ PARTS ######-->
+				<aura:if isTrue="{!v.SelectedTab=='tab-KJPARTS'}">
+                <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Product Code">ProductCode</div></th>
+                </aura:if>
+				<!--###### DYNAMIC COLUMNS FOR TAB BLADES ######-->
+				<aura:if isTrue="{!v.SelectedTab=='tab-BLADES'}">
+                <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Product Code">Code</div></th>
+                <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Width">Width</div></th>
+                <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Length">Length</div></th>
+                <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Thickness">Thickness</div></th>
+                <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Bevel">Bevel</div></th>
+                <th scope="col" style="width: 3rem;"><div class="slds-truncate slds-cell-fixed" title="Material">Material</div></th>
+                </aura:if>     
+         </tr>
+</thead>
+<tbody class="kadant-searchresults-body">
+	<aura:iteration items="{!v.SearchResults}" var="item"> 
+		<tr>
+		<td role="gridcell" tabindex="0" class="slds-text-align_left" style="width: 1.10rem;">              
+            <aura:if isTrue="{!v.SelectedSubTab!='tab-SERVICES-DEV'}">
+        	  <lightning:input class="kadant-checkboxParts-custom" aura:id="checkboxParts" type="checkbox-button" label="{!item[0]}" name="{!item[1]}"  title="1" value="" checked="{!item[23]}" onchange="{!c.selectPart}" size="small" />
+            </aura:if>    
+			<aura:if isTrue="{!v.SelectedSubTab=='tab-SERVICES-DEV'}">
+            <lightning:button iconName="utility:add" iconPosition="left" variant="neutral" aura:id="AddDummyButton"  name="{!item[0]+'-dup'}" title="{!item[1]+'-dup'}"  onclick="{!c.selectDummyPart}"/>
+            </aura:if>
+		</td>
+		<td>
+			<div class="slds-truncate" title="Part Number"><a onclick="{!c.openBomDialog}" id="{!item[0]}" title="{!item[1]}" aura:id="bomassy">{!item[1]}</a>
+                <aura:if isTrue="{!item[22]=='Y'}">
+            	&nbsp;<lightning:icon iconName="utility:success" size="xx-small" alternativeText="Reorder"/>
+            </aura:if>
+				<aura:if isTrue="{!item[19]=='true '}">
+            	&nbsp;<lightning:icon iconName="utility:warning" size="xx-small" alternativeText="Part of Kit! Do not sell separately!"/>Part of Kit! {!item[20]}
+            </aura:if>
+            </div>
+		</td>
+		<td>
+			<div class="slds-truncate" >{!item[2]}</div>
+		</td>
+		<!--td-->
+			<!--div title="Product code">{!item[3]}</div-->
+		<!--/td-->
+        <aura:if isTrue="{!v.SelectedTab=='tab-HISTORY'}">
+            <td><div title="Customer part">{!item[19]}</div></td>
+            <td><div title="Product code">{!item[3]}</div></td>
+        	<td><div title="CO">{!item[4]}</div></td>
+        	<td><div class="slds-truncate" title="CO date">{!item[5]}</div></td>
+        	<td><div class="slds-truncate" title="UP">{!item[6]}</div></td>
+    	
+        	<aura:if isTrue="{!v.SelectedHisTab=='tab-HISTORY-FH'}">
+            <td><div title="Nipp">{!item[10]}</div></td>
+        	<td><div title="M">{!item[7]}</div></td>
+        	<td><div title="P">{!item[8]}</div></td>
+        	<td><div title="S">{!item[9]}</div></td>
+    		</aura:if>
+            
+        	<aura:if isTrue="{!v.SelectedHisTab=='tab-HISTORY-DCF'}">
+            <td><div title="Mat">{!item[15]}</div></td>
+            <td><div title="Wid">{!item[17]}</div></td>
+        	<td><div title="Len">{!item[14]}</div></td>
+        	<td><div title="Thick">{!item[16]}</div></td>
+            <td><div title="Bev">{!item[13]}</div></td>
+    		</aura:if>
+        </aura:if>
+    	<aura:if isTrue="{!v.SelectedTab=='tab-JOINTS'}">
+            <td><div title="Nipp">{!item[17]}</div></td>
+        	<td><div title="M">{!item[4]}</div></td>
+        	<td><div title="P">{!item[5]}</div></td>
+        	<td><div title="S">{!item[6]}</div></td>
+            <td><div title="Temp">{!item[8]}</div></td>
+            <td><div title="Press">{!item[9]}</div></td>
+            <td><div title="Seal">{!item[7]}</div></td>
+    	</aura:if>
+		<aura:if isTrue="{!v.SelectedTab=='tab-SYPHONS'}">
+            <td><div title="Product code">{!item[3]}</div></td>
+        </aura:if>
+        <aura:if isTrue="{!v.SelectedTab=='tab-DOCTORS'}">
+            <td><div title="Product code">{!item[3]}</div></td>
+        </aura:if>
+		<aura:if isTrue="{!v.SelectedTab=='tab-PARTS'}">
+			<td><div title="Product code">{!item[3]}</div></td>
+            <td><div title="Drawing No">{!item[18]}</div></td>
+        </aura:if>
+        <aura:if isTrue="{!v.SelectedTab=='tab-KCDPARTS'}">
+            <td><div title="UOM">{!item[21]}</div></td>
+			<td><div title="Product code">{!item[3]}</div></td>
+        </aura:if>
+   		<aura:if isTrue="{!v.SelectedTab=='tab-KLPARTS'}">
+			<td><div title="Product code">{!item[3]}</div></td>
+            <td><div title="Drawing No">{!item[18]}</div></td>
+        </aura:if>
+    	<aura:if isTrue="{!v.SelectedTab=='tab-BLADES'}">
+            <td><div title="Product code">{!item[3]}</div></td>
+            <td><div title="Width">{!item[16]}</div></td>
+        	<td><div title="Length">{!item[13]}</div></td>
+        	<td><div title="Thickness">{!item[15]}</div></td>
+            <td><div title="Bevel">{!item[11]}</div></td>
+            <td><div title="Material">{!item[14]}</div></td>
+    	</aura:if>        
+		</tr>
+	</aura:iteration>
+    
+</tbody>
+</table>
+ 
+
+    <aura:if isTrue="{!v.ShowBomDialog}">
+        <div style="z-index: 1000; position:relative; left: -200px; top: 200px !important;">  
+  		<div id="bomdialogdiv" class="slds-docked_container">
+    	<section id="bomsection" class="slds-docked-composer slds-grid slds-grid_vertical slds-is-open" role="dialog" aria-labelledby="dialog-heading-id-1" aria-describedby="dialog-content-id-1" >
+      		<header class="slds-docked-composer__header slds-grid slds-shrink-none" aria-live="assertive">
+        	<div class="slds-media slds-media_center slds-no-space">
+          	<div class="slds-media__figure slds-m-right_x-small">
+            	<span class="slds-icon_container">
+                         <lightning:icon iconName="utility:work_order_type" size="xx-small" alternativeText="Reorder"/>
+            	</span>
+          	</div>
+          	<div class="slds-media__body">
+                <h2 class="slds-truncate" id="dialog-heading-id-1" title="Header">Bill of Material: {!v.BomAssembly}</h2>
+          	</div>
+        	</div>
+      		</header>
+      		<div class="slds-docked-composer__body" id="dialog-content-id-1">
+            <div id="bomdiv" class="slds-scrollable">
+			<table class="slds-table slds-table_cell-buffer slds-table_bordered">
+            <thead class="kadant-searchresults-head">
+                <tr>
+                <th>&nbsp;</th>
+                <th>Part</th>
+                <th>Description</th>
+                <th>Qty per</th>
+                <th>Pos dwg</th>
+                </tr>
+            </thead>
+            <tbody class="kadant-searchresults-body">
+                <aura:iteration items="{!v.BomParts}" var="bomitem"> 
+				<tr>
+				<td role="gridcell" tabindex="0" class="slds-text-align_left" style="width: 1.10rem;">              
+        		<lightning:input class="kadant-checkboxParts-custom" aura:id="checkboxParts" type="checkbox-button" label="{!bomitem[0]}" name="{!bomitem[3]}"  title="{!bomitem[2]}" value="" checked="{!bomitem[6]}" onchange="{!c.selectPart}" size="small" />
+				</td>
+				<td><div class="slds-truncate">{!bomitem[3]}</div></td>
+				<td><div class="slds-truncate">{!bomitem[4]}</div></td>
+                <td><div title="Qty per">{!bomitem[2]}</div></td>
+				<td><div title="Product code">{!bomitem[5]}</div></td>
+				</tr>
+				</aura:iteration>
+            </tbody>
+            </table>
+            </div>
+      		</div>
+      		<footer class="slds-docked-composer__footer slds-shrink-none">
+        	<div class="slds-col_bump-left slds-text-align_right">
+          	<button class="slds-button slds-button_brand" onclick="{!c.closeBomDialog}">Close</button>
+        	</div>
+      		</footer>
+    	</section>
+  		</div>
+		</div>
+    </aura:if> 
+   
+
+</div>
+</div>   
+</aura:if>
+    
+          <!--###### MODAL BOX FOOTER Part Start From Here ######-->
+          <div class="slds-modal__footer">
+            <button class="slds-button slds-button--neutral" onclick="{!c.clearSearch}" >Clear</button>
+            <button class="slds-button slds-button--neutral" onclick="{!c.cancelPages}" >Cancel</button>
+            <aura:if isTrue="{!v.ShowQtyWarning}"><button class="slds-button slds-button--brand" onclick="{!c.openPage2}" disabled="true">Next</button><lightning:icon iconName="utility:warning" size="xx-small" alternativeText="Too many lines!"/>Note: Only 35 lines can be added at a time</aura:if>
+            <aura:if isTrue="{!not(v.ShowQtyWarning)}">  <button class="slds-button slds-button--brand" onclick="{!c.openPage2}">Next</button></aura:if>
+          </div>
+        </div>
+      </div>
+      <div class="slds-backdrop slds-backdrop--open"></div>
+      <!--###### MODAL BOX Part END Here ######-->
+    
+    
+</aura:if>
+
+<!--Screen2 Quote line pricing -->   
+<aura:if isTrue="{!v.isOpen2}">
+    <!--###### MODAL BOX Start From Here  slds-modal slds-fade-in-open ######--> 
+<div role="dialog" tabindex="-1" aria-labelledby="header99" class="slds-modal slds-fade-in-open slds-modal_large slds-list-builder" aria-modal="true">
+<div class="slds-modal__container">
+    
+<!-- ###### MODAL BOX HEADER Part Start From Here ######-->
+<div class="slds-modal__header">
+<button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" onclick="{!c.cancelPages}">
+X
+<span class="slds-assistive-text">Close</span>
+</button>
+<h2 id="header99" class="slds-text-heading--medium">Add to quote line</h2>
+</div>
+            
+<div class="slds-modal__content slds-p-around--medium">
+<div class="slds-scrollable slds-grow">
+	<table id="Screen2Table">
+	<thead></thead>
+    <tbody>
+        <aura:iteration items="{!v.QuoteLineList}" var="item"> 
+            <tr>
+                <td><lightning:layoutItem  flexibility="grow"><lightning:input class="xFieldSmall" label="Product" name="{!'prod'+item[0]}" value="{!item[1]}" aura:id="lineProd" /></lightning:layoutItem></td>
+                <td ><lightning:input label="Description" value="{!item[2]}" />
+                <aura:if isTrue="{!item[0]==v.BldLineID}">
+                    <p>Material = {!v.BldConfigMAT}</p>
+            		<p>Width = {!v.BldConfigWIDTH}</p>
+            		<p>Thickness = {!v.BldConfigTHICK}</p>
+            		<p>Bevel angle = {!v.BldConfigBEVEL}</p>
+            		<p>Length = {!v.BldConfigLEN}</p>
+                    <p>Finishing = {!v.BldConfigSURFIN}</p>
+                </aura:if>
+                </td>
+                <td ><lightning:input type="number" label="Qty" name="{!'qty'+item[0]}" value="{!item[5]}" aura:id="lineQty" /></td>
+                                <aura:if isTrue="{!v.quoteRecord[0][1]!='0124W0000015fSfQAI'}"><td ><lightning:input type="number" step="0.01" label="Discount %" name="{!'disc'+item[0]}" value="{!item[6]}" aura:id="lineDisc" /></td></aura:if>
+                <aura:if isTrue="{!v.quoteRecord[0][1]=='0124W0000015fSfQAI'}"><td ><lightning:input type="number" step="0.01" label="Discount %" name="{!'disc'+item[0]}" value="{!item[6]}" aura:id="lineDisc" class="slds-hide" /></td></aura:if>
+                <td >
+                    <aura:if isTrue="{!item[0]!=v.BldLineID}">
+                        <lightning:input type="number" step="0.01" fieldLevelHelp="{!'Price rule applied: '+item[7]}" label="{!'Unit Price'}" name="{!'up'+item[0]}" value="{!item[3]}" aura:id="lineUP" />
+                    </aura:if>
+                    <aura:if isTrue="{!item[0]==v.BldLineID}">
+                    	<lightning:input type="number" step="0.01" label="Unit price" name="{!'up'+item[0]}" value="{!v.BldLineUP}" aura:id="lineUP" />
+                    </aura:if>
+                </td>
+                <td><lightning:input type="text" fieldLevelHelp="{!'Leadtime expressed in: '+v.quoteRecord[0][5]}" label="Leadtime" name="{!'lt'+item[0]}" value="{!item[11]}" aura:id="lineLT" /></td>
+                <td><lightning:input type="text" label="ICP" name="{!'icp'+item[0]}" value="{!item[9]}" aura:id="lineICP" class="slds-hide" /></td>
+                <td><lightning:input type="text" label="PRL" name="{!'prl'+item[0]}" value="{!item[10]}" aura:id="linePRL" class="slds-hide" /></td>
+                <td><aura:if isTrue="{!v.quoteRecord[0][0]=='KSA Quotes'}"><lightning:select label="Natureza de operaçao" aura:id="lineNDO" name="{!'ndo'+item[0]}">
+                    <option value="None">None</option>
+                    <option value="00">Serviço nacional</option>
+                    <option value="s2">Venda (uso próprio) p/conta e ordem</option>
+                    <option value="sa">Venda (uso próprio)</option>
+                    <option value="sb">Venda (ind/rev)</option>
+                    <option value="si">Venda (uso próprio - zfm)</option>
+                    <option value="sw">Venda (ind./rev.) p/conta e ordem p/ind.</option>
+					<option value="tr">Serviços - (exportação)</option>
+                    <option value="tx">Venda p/conta ordem (uso próprio)</option>
+                    <option value="uq">Venda p/conta ordem (ind./rev.)</option>
+                    <option value="vi">Venda (uso próprio) recap</option>
+                    <option value="vs">Complemento de valor</option>
+                    <option value="wf">Venda (ind./rev) susp. pis cofins ipi</option>
+                    <option value="wi">Venda</option>
+                    <option value="wo">Venda (ind/rev) c/ suspensão ipi</option>
+                    <option value="wq">Venda (drawback integrado)</option>
+                    <option value="SG">Venda (exportação)</option>
+                    <option value="VF">Back to Back (saída)</option>
+                    </lightning:select></aura:if>
+                    <aura:if isTrue="{!v.quoteRecord[0][0]!='KSA Quotes'}"><lightning:select label="Natureza de operaçao" aura:id="lineNDO" name="{!'ndo'+item[0]}" class="slds-hide">
+                    <option value="None">None</option>
+                    </lightning:select></aura:if>
+                </td>
+                <td><aura:if isTrue="{!v.quoteRecord[0][1]=='KSA Quotes'}"><lightning:select label="Codigo Serviço" aura:id="lineSCO" name="{!'sco'+item[0]}">
+                    <option value="None">None</option>
+					<OPTION VALUE="07.01">07.01</OPTION>
+					<OPTION VALUE="14.01">14.01</OPTION>
+					<OPTION VALUE="14.02">14.02</OPTION>
+					<OPTION VALUE="14.06">14.06</OPTION>
+                    </lightning:select></aura:if>
+                    <aura:if isTrue="{!v.quoteRecord.RecordType.Name!='KSA Quotes'}"><lightning:select label="Codigo Serviço" aura:id="lineSCO" name="{!'sco'+item[0]}" class="slds-hide">
+                    <option value="None">None</option>
+                    </lightning:select></aura:if>
+                </td>
+            </tr>
+            <tr style="border-bottom:1px solid #d7d7d7;padding:7px;">
+            	<td  colspan="5">
+					<section class="slds-clearfix">
+        			<div class="slds-float--left">
+
+                        <lightning:button class="SectionButton" label="Account pricing" value="{!item[0]}" iconName="utility:chevronright" iconPosition="left" onclick="{! c.expandPriceTool }" aura:id="SectionButton"/>
+                        <aura:iteration items="{!v.QuotePricingList}" var="item2"> 
+                       		<aura:if isTrue="{!item2[0]==item[0]}"><aura:if isTrue="{!item2[1]=='Has content: '}">
+                                <aura:if isTrue="{!item2[5]=='1'}">
+                                &nbsp;<lightning:icon iconName="utility:attach" size="xx-small" alternativeText="HasContent"/>
+                                </aura:if>
+                            </aura:if></aura:if>
+                    	</aura:iteration>
+                        
+        			</div>
+                        
+    				<div style="display:none;" id="{!'sec-'+item[0]}">
+                    <aura:if isTrue="{!item[8]=='false'}">
+                    <table style="border:2px solid #a7a7a7;">
+                    <tr valign="top">
+                    <td><i>Parent agreement:</i></td>
+                    <td><aura:iteration items="{!v.QuotePricingList}" var="item2"> 
+                       	<aura:if isTrue="{!item2[0]==item[0]}"><aura:if isTrue="{!item2[1]=='Parent agreement: '}">{!item2[2]}</aura:if></aura:if>
+                    	</aura:iteration>
+                    </td>
+                    <td><aura:iteration items="{!v.QuotePricingList}" var="item2"> 
+                       	<aura:if isTrue="{!item2[0]==item[0]}"><aura:if isTrue="{!item2[1]=='Parent agreement: '}">{!item2[3]}</aura:if></aura:if>
+                    	</aura:iteration>
+                    </td>                       
+                    <td><aura:iteration items="{!v.QuotePricingList}" var="item2"> 
+                       	<aura:if isTrue="{!item2[0]==item[0]}"><aura:if isTrue="{!item2[1]=='Parent agreement: '}"><lightning:formattedNumber value="{!item2[5]}" style="currency" currencyCode="{!item2[6]}" /></aura:if></aura:if>
+                    	</aura:iteration>
+                    </td>           
+                    </tr>
+                    <tr valign="top">
+                    <td><i>Account agreement:</i></td>
+                    <td><aura:iteration items="{!v.QuotePricingList}" var="item2"> 
+                       	<aura:if isTrue="{!item2[0]==item[0]}"><aura:if isTrue="{!item2[1]=='Account agreement: '}">{!item2[2]}</aura:if></aura:if>
+                    	</aura:iteration>
+                    </td>
+                    <td><aura:iteration items="{!v.QuotePricingList}" var="item2"> 
+                       	<aura:if isTrue="{!item2[0]==item[0]}"><aura:if isTrue="{!item2[1]=='Account agreement: '}">{!item2[3]}</aura:if></aura:if>
+                    	</aura:iteration>
+                    </td>                       
+                    <td><aura:iteration items="{!v.QuotePricingList}" var="item2"> 
+                       	<aura:if isTrue="{!item2[0]==item[0]}"><aura:if isTrue="{!item2[1]=='Account agreement: '}"><lightning:formattedNumber value="{!item2[5]}" style="currency" currencyCode="{!item2[6]}" /></aura:if></aura:if>
+                    	</aura:iteration>
+                    </td>           
+                    </tr>  
+                    <tr valign="top">
+                    	<td colspan="4"><i>Account order history:</i></td>   
+                    </tr>
+                    <aura:iteration items="{!v.QuotePricingList}" var="item2">
+                    <aura:if isTrue="{!item2[0]==item[0]}"> <aura:if isTrue="{!item2[1]=='Order history: '}">
+                    <tr valign="top">
+                        <td><li>{!item2[2]}</li></td><td>{!item2[3]}</td><td>{!item2[4]}</td><td><lightning:formattedNumber value="{!item2[5]}" style="currency" currencyCode="{!item2[6]}" /></td>
+                    </tr>
+                    </aura:if></aura:if>
+                    </aura:iteration>   
+                    <tr valign="top">
+                    	<td colspan="4"><i>Account quote history:</i></td>   
+                    </tr>
+                    <aura:iteration items="{!v.QuotePricingList}" var="item2">
+                    <aura:if isTrue="{!item2[0]==item[0]}"> <aura:if isTrue="{!item2[1]=='Quote history: '}">
+                    <tr valign="top">
+                        <td><li>{!item2[2]}</li></td><td>{!item2[3]}</td><td>{!item2[4]}</td><td><lightning:formattedNumber value="{!item2[5]}" style="currency" currencyCode="{!item2[6]}" /><aura:if isTrue="{!item2[7]!=' '}">&nbsp;<lightning:formattedurl value="{!'/lightning/r/QuoteLineItem/'+item2[8]+'/view'}" target="_blank" label= "View remark" /></aura:if></td>
+                        
+                    </tr>
+                    </aura:if></aura:if>
+                    </aura:iteration>                        
+                    </table>
+                    </aura:if>
+                    <aura:if isTrue="{!item[8]=='true'}">
+                        <table style="border:2px solid #a7a7a7;">
+                            <tr valign="top">
+                                <td>
+                                    <ul class="slds-list--dotted"><aura:if isTrue="{!item[9]!=null}">
+                                        <li><lightning:formattedurl value="{!'/lightning/r/ContentDocument/'+item[9]+'/view'}" target="_blank" label= "Price information (opens in new tab)" /></li> 
+                                        <!-- <li><lightning:fileCard fileId="'+item[9]+'" description="Sample Description"/></li>-->
+                                        </aura:if>
+                                        <li><lightning:formattedurl value="{!'/lightning/r/'+item[0]+'/related/AttachedContentDocuments/view'}" target="_blank" label= "View all documents for this product (opens in new tab)" /></li>
+                                    </ul>
+                                    
+                                </td>
+                    		</tr>
+                        </table>
+                    </aura:if>
+                        
+    				</div>
+                    </section>
+                </td>
+            </tr>
+   		</aura:iteration>
+        </tbody>
+    </table>
+
+             
+    </div>
+</div>
+<!--###### MODAL BOX BODY Part Start From Here ######-->
+<div class="slds-modal__content slds-p-around--medium">
+<div class="slds-scrollable slds-grow">
+
+</div>
+</div>
+          <!--###### MODAL BOX FOOTER Part Start From Here ######-->
+          <div class="slds-modal__footer">
+            <button class="slds-button slds-button--neutral" onclick="{!c.openPreviousPage}">Back</button>
+            <button class="slds-button slds-button--neutral" onclick="{!c.cancelPages}" >Cancel</button>
+            <button class="slds-button slds-button--brand" onclick="{!c.closePages}" aura:id="SaveButtonid">Save</button>
+          </div>
+        </div>
+      </div>
+      <div class="slds-backdrop slds-backdrop--open"></div>
+      <!--###### MODAL BOX Part END Here ######-->
+    
+</aura:if>
+    
+</aura:component>

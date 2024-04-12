@@ -1,0 +1,51 @@
+<aura:component>
+    <aura:registerEvent name="selected" type="c:eventSelect_EVT"/>
+
+    <aura:attribute name="rule" type="Rule__c"/>
+    <aura:attribute name="timeZone" type="String"/>
+
+    <div class="tabClass slds-col slds-grid" style="padding-left:1%;padding-top:2%;cursor: pointer; background-color:white;width:100% !important;height:100% !important;border-radius:5px;"
+         onclick="{!c.fireApplicationEvent}">
+        <div class="padding Class slds-col slds-wrap slds-grid slds-p -around_small" style="width:100%;height:100%;">
+            <div class="slds-col slds -wrap slds-grid" style="max-width:85%;min-height:90%;">
+                <div class="slds-col slds-wrap slds-grid slds-size_10-of-12 paddingC lass slds-p-top_x-small slds-p-bottom_xx-small" style="width:99%;height:98%;">
+                    <div class="slds-col slds-wrap slds-grid slds-size_1-of-1" style="max-width:99%;max-height:50%;">
+                        <div class="bodyFont slds-col slds -wrap" style="font-weight:600; max-width:100%;max-height:50%;">
+                        	{!v.rule.RuleLongNm__c}
+                        </div>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-p- around_x-small" >
+                    </div>
+                    <div class="slds-col slds-wrap slds-grid slds-size_5-of-12 bodyFont2" style="max-width:98%;max-height:50%;">
+                        <aura:if isTrue="{!v.rule.AlertStatus__c == 'ACTIVE' }">
+                            Active Since:
+                            <aura:set attribute="else">
+                                Last Alarm:
+                            </aura:set>
+                        </aura:if>
+                    </div>
+                    <div class="slds-col slds-wrap slds-grid slds-size_7-of-12 bodyFont2" style="font-weight:600;max-width:99%;max-height:50%;">
+                        <aura:if isTrue="{!v.rule.AlertAlarmDtTm__c == null }">
+                            <aura:set attribute="else">
+                                <ui:outputDateTime value="{!v.rule.AlertAlarmDtTm__c}" timezone="{!v.timeZone}" format="MMM d, HH:mm"/>
+                            </aura:set>
+                            (Blank)
+                        </aura:if>
+                    </div>
+                </div>
+                <div class="slds-col slds-wrap slds-grid slds-size_2-of-12" style="margin-left:2px;max-width:99%;max-height:50%;">
+                    <div class="slds-size_1-of-1 slds-p-top_large slds-align _absolute-center" style="he ight:190px;">
+                        <aura:if isTrue="{!v.rule.AlertStatus__c == 'ACTIVE' }">
+                            <img src="{!$Resource.Alert_Logo}" width="30"/>
+                            <aura:set attribute="else">
+                                <aura:if isTrue="{!v.rule.AlertLastActiveDtTm__c != null }">
+                                    <img src="{!$Resource.Information_Logo}" width="30"/>
+                                </aura:if>
+                            </aura:set>
+                        </aura:if>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</aura:component>

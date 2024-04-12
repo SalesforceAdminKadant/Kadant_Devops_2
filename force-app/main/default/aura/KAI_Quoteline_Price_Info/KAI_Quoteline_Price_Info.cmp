@@ -1,0 +1,79 @@
+<aura:component  access="global" implements="force:hasRecordId,force:hasSObjectName,force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader"  controller="KAI_Search_Products_Engine">
+	<aura:attribute name="DocRecordId" type="String" default="{!v.recordId}"/>
+	<aura:attribute name="DocObjectName" type="String" default="{!v.sObjectName}"/> 
+  
+    <aura:attribute name="simpleRecord" type="QuoteLineItem" />
+	<force:recordData aura:id="recordLoader"
+        layoutType="FULL"
+  		recordId="{!v.recordId}"
+  		targetFields="{!v.simpleRecord}"
+  		targetError="{!v.recordError}"
+  		recordUpdated="{!c.init}"
+  	/>
+        
+    <aura:attribute name="DocParentRecordId" type="String" default=""/>
+    <aura:attribute name="DocProductId" type="String" default=""/>
+    <aura:attribute name="DocProductLP" type="Decimal" default=""/>
+    <aura:attribute name="QuotePricingList" type="String" />
+    <aura:attribute name="SelectedPartListContainer" type="Map" default="{}"/>
+
+    <div>
+    <table>
+                    <tr valign="top">
+                    <td colspan="3"><strong><i>Current list price:</i></strong></td>
+                    <td><lightning:formattedNumber value="{!v.DocProductLP}" style="currency" currencyCode="EUR" /></td>  
+        			</tr>
+        			<tr valign="top">
+                    <td><strong><i>Parent agreement:</i></strong></td>
+                    <td><aura:iteration items="{!v.QuotePricingList}" var="item2"> 
+                       	<aura:if isTrue="{!item2[1]=='Parent agreement: '}">{!item2[2]}</aura:if>
+                        </aura:iteration>
+                    </td>
+                    <td><aura:iteration items="{!v.QuotePricingList}" var="item2"> 
+                       	<aura:if isTrue="{!item2[1]=='Parent agreement: '}">{!item2[3]}</aura:if>
+                    	</aura:iteration>
+                    </td>                       
+                    <td><aura:iteration items="{!v.QuotePricingList}" var="item2"> 
+                       	<aura:if isTrue="{!item2[1]=='Parent agreement: '}"><lightning:formattedNumber value="{!item2[5]}" style="currency" currencyCode="{!item2[6]}" /></aura:if>
+                    	</aura:iteration>
+                    </td>           
+                    </tr>
+                    <tr valign="top">
+                    <td><strong><i>Account agreement:</i></strong></td>
+                    <td><aura:iteration items="{!v.QuotePricingList}" var="item2"> 
+                       	<aura:if isTrue="{!item2[1]=='Account agreement: '}">{!item2[2]}</aura:if>
+                    	</aura:iteration>
+                    </td>
+                    <td><aura:iteration items="{!v.QuotePricingList}" var="item2"> 
+                       	<aura:if isTrue="{!item2[1]=='Account agreement: '}">{!item2[3]}</aura:if>
+                    	</aura:iteration>
+                    </td>                       
+                    <td><aura:iteration items="{!v.QuotePricingList}" var="item2"> 
+                       	<aura:if isTrue="{!item2[1]=='Account agreement: '}"><lightning:formattedNumber value="{!item2[5]}" style="currency" currencyCode="{!item2[6]}" /></aura:if>
+                    	</aura:iteration>
+                    </td>           
+                    </tr>  
+                    <tr valign="top">
+                        <td colspan="4"><strong><i>Account order history:</i></strong></td>   
+                    </tr>
+             <aura:iteration items="{!v.QuotePricingList}" var="item2">
+                    <aura:if isTrue="{!item2[1]=='Order history: '}">
+                    <tr valign="top">
+                        <td><li>{!item2[2]}</li></td><td>{!item2[3]}</td><td>{!item2[4]}</td><td><lightning:formattedNumber value="{!item2[5]}" style="currency" currencyCode="{!item2[6]}" /></td>
+                    </tr>
+                    </aura:if>
+             </aura:iteration>   
+                    <tr valign="top">
+                        <td colspan="4"><strong><i>Account quote history:</i></strong></td>   
+                    </tr>
+             <aura:iteration items="{!v.QuotePricingList}" var="item2">
+                    <aura:if isTrue="{!item2[1]=='Quote history: '}">
+                    <tr valign="top">
+                        <td><li>{!item2[2]}</li></td><td>{!item2[3]}</td><td>{!item2[4]}</td><td><lightning:formattedNumber value="{!item2[5]}" style="currency" currencyCode="{!item2[6]}" /></td>
+                    </tr>
+                    </aura:if>
+             </aura:iteration>                        
+        </table>
+    	</div>
+    
+</aura:component>

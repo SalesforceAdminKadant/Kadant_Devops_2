@@ -1,0 +1,424 @@
+<apex:page standardController="Service_Report__c" extensions="displayServiceReportController" applyBodyTag="false" showHeader="false" title="Service Report" renderAs="pdf">
+<head>
+    <style>
+        .custHeader {
+            font-family: 'Arial Unicode MS'; 
+            font-size: 11pt;
+        }
+        .techHeader {
+            font-family: 'Arial Unicode MS'; 
+            font-size: 15pt;            
+            text-align: right;
+        }
+        .acctHeader {
+            font-weight: bold; 
+            font-family: sans-serif; 
+            font-size: 15pt;            
+            text-align: right;
+        }
+        .objHeader {
+            font-family: sans-serif; 
+            font-size: 10pt;
+            font-weight: bold; 
+            text-align: center;
+        }
+        .objLabel {
+            font-weight: bold; 
+            font-family: sans-serif; 
+            font-size: 11pt;
+        }
+        .objText {
+            font-family: 'Arial Unicode MS'; 
+            font-size: 11pt;
+        } 
+        .yankeeHeader {
+            font-family: 'Arial Unicode MS'; 
+            font-size: 11pt;
+            font-weight: bold; 
+            background-color: #DCDCDC;
+            text-align: center;
+        }        
+        .yankeeTableText {
+            font-family: 'Arial Unicode MS'; 
+            font-size: 11pt;
+            border: 0.5px solid #DCDCDC;
+        } 
+        .openActionHeader {
+            font-family: 'Arial Unicode MS'; 
+            font-size: 10pt;
+            font-weight: bold; 
+            background-color: #DCDCDC;
+            text-align: center;
+        }
+        .openActionTableText {
+            font-family: 'Arial Unicode MS'; 
+            font-size: 9pt;
+            border: 0.5px solid #DCDCDC;
+            border-collapse: collapse;
+        } 
+        .boldMed {
+            font-weight: bold; 
+            font-family: sans-serif; 
+            font-size: 11pt;"
+        }  
+        .logoReg {            
+            font-family: 'Arial Unicode MS'; 
+            font-size: 11pt;
+            padding-left: 4px;
+            padding-bottom: -8px;
+        }  
+        @page { 
+            size: 8.5in 11in;            
+            @bottom-right {
+                content: "Page " counter(page) " of " counter(pages);  
+                font-family: 'Arial Unicode MS'; 
+                font-size: 9pt; 
+            }
+        }
+        .displayDate {
+            font-family: 'Arial Unicode MS'; 
+            font-size: 12pt;
+            text-align: right;
+        }
+        .emptyRow {
+            padding-top: 5px;
+        } 
+        .childDiv{
+            display:inline-block;
+            width:50%;
+            align-content: center;
+        }
+        .tableLeftHeader {
+            font-family: sans-serif; 
+            font-size: 11pt;
+            font-weight: bold; 
+            background-color: #DCDCDC;
+            text-align: left;
+            width: 50%;
+        }
+        .tableRightSide {
+            font-family: sans-serif; 
+            font-size: 11pt;
+            text-align: left;
+            width: 50%;
+        }
+        .tableTopHeader {
+            font-family: sans-serif; 
+            font-size: 11pt;
+            font-weight: bold; 
+            background-color: #DCDCDC;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="headerPage" style="page-break-after: always">
+<table>
+    <tr>
+        <td rowspan="7"><hr style="margin-right:0; width:0.5px; height:170px; border: 0.5px solid rgb(230, 71, 9);" /></td>
+        <td style="padding-bottom: 4px;">
+            <apex:image url="{!$Resource.KadantLogo}" width="159" height="28"/>
+        </td>
+    </tr>
+    <tr><td class="boldMed" style="padding-left: 4px;">KADANT SOLUTIONS DIVISION</td></tr>
+    <tr><td class="logoReg">35 Sword Street</td></tr>
+    <tr><td class="logoReg">Auburn, MA 01501 USA</td></tr>
+    <tr><td class="logoReg">Tel: +1 508-791-8171</td></tr>
+    <tr><td class="logoReg">Fax: +1 508-757-1507</td></tr>
+    <tr><td class="logoReg">www.kadant.com</td></tr>
+</table>
+<p class="techHeader" style="padding-top: 120px;">SERVICE REPORT</p>
+<p class="techHeader">{!machineNumber}</p>
+<p>
+    <hr style="margin-right:0; width: 400px; border: 0.5px solid black;" />
+</p>
+<br />
+<apex:outputPanel rendered="{!showContributors}">
+<div>    
+    <p class="acctHeader">{!accountSite}</p>
+    <p class="techHeader">Prepared by: {!userName}</p>    
+    <p class="techHeader">Contributor(s): {!contributors}</p>
+    <p class="techHeader">Phone: {!userMobile}</p>
+    <p class="techHeader">Email: {!userEmail}</p>
+    <p class="techHeader">Visit date: 
+        <apex:outputText value="{0, date, MMM-dd-YYYY}">
+            <apex:param value="{!visitDate}" />
+        </apex:outputText>    
+    </p>
+</div>
+<br />
+<p>
+    <hr style="width: 100%; border: 0.5px solid black;" />
+</p>
+<p style="font-family: 'Arial Unicode MS'; font-size: 9pt; padding-top: 45px;">
+        &copy;&nbsp;<apex:outputText value="{0,date,yyyy}"><apex:param value="{!today()}" /> </apex:outputText> Kadant Solutions Division. All rights reserved. Confidential and proprietary information of Kadant Solutions
+        Division and provided subject to Terms of Condition of Kadant Solutions Division. This document may not be reproduced or disclosed to third parties without the prior written consent of Kadant Solutions Division.    
+</p>
+</apex:outputPanel>
+<apex:outputPanel rendered="{!hideContributors}">
+<div>    
+    <p class="acctHeader">{!accountSite}</p>
+    <p class="techHeader">Prepared by: {!userName}</p>    
+    <p class="techHeader">Phone: {!userMobile}</p>
+    <p class="techHeader">Email: {!userEmail}</p>
+    <p class="techHeader">Visit date: 
+        <apex:outputText value="{0, date, MMM-dd-YYYY}">
+            <apex:param value="{!visitDate}" />
+        </apex:outputText>    
+    </p>
+</div>
+<br />
+<p>
+    <hr style="width: 100%; border: 0.5px solid black;" />
+</p>
+<p style="font-family: 'Arial Unicode MS'; font-size: 9pt; padding-top: 61px;">
+        &copy;&nbsp;<apex:outputText value="{0,date,yyyy}"><apex:param value="{!today()}" /> </apex:outputText> Kadant Solutions Division. All rights reserved. Confidential and proprietary information of Kadant Solutions
+        Division and provided subject to Terms of Condition of Kadant Solutions Division. This document may not be reproduced or disclosed to third parties without the prior written consent of Kadant Solutions Division.    
+</p>
+</apex:outputPanel>
+</div>
+
+<apex:outputText value="{!caHtmlCode}" escape="false" />
+
+<apex:outputText value="{!htmlCode}" escape="false" />
+
+<p>
+    <span class="objLabel">{!visitObjective}</span><br /><span class="objText">{!objective}</span>
+</p>
+<p class="objLabel">Mill Contact(s)<br /> <span style="font-family: Arial Unicode MS; font-size: 11pt;">{!contactNames}</span></p>
+
+<apex:outputPanel rendered="{!srSummary}">
+    <p>
+        <span class="objLabel">Executive Summary</span><br />
+        <apex:repeat value="{!reportSummary}" var="rsLine">
+            <span style="font-family: Arial Unicode MS; font-size: 11pt;"><apex:outputText value="{!rsLine}" /></span><br />
+        </apex:repeat> 
+    </p>
+</apex:outputPanel>
+
+<apex:repeat value="{!srps}" id="srpRepeat" var="srpItem">
+    <p><span class="boldMed"><apex:outputText value="{!srpItem.sectionName}" escape="false"/>&nbsp;-&nbsp;<apex:outputText value="{!srpItem.sriPosition}" escape="false"/></span></p>
+
+    <apex:outputPanel rendered="{!srpItem.showYankeeGrid}">
+        <table width="100%" style="border-collapse: collapse;">
+            <tr>
+                <td class="yankeeHeader" colspan="2">Blade Setup</td><td>&nbsp;</td><td class="yankeeHeader" colspan="2">Yankee/Doctor Setup</td>
+            </tr>
+            <tr>
+                <td class="yankeeTableText">Blade stick-out</td><td class="yankeeTableText">{!srpItem.bladeStickout}</td><td>&nbsp;</td><td class="yankeeTableText">Yankee construction</td><td class="yankeeTableText">{!srpItem.construction}</td>
+            </tr>
+            <tr>
+                <td class="yankeeTableText">Target blade angle</td><td class="yankeeTableText">{!srpItem.targetBlade}</td><td>&nbsp;</td><td class="yankeeTableText">Yankee Metalized</td><td class="yankeeTableText">{!srpItem.metalized}</td>
+            </tr>
+            <tr>
+                <td class="yankeeTableText">Blade angle - TS</td><td class="yankeeTableText">{!srpItem.bladeAngleTs}</td><td>&nbsp;</td><td class="yankeeTableText">Yankee operating pressure</td><td class="yankeeTableText">{!srpItem.operatingPressure}</td>
+            </tr>
+            <tr>
+                <td class="yankeeTableText">Blade angle - Center</td><td class="yankeeTableText">{!srpItem.bladeAngleCenter}</td><td>&nbsp;</td><td class="yankeeTableText">Yankee setup profile pressure</td><td class="yankeeTableText">{!srpItem.profilePressure}</td>
+            </tr>
+            <tr>
+                <td class="yankeeTableText">Blade angle - DS</td><td class="yankeeTableText">{!srpItem.bladeAngleDs}</td><td>&nbsp;</td><td class="yankeeTableText">Doctor setup stop block pressure</td><td class="yankeeTableText">{!srpItem.stopBlockPressure}</td>
+            </tr>
+            <tr>
+                <td class="yankeeTableText">Blade Level</td><td class="yankeeTableText">{!srpItem.bladeLevel}</td><td>&nbsp;</td><td class="yankeeTableText">Doctor loading pressure (PSI)</td><td class="yankeeTableText">{!srpItem.loadingPressure}</td>
+            </tr>
+            <tr>
+                <td class="yankeeTableText">Design Blade contact from BDC</td><td class="yankeeTableText">{!srpItem.designBlade}</td><td>&nbsp;</td><td class="yankeeTableText">Doctor loading PLI</td><td class="yankeeTableText">{!srpItem.loadingPli}</td>
+            </tr>
+            <tr>
+                <td class="yankeeTableText">Blade contact from BDC</td><td class="yankeeTableText">{!srpItem.bladeContact}</td><td>&nbsp;</td><td class="yankeeTableText">Last Conformatic Tube Change</td><td class="yankeeTableText">{!srpItem.conformatic_change}</td>
+            </tr>
+            <tr>
+                <td class="yankeeTableText">Last Backing Blade Change</td><td class="yankeeTableText">{!srpItem.blade_change}</td><td>&nbsp;</td><td class="yankeeTableText">&nbsp;</td><td class="yankeeTableText">&nbsp;</td>
+            </tr> 
+            <tr><td class="emptyRow"></td></tr>
+        </table>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!srpItem.showMcleanGrid}">
+        <table width="100%">
+            <tr>
+                <td valign="TOP">
+                    <table width="100%" style="border-collapse: collapse;">
+                        <tr>
+                            <td class="yankeeHeader" rowspan="4">Operation information</td>
+                            <td class="yankeeTableText">High pressure water setting, PSI</td>
+                            <td class="yankeeTableText">{!srpItem.high_pressure}</td>
+                        </tr>
+                        <tr>
+                            <td class="yankeeTableText">Vacuum pressure, in Hg</td>
+                            <td class="yankeeTableText">{!srpItem.vac_pressure}</td>
+                        </tr>
+                        <tr>
+                            <td class="yankeeTableText">Cleaning frequency, minutes</td>
+                            <td class="yankeeTableText">{!srpItem.cleaning_freq}</td>
+                        </tr>
+                        <tr>
+                            <td class="yankeeTableText">Cleaning width, inches</td>
+                            <td class="yankeeTableText">{!srpItem.cleaning_width}</td>
+                        </tr>
+                    </table>                    
+                </td>
+                <td></td>
+                <td valign="TOP">
+                    <table height="100%" width="100%" style="border-collapse: collapse;">
+                        <tr><td class="yankeeHeader" colspan="2">Hours of Operation</td></tr>
+                        <tr><td align="left" class="yankeeTableText">Beam</td><td class="yankeeTableText">{!srpItem.beam_total}</td></tr>
+                        <tr><td align="left" class="yankeeTableText">High Pressure Unit</td><td class="yankeeTableText">{!srpItem.hpu}</td></tr>
+                        <tr><td align="left" class="yankeeTableText">Vacuum Blower</td><td class="yankeeTableText">{!srpItem.vac_blower}</td></tr>
+                    </table>                    
+                </td>
+            </tr>
+        </table>
+    </apex:outputPanel>    
+
+    <apex:outputPanel rendered="{!srpItem.showTrialBladeSummary}">
+        <apex:outputText value="{!tbSummaryTable}" escape="false" />
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!srpItem.showTrialBladeConditions}">
+        <apex:outputText value="{!tbMachineTable}" escape="false" />
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!srpItem.hideMcleanGrid}">
+        <apex:repeat value="{!srpItem.stiITems}" id="srpRepeat" var="stiItem">
+            <table width="100%">
+                <tr>
+                    <td width="100%"><span style="font-family: Arial Unicode MS; font-size: 11pt;"><u>{!stiItem.stiTopic}:</u></span>
+                        <apex:repeat value="{!stiItem.stiSummary}" var="cLine">
+                            <span style="font-family: Arial Unicode MS; font-size: 11pt;"><apex:outputText value="{!cLine}" /></span><br />
+                        </apex:repeat>            
+                    </td>
+                </tr>
+                <apex:repeat value="{!stiItem.stiImages}" var="img" id="theRepeat">                
+                    <tr>
+                        <td align="center" width="100%"><apex:image value="{!img.imageUrl}" height="{!stiItem.imageSize}%" width="{!stiItem.imageSize}%"/></td>            
+                    </tr>
+                    <tr>
+                        <td class="objHeader"><apex:outputText value="{!img.captionDescription}"/></td>
+                    </tr>                
+                </apex:repeat>
+                <tr><td class="emptyRow"></td></tr>
+            </table>
+        </apex:repeat>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!srpItem.showMcleanGrid}">
+        <table width="100%">
+            <tr>
+                <td width="100%">
+                    <apex:repeat value="{!srpItem.stiItemsMcleans}" var="mLine">
+                        <table width="100%">
+                            <tr>
+                                <td align="center" class="yankeeHeader">{!mLine.stiTopic}</td>
+                            </tr>                            
+                            <apex:repeat value="{!mLine.mcleanItem}" var="mtop">
+                                <tr>
+                                    <td>
+                                        <span style="font-family: Arial Unicode MS; font-size: 11pt;">{!mtop.stiComponent} - {!mtop.stiInspection}<br /></span>
+                                        <apex:outputPanel rendered="{!mtop.showVisitDate}">
+                                            <span style="font-family: Arial Unicode MS; font-size: 11pt;">Date Last Profiled: <apex:outputText value="{0, date, MMM-dd-YYYY}"><apex:param value="{!mtop.lastDate}" /></apex:outputText> <br /></span>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!mtop.showReplacedDate}">
+                                            <span style="font-family: Arial Unicode MS; font-size: 11pt;">Date Last Replaced: <apex:outputText value="{0, date, MMM-dd-YYYY}"><apex:param value="{!mtop.lastDate}" /></apex:outputText> <br /></span>
+                                        </apex:outputPanel>
+                                    </td>
+                                </tr>
+                                <apex:outputPanel rendered="{!mtop.showMcleanNotes}">
+                                    <tr>
+                                        <td>
+                                            <table width="100%">
+                                                <tr>
+                                                    <td width="50px;">&nbsp;</td>
+                                                    <td width="750px;">
+                                                        <span style="font-family: Arial Unicode MS; font-size: 11pt;">Notes:&nbsp;&nbsp;</span>
+                                                        <apex:repeat value="{!mtop.stiSummary}" var="mLine">
+                                                            <span style="font-family: Arial Unicode MS; font-size: 11pt;"><apex:outputText value="{!mLine}" /></span><br />
+                                                        </apex:repeat>            
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </apex:outputPanel>
+                                <apex:repeat value="{!mtop.stiImages}" var="img" id="theRepeat">                
+                                    <tr>
+                                        <td align="center" width="100%"><apex:image value="{!img.imageUrl}" height="{!mtop.imageSize}%" width="{!mtop.imageSize}%"/></td>            
+                                    </tr>
+                                    <tr>
+                                        <td class="objHeader"><apex:outputText value="{!img.captionDescription}"/></td>
+                                    </tr>                
+                                </apex:repeat>
+                                <tr><td class="emptyRow"></td></tr>
+                            </apex:repeat>
+                        </table>                    
+                    </apex:repeat>                         
+                </td>
+            </tr>
+        </table>
+    </apex:outputPanel>   
+</apex:repeat>
+<apex:outputPanel rendered="{!showOscillatorItems}">
+    <div>
+        <p>
+            <span class="objLabel">Oscillator Repairs</span><br />
+        </p>
+        <p style="{!IF(hasVisitSum, '', 'display: none;')}">
+            <span class="objLabel">Visit Summary: </span><br />
+            <apex:repeat value="{!visitSummary}" var="vLine">
+                <span style="font-family: Arial Unicode MS; font-size: 11pt;"><apex:outputText value="{!vLine}" /></span><br /><br />
+            </apex:repeat>
+        </p>
+    </div>
+    <apex:repeat value="{!orps}" id="orpRepeat" var="orpItem">
+        <table border="1" width="100%" style="border-collapse: collapse;">
+            <tr><td class="tableLeftHeader" style="background-color:#FFEBCD">Product Type</td><td class="tableRightSide" style="background-color:#FFEBCD"><apex:outputText value="{!orpItem.productType}" escape="false"/></td></tr>
+            <tr><td class="tableLeftHeader">Product Serial number</td><td class="tableRightSide"><apex:outputText value="{!orpItem.oscillatorSerialNumber}" escape="false"/></td></tr>
+            <tr><td class="tableLeftHeader">Motor Serial Number</td><td class="tableRightSide"><apex:outputText value="{!orpItem.motorSerialNumber}" escape="false"/></td></tr>
+            <tr><td class="tableLeftHeader">Ball Screw Serial Number</td><td class="tableRightSide"><apex:outputText value="{!orpItem.ballSerialNumber}" escape="false"/></td></tr>
+            <tr><td class="tableLeftHeader">Repair Type</td><td class="tableRightSide"><apex:outputText value="{!orpItem.repairType}" escape="false"/></td></tr>                          
+            <tr><td class="tableTopHeader" colspan="2"><span class="objLabel">Parts Installed</span></td></tr>
+            <tr><td colspan="2">
+                    <apex:repeat value="{!orpItem.repairComponents}" var="cLine">
+                        <span style="font-family: Arial Unicode MS; font-size: 11pt;"><apex:outputText value="{!cLine}" /></span><br /><br />
+                    </apex:repeat>
+                </td>
+            </tr>
+            <tr><td class="tableTopHeader" colspan="2"><span class="objLabel">Comments</span></td></tr>
+            <tr><td colspan="2">
+                <apex:repeat value="{!orpItem.comments}" var="cLine">
+                    <span style="font-family: Arial Unicode MS; font-size: 11pt;"><apex:outputText value="{!cLine}" /></span><br /><br />
+                </apex:repeat>
+            </td>
+            </tr>
+            </table>
+            <br />
+            <table width="100%" style="border-collapse: collapse;">                          
+            <apex:repeat value="{!orpItem.sriImages}" var="img" id="theRepeat">
+            <tr>
+                <td align="center" colspan="3" width="100%"><apex:image value="{!img.imageUrl}" height="{!orpItem.imageSize}%" width="{!orpItem.imageSize}%"/></td>            
+            </tr>
+            <tr>
+                <td class="objHeader" colspan="3"><apex:outputText value="{!img.captionDescription}"/></td>
+            </tr>
+            </apex:repeat>    
+        </table>
+        <br />
+        <hr />
+        <br />
+    </apex:repeat>
+</apex:outputPanel>
+
+<apex:outputPanel rendered="{!srComments}">
+    <p>
+        <span class="objLabel">{!commentsTitle}</span><br />
+        <span style="font-family: Arial Unicode MS; font-size: 11pt;">
+            <apex:repeat value="{!reportComments}" var="rcLine">
+                <span style="font-family: Arial Unicode MS; font-size: 11pt;"><apex:outputText value="{!rcLine}" /></span><br />
+            </apex:repeat>            
+        </span>
+    </p>
+</apex:outputPanel>
+
+</body>
+</apex:page>

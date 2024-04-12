@@ -1,0 +1,174 @@
+<apex:page standardController="Oscillator_Rebuild__c" extensions="DisplayOscillatorRebuildController" applyBodyTag="false" showHeader="false" title="Oscillator Rebuild Report" renderAs="pdf">
+<head>
+    <style>
+        .custHeader {
+            font-family: 'Arial Unicode MS'; 
+            font-size: 11pt;
+        }
+        .techHeader {
+            font-family: 'Arial Unicode MS'; 
+            font-size: 15pt;            
+            text-align: right;
+        }
+        .acctHeader {
+            font-weight: bold; 
+            font-family: sans-serif; 
+            font-size: 15pt;            
+            text-align: right;
+        }
+        .objHeader {
+            font-family: sans-serif; 
+            font-size: 10pt;
+            font-weight: bold; 
+            text-align: center;
+        }
+        .objLabel {
+            font-weight: bold; 
+            font-family: sans-serif; 
+            font-size: 11pt;
+        }
+        .objText {
+            font-family: 'Arial Unicode MS'; 
+            font-size: 11pt;
+        }  
+        .boldMed {
+            font-weight: bold; 
+            font-family: sans-serif; 
+            font-size: 11pt;
+        }  
+        .logoReg {            
+            font-family: 'Arial Unicode MS'; 
+            font-size: 11pt;
+            padding-left: 4px;
+            padding-bottom: -8px;
+        }  
+        @page { 
+            size: 8.5in 11in;            
+            @bottom-right {
+                content: "Page " counter(page) " of " counter(pages);  
+                font-family: 'Arial Unicode MS'; 
+                font-size: 9pt; 
+            }
+        }
+        .displayDate {
+            font-family: 'Arial Unicode MS'; 
+            font-size: 12pt;
+            text-align: right;
+        }       
+        .tableLeftHeader {
+            font-family: sans-serif; 
+            font-size: 11pt;
+            font-weight: bold; 
+            background-color: #DCDCDC;
+            text-align: left;
+            width: 50%;
+        }
+        .tableRightSide {
+            font-family: sans-serif; 
+            font-size: 11pt;
+            text-align: left;
+            width: 50%;
+        }
+        .tableTopHeader {
+            font-family: sans-serif; 
+            font-size: 11pt;
+            font-weight: bold; 
+            background-color: #DCDCDC;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="headerPage" style="page-break-after: always">
+<table>
+    <tr>
+        <td rowspan="7"><hr style="margin-right:0; width:0.5px; height:170px; border: 0.5px solid rgb(230, 71, 9);" /></td>
+        <td style="padding-bottom: 4px;">
+            <apex:image url="{!$Resource.KadantLogo}" width="159" height="28"/>
+        </td>
+    </tr>
+    <tr><td class="boldMed" style="padding-left: 4px;">KADANT SOLUTIONS DIVISION</td></tr>
+    <tr><td class="logoReg">35 Sword Street</td></tr>
+    <tr><td class="logoReg">Auburn, MA 01501 USA</td></tr>
+    <tr><td class="logoReg">Tel: +1 508-791-8171</td></tr>
+    <tr><td class="logoReg">Fax: +1 508-757-1507</td></tr>
+    <tr><td class="logoReg">www.kadant.com</td></tr>
+</table>
+<p class="techHeader" style="padding-top: 120px;">OSCILLATOR REPAIR</p>
+<p class="techHeader">Sales order/RMA: {!soRmaNumber}</p>
+<p>
+    <hr style="margin-right:0; width: 400px; border: 0.5px solid black;" />
+</p>
+<br />
+<div>    
+    <p class="acctHeader">{!accountSite}</p>
+    <p class="techHeader">Prepared by: {!userName}</p>
+    <p class="techHeader">Phone: {!userMobile}</p>
+    <p class="techHeader">Email: {!userEmail}</p>
+    <p class="techHeader">Repair date: 
+        <apex:outputText value="{0, date, MMM-dd-YYYY}">
+            <apex:param value="{!repairDate}" />
+        </apex:outputText>    
+    </p>
+</div>
+<br />
+<p>
+    <hr style="width: 100%; border: 0.5px solid black;" />
+</p>
+<p style="font-family: 'Arial Unicode MS'; font-size: 9pt; padding-top: 91px;">
+        &copy;&nbsp;<apex:outputText value="{0,date,yyyy}"><apex:param value="{!today()}" /> </apex:outputText> Kadant Solutions Division. All rights reserved. Confidential and proprietary information of Kadant Solutions
+        Division and provided subject to Terms of Condition of Kadant Solutions Division. This document may not be reproduced or disclosed to third parties without the prior written consent of Kadant Solutions Division.    
+</p>
+</div>
+<div class="openItems" style="page-break-after: always">
+</div>
+<div>
+    <p>
+        <span class="objLabel">Oscillator Repairs</span><br />
+    </p>
+    <p style="{!IF(hasVisitSum, '', 'display: none;')}">
+        <span class="objLabel">Visit Summary: </span><br />
+        <apex:repeat value="{!visitSummary}" var="vLine">
+            <span style="font-family: Arial Unicode MS; font-size: 11pt;"><apex:outputText value="{!vLine}" /></span><br /><br />
+        </apex:repeat>
+    </p>
+        <apex:repeat value="{!orps}" id="srpRepeat" var="orpItem">
+            <table border="1" width="100%" style="border-collapse: collapse;">
+                <tr><td class="tableLeftHeader" style="background-color:#FFEBCD">Product Type</td><td class="tableRightSide" style="background-color:#FFEBCD"><apex:outputText value="{!orpItem.productType}" escape="false"/></td></tr>
+                <tr><td class="tableLeftHeader">Product Serial number</td><td class="tableRightSide"><apex:outputText value="{!orpItem.oscillatorSerialNumber}" escape="false"/></td></tr>
+                <tr><td class="tableLeftHeader">Motor Serial Number</td><td class="tableRightSide"><apex:outputText value="{!orpItem.motorSerialNumber}" escape="false"/></td></tr>
+                <tr><td class="tableLeftHeader">Ball Screw Serial Number</td><td class="tableRightSide"><apex:outputText value="{!orpItem.ballSerialNumber}" escape="false"/></td></tr>
+                <tr><td class="tableLeftHeader">Repair Type</td><td class="tableRightSide"><apex:outputText value="{!orpItem.repairType}" escape="false"/></td></tr>                          
+                <tr><td class="tableTopHeader" colspan="2"><span class="objLabel">Parts Installed</span></td></tr>
+                <tr><td colspan="2">
+                        <apex:repeat value="{!orpItem.repairComponents}" var="cLine">
+                            <span style="font-family: Arial Unicode MS; font-size: 11pt;"><apex:outputText value="{!cLine}" /></span><br /><br />
+                        </apex:repeat>
+                    </td>
+                </tr>
+                <tr><td class="tableTopHeader" colspan="2"><span class="objLabel">Comments</span></td></tr>
+                <tr><td colspan="2">
+                    <apex:repeat value="{!orpItem.comments}" var="cLine">
+                        <span style="font-family: Arial Unicode MS; font-size: 11pt;"><apex:outputText value="{!cLine}" /></span><br /><br />
+                    </apex:repeat>
+                </td>
+                </tr>
+             </table>
+             <br />
+             <table width="100%" style="border-collapse: collapse;">                          
+                <apex:repeat value="{!orpItem.sriImages}" var="img" id="theRepeat">
+                <tr>
+                    <td align="center" colspan="3" width="100%"><apex:image value="{!img.imageUrl}" height="{!orpItem.imageSize}%" width="{!orpItem.imageSize}%"/></td>            
+                </tr>
+                <tr>
+                    <td class="objHeader" colspan="3"><apex:outputText value="{!img.captionDescription}"/></td>
+                </tr>
+                </apex:repeat>    
+            </table>
+            <br />
+            <hr />
+            <br />
+        </apex:repeat>    
+    </div>
+</body>
+</apex:page>

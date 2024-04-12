@@ -1,0 +1,5 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" access="global" >
+<ltng:require scripts="{!$Resource.kbmax_embed_min}" afterScriptsLoaded="{!c.loadKbMax}" />
+
+	<div id="viewer" style="height: 800px;"></div>
+</aura:component>

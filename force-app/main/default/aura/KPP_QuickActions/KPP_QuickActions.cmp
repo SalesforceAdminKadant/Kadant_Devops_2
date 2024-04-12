@@ -1,0 +1,18 @@
+<aura:component  implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" controller="KPP_Function_Library">
+    <aura:attribute name="DocId" type="String" />
+    <aura:attribute name="CusId" type="String" />
+    <aura:attribute name="Page" type="String" />
+    
+	<aura:handler name="init" value="{!this}" action="{!c.onLoad}"/> 
+   
+    <table><tr><td class="RightScreen">  
+    
+    <lightning:button class="ActionButton" variant="brand" label="Request service" iconName="utility:custom_apps" iconPosition="left" title="Service Request" onclick="{! c.makeCase }"/>
+        <br/><br/>
+    <lightning:button class="ActionButton" variant="brand" label="Report issue&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" iconName="utility:sentiment_negative" iconPosition="left" title="Complaint" onclick="{! c.makeCase }"/>
+        <br/><br/>
+    <lightning:button class="ActionButton" variant="brand" label="New comment&nbsp;&nbsp;&nbsp;" iconName="utility:share_post" iconPosition="left" title="Chat" onclick="{! c.makeComment }"/>
+         <br/><br/>
+    <lightning:button class="ActionButton" variant="brand" label="Upload files&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" iconName="utility:upload" iconPosition="left" title="Upload" onclick="{! c.uploadFiles }"/>   
+    </td></tr></table>
+</aura:component>

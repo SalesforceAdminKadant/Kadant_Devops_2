@@ -1,0 +1,4423 @@
+<apex:page controller="MachineSectionMapControllerReadOnly" showHeader="true" sidebar="false" tabStyle="Account" action="{!Init}">
+
+    <apex:includeLightning />
+
+    <div id="lightning" />
+
+    <apex:includeScript value="{!URLFOR($Resource.jQueryUI, '/jquery-ui-1.12.1.custom/external/jquery/jquery.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.jQueryUI, '/jquery-ui-1.12.1.custom/jquery-ui.js')}" />
+    <script src="/soap/ajax/44.0/connection.js" type="text/javascript"></script>
+    <script src="/canvas/sdk/js/publisher.js" type="text/javascript"></script>
+
+    <apex:outputPanel layout="none" rendered="{!GoJS_Debug = true}">
+        <script type="text/javascript" src="/KadantAccessPortal/resource/0123456789/{!GoJS_Resource}/GoJS/go-debug.js"></script>
+    </apex:outputPanel>
+    <apex:outputPanel layout="none" rendered="{!GoJS_Debug = false}">
+        <script type="text/javascript" src="/KadantAccessPortal/resource/0123456789/{!GoJS_Resource}/GoJS/go.js"></script>
+    </apex:outputPanel>
+
+    <apex:stylesheet value="{!URLFOR($Resource.jQueryUI, '/jquery-ui-1.12.1.custom/jquery-ui.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.FontAwesome, '/font-awesome-4.7.0/css/font-awesome.min.css')}" />
+
+    <style type="text/css">
+        #Creping {
+            transform: rotate(-20deg);
+        }
+
+        img.helpOrb {
+            position: absolute;
+            right: -16px;
+        }
+
+        .inline {
+            display: inline;
+        }
+
+        .floatRight {
+            float: right;
+        }
+
+        .height360 {
+            height: 360px;
+        }
+
+        .initiallyHidden {
+            display: none;
+        }
+
+        .fullWidth {
+            width: 100%;
+        }
+
+        .shiftRight {
+            margin-right: -5px;
+        }
+
+        .valignTop {
+            vertical-align: text-top;
+        }
+
+        #closeDialog, #saveAsDialog {
+            display: none;
+        }
+
+        .ui-menu {
+            width: 150px;
+        }
+
+        #menu {
+            background-color: transparent !important;
+            margin-top: 10px !important;
+            height: 30px;
+            width: 100%;
+            border: 0px;
+            display: none;
+        }
+
+            #menu > li {
+                float: left;
+            }
+
+        .ui-menu-icon {
+            background-color: transparent;
+        }
+
+        .ui-controlgroup-vertical {
+            width: 150px;
+        }       
+
+        span.required::before {
+            content: " ";
+            background-color: #C00;
+            white-space: pre;
+            height: 100%;
+        }
+
+        .requiredInput {
+            position: relative;
+            height: 100%;
+        }
+
+        .requiredBlock {
+            background-color: #C00;
+            position: absolute;
+            left: -4px;
+            width: 3px;
+            top: 1px;
+            bottom: 1px;
+        }
+
+        .topRow {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .topSpacer {
+            margin: 10px;
+        }
+
+        .toolbar > label {
+            margin-left: 1px !important;
+            background-color: transparent !important;
+            color: black !important;
+        }
+
+        .toolbar > .ui-state-active {
+            border-color: #c5c5c5 !important;
+        }
+
+        .ui-accordion-content > div {
+            width: 100% !important;
+        }
+
+        .ui-accordion-content {
+            padding-left: 5px !important;
+            padding-right: 5px !important;
+        }
+
+        .topBox {
+            margin-top: 2px;
+            border-color: rgb(197, 197, 197) !important;
+            border-radius: 3px;
+            border-width: 1px;
+            border-style: solid;
+        }
+
+        .mainBlock {
+            width: 100%;
+            white-space: nowrap;
+        }
+
+        #palette {
+            display: none;
+            width: 15%;
+            display: inline-block;
+            vertical-align: top;
+            overflow-x: auto;
+        }
+
+        #metadataTable {
+            width: 100% !important;
+        }
+
+        #metadataHeader {
+            font-family: Arial,Helvetica,sans-serif;
+        }
+
+        .colLabelTop {
+            width: 25%;
+            text-align: right;
+            vertical-align: top !important;
+            font-family: Arial,Helvetica,sans-serif;
+            padding-right: 12px;
+        }
+
+        .colLabel {
+            width: 25%;
+            text-align: right;
+            vertical-align: middle !important;
+            font-family: Arial,Helvetica,sans-serif;
+            padding-right: 12px;
+        }
+
+        .colValue {
+            width: 70%;
+        }
+
+            .colValue > div {
+                width: 100%;
+            }
+                .colValue > div > input,
+                .colValue > div > textarea {
+                    width: 90%;
+                    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+                    -moz-box-sizing: border-box; /* Firefox, other Gecko */
+                    box-sizing: border-box; /* Opera/IE 8+ */
+                }
+
+                    .colValue > div > input[type='checkbox'] {
+                        display: inline-block;
+                        width: auto;
+                    }
+
+        .images {
+            display: none;
+        }
+
+        #diagramDiv {
+            width: 66%;
+            display: inline-block;
+            vertical-align: top;
+            border: solid 1px black;
+            height: 584px;
+        }
+
+        #metadataGroup {
+            width: 35%;
+            display: inline-block;
+            vertical-align: top;
+            overflow-y: scroll;
+        }
+
+        #toast {
+            visibility: hidden;
+            min-width: 150px;
+            margin: -100px 0 0 -150px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 5px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1;
+            left: 50%;
+            top: 50%;
+            height: 26px;
+            vertical-align: middle;
+        }
+
+        #toast.show {
+            visibility: visible;
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.0s;
+            animation: fadein 0.5s, fadeout 0.5s 2.0s;
+            background-color: #333;
+            z-index: 1000;
+        }         
+
+        .red-background {
+            background: red;
+        }
+
+        .red-border {
+            border: 1px solid red !important;
+        }
+
+        @-webkit-keyframes fadein {
+            from {
+                bottom: 0;
+                opacity: 0;
+            }
+
+            to {
+                bottom: 30px;
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadein {
+            from {
+                bottom: 0;
+                opacity: 0;
+            }
+
+            to {
+                bottom: 30px;
+                opacity: 1;
+            }
+        }
+
+        @-webkit-keyframes fadeout {
+            from {
+                bottom: 30px;
+                opacity: 1;
+            }
+
+            to {
+                bottom: 0;
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeout {
+            from {
+                bottom: 30px;
+                opacity: 1;
+            }
+
+            to {
+                bottom: 0;
+                opacity: 0;
+            }
+        }
+    </style>
+
+    <div style="display:none;" id="inactiveTimeoutWarning">{!$Label.Inactive_Warning}</div>
+    <div style="display:none;" id="notFirstEditor">{!$Label.Not_First_Editor}</div>
+
+    <apex:form style="width:98%">
+        <apex:outputPanel >
+            <div>
+                <div class="mainBlock">                    
+                    <div id="diagramDiv" class="topBox"></div>
+                    <div id="metadataGroup" class="topBox"></div>
+                    <div id="toast"></div>
+                </div>
+            </div>
+        </apex:outputPanel>
+    </apex:form>
+    <script>
+        var debug = 0;
+        var diagram = null;
+        var docImages = null;
+        var configs = null;
+        const showProperties = ["Application__c", "Drawing_No__c", "Competitor__c", "Has_Brush__c", "Nozzle_Part_ID__c", 
+        "Nozzle_Description__c", "Nozzle_Customer_Part_No__c", "Nozzle_Code__c", "nozzle_supplier__c", "Nozzle_Quantity__c", 
+        "Nozzle_Spacing__c", "Nozzle_Thread_Type__c", "Nozzle_Thread_Size__c", "Nozzle_Type__c", "Nozzle_Fan_Angle__c", "Nozzle_Orifice_Size__c",
+        "Kadant_Part_Number__c", "Description__c", "Customer_Part_Number__c", "Supplier__c", "UOM__c", "Inlet_Pressure__c", "Media_Size__c",
+        "Media_Type__c", "Label_Name__c", "Critical_Position__c", "Blade_Kadant_Item_Number__c", "Blade_Quick_Identifier__c",
+        "Blade_Customer_Item_Number__c", "Blade_Supplier__c", "Blade_Description__c", "Target_Blade_Angle__c", "Blade_Angle_DS__c", 
+        "Blade_Angle_TS__c", "Blade_Level__c", "Holder_Type__c", "Holder_Drawing_Number__c", "Backing_Blade_Kadant_Item_Number__c",
+        "Backing_Blade_Customer_Item_Number__c", "Backing_Blade_Supplier__c", "Backing_Blade_Description__c",  "Doctor_Assembly_Drawing_Number__c",
+        "Primary_Cartridge_Kadant_Part_Number__c", "Primary_Cartridge_Customer_Item_Number__c", "Primary_Cartridge_Description__c", 
+        "Conformatic_Tube_Kadant_Item_Number__c", "Conformatic_Tube_Customer_Item_Number__c", "Conformatic_Tube_Description__c", 
+        "Holder_Customer_Item_Number__c", "Holder_Supplier__c", "Holder_Description__c"];
+
+        var highlights = [];
+
+        var ARROW_DEFAULT_SIZE = 48;
+        var ARROW_WIDTH_NORMAL = 1.25;
+        var ARROW_HEAD_WIDTH = 6;
+
+        var BELT_WIDTH_NORMAL = 2.5;
+        var BELT_DASH_NORMAL = null;
+
+        var BELT_WIDTH_ERROR = 5.0;
+        var BELT_DASH_ERROR = [10, 2];
+
+        var DEFAULT_LOCATION = "100 500";
+
+        var COLOR_SELECTED = "dodgerblue";
+        var COLOR_ERROR = "red";
+        var COLOR_ERROR2 = "darkred";
+        var COLOR_NORMAL = "black";
+
+        var WIDTH_SELECTED = 4;
+        var WIDTH_ERROR = 5;
+        var WIDTH_NORMAL = 1;
+
+        var PICKLIST_UNSET = '(not set)';
+
+        var ARROW_TYPE = "Triangle";
+        var ARROW_NONE = "None";
+
+        var maxStringSize = 6000000;    // Maximum String size is 6,000,000 characters
+        var maxFileSize = 4350000;      // After Base64 Encoding, this is the max file size
+        var chunkSize = 950000;         // Maximum Javascript Remoting message size is 1,000,000 characters
+        var uploadIndex = 0;
+
+        var metadata;
+        var metadataVals = new Object();
+        var partFieldPartOptions;
+        var partFieldDescOptions;
+        var partFieldCustOptions;
+        var recordTypes;
+        var deletedNodes = [];
+        var diagramDirty = false;
+        var wasDirty = false;
+        var isSheetPath = false;
+        var viewBoundsHeight = 0;
+
+        var printing = false;
+        var printIncludeWatermarks = true;
+
+        var copyMetadataKey;
+
+        var userPrefs;
+        var palettePrefNames = [];
+
+        var resetWatermarks = true;
+        var loading = false;
+        var updatingMetadata = false;
+        var returnAfterSave = false;
+        
+        var dragDropSupported;
+
+        var idToNodeKey = new Object();
+        var j$ = jQuery.noConflict();
+        var g$ = go.GraphObject.make;
+
+        var PREF_GRID = "Grid Settings"; // show|snap
+        var PREF_SHOW_PALETTE = "Show Palette";
+        var PREF_SHOW_METADATA = "Show Metadata";
+        var FILTER_CLASS = "Machine_Mapping_Filter__c";
+
+        var editTimeout = {!EditTimeout} * 60 * 1000;
+        var editTimeoutWarn = {!EditTimeoutWarn} * 60 * 1000;
+        var editorStillActive = true;
+        var lastActiveTime;
+        var didInactiveWarning = false;
+        var resetEditing = false;
+        var editInfoTimer;
+        var inactiveWarnTimer;
+        var inactiveWarnTitle;
+
+        var GradientLightGray = g$(go.Brush, "Linear", { 0: "White", 1: "#DADADA" });
+
+        var lcHost = "{!$CurrentPage.parameters.lcHost}";
+        var vfHost = getHost('{!$CurrentPage.URL}', '/');
+
+        var imageInfos = [];
+
+        var dynamicLineSelected = false;
+        
+        var vfcomponents = {};
+
+        j$(window).on("load", function()
+        {
+            //console.log('In Load 1');
+            if (diagram != null)
+            {
+                var editInfo = JSON.parse('{!LastEditInfo}');
+                if (editInfo && editInfo.name)
+                {
+                    var text = j$("#notFirstEditor").text();
+
+                    text = text.replace("(user)", editInfo.name);
+
+                    j$("#notFirstEditor").text(text);
+
+                    j$("#notFirstEditor").dialog
+                    ({
+                        modal: true,
+                        buttons:
+                        [{
+                            text: "OK",
+                            click: function() {j$(this).dialog("close");}
+                        }]
+                    });
+                }
+
+                diagram.startTransaction("json load");
+                LoadJson();
+                ResetMetadataPanel();
+                diagram.commitTransaction("json load");
+                setTimeout (FixHeight, 1);
+            }
+            j$(window).resize(function() { FixHeight(); } );
+            //console.log('Done Load 2');            
+        });
+
+        j$(document).ready(function()
+        {
+            //console.log('In Ready 1'); 
+            isSheetPath = false;
+            var testDiv = document.createElement('div');
+            dragDropSupported = (('draggable' in testDiv) || ('ondragstart' in div && 'ondrop' in testDiv)) &&
+                'FormData' in window && 'FileReader' in window;
+
+            try
+            {
+                loading = true;
+
+                InitPrefs();
+                InitConfigs();
+                InitDocImages();
+                InitTypes();
+                Init();
+
+                InitMetadata();
+
+                if ({!IsReadOnly})
+                    SetReadOnly();
+
+                j$("#menu").menu(
+                {
+                    position: { my: "left top", at: "left top+30" },
+                    icons: { submenu: "ui-icon-triangle-1-s" }
+                });
+
+                j$("#menu").show();
+
+                j$(".toolbar").controlgroup();
+                j$(".toolbar").show();
+
+                HandlePrefs();
+
+                window.addEventListener("message", handleMessage, false);
+
+                sendToLightning("vfHost", vfHost);
+                sendToLightning("dirty", false);
+
+                // Remmed out the following line because Palette preferences are handled differently.  SAM 8-AUG-2019
+                //j$('.cb_visible').prop('checked', true);
+                j$('.cb_visible').click(function(e)
+                {
+                    e.stopPropagation();
+
+                    var layerName = this.id.substring(3);
+                    
+                    diagram.startTransaction('toggleVisible ' + layerName);
+
+                    var layer = diagram.findLayer(layerName);
+
+                    if (layer !== null)
+                    {
+                            layer.visible = e.currentTarget.checked;
+                    }
+
+                    diagram.commitTransaction('toggleVisible ' + layerName);
+                });
+
+                j$("#saveAsDialog").dialog(
+                {
+                    autoOpen: false,
+                    modal: true
+                });
+
+                // sfdc sidebar was shown/hidden
+                j$("#handlebarContainer").click(function()
+                {
+                    FixWidth();
+                });
+            }
+            catch (ex)
+            {
+                alert ("Error loading page: " + ex.message);
+            }
+            loading = false;
+            //console.log('Out of Ready 4');            
+        });
+
+        j$(window).on('beforeunload', function()
+        {
+            //console.log("beforeunload");
+
+            var dirty = diagramDirty;
+
+            for (var it = diagram.nodes; !dirty && it.next() ; )
+            {
+                var node = it.value;
+                if (node instanceof go.Node && node.data.dirty)
+                    dirty = true;
+            }
+            resetEditing = dirty;
+            //console.log("beforeunload: dirty = " + dirty);
+            if (!dirty)
+            {
+                return undefined; // no prompt
+            }
+            else
+            {
+                return 'The machine map has changed. Are you sure you want to leave without saving?';
+            }
+        });
+
+        function StillActive()
+        {
+            diagram.startTransaction ('still active');
+            editorStillActive = true;
+            
+            diagram.commitTransaction ('still active');
+        }
+
+        function ClearFlashy()
+        {
+            if (inactiveWarnTimer)
+            {
+                clearInterval(inactiveWarnTimer);
+                inactiveWarnTimer = null;
+                document.title = inactiveWarnTitle;
+            }
+        }
+
+        function HandlePrefs()
+        {
+            var pref = userPrefs[PREF_GRID];
+            if (pref)
+            {
+                var tmp = pref.split("|");
+
+                //j$("#grid").prop("checked", tmp[0] == "true");
+                //j$("#snap").prop("checked", tmp[1] == "true");
+                //UpdateGridOption();
+            }
+
+            for (var i = 0; i < palettePrefNames.length; i++)
+            {
+                var paletteName = palettePrefNames[i];
+                var prefKey = "PALETTE_HIDE_" + paletteName;
+                var chkBox = "#cb_" + paletteName;
+                pref = userPrefs[prefKey];
+                if (pref)
+                {
+                    if (pref == "false")
+                    {                                   
+                        j$(chkBox).prop("checked", false);
+                        var layer = diagram.findLayer(paletteName);
+                        if (layer !== null)
+                        {
+                                layer.visible = false;
+                        }
+                    }
+                    else
+                        j$(chkBox).prop("checked", true);
+                }
+                else
+                {
+                    j$(chkBox).prop("checked", true);
+                }
+            }
+        }
+
+        function MakeSObject(node)
+        {
+            var data = node.data;
+            var so = new sforce.SObject(data.sObjectType);
+
+            if (!data.objectId)
+            {
+                // no object id = insert; set type and record type
+                so.Machine_Section__c = '{!MachineSectionId}';
+                so.RecordTypeId = recordTypes[data.recordType];
+            }
+            else
+            {
+                // have an object id = update; just set the id
+                so.Id = data.objectId;
+            }
+
+            // include associated metadata fields
+            var metas = metadataVals[data.key];
+            if (metas)
+            {
+                var metadataDefs = metadata[data.recordType];
+
+                for (var meta in metas)
+                {
+                    var metadataDef = null;
+                    for (var i = 0; i < metadataDefs.length && metadataDef == null; i++)
+                    {
+                        // todo: direct index instead of loop
+                        if (metadataDefs[i].path == meta)
+                            metadataDef = metadataDefs[i];
+                    }
+
+                    if (metadataDef && !metadataDef.isReadOnly)
+                    {
+                        if (metadataDef.picks && metadataDef.picks.length > 0 && metas[meta] == PICKLIST_UNSET)
+                        {
+                            SetSoField(so, meta, null);
+                        }
+                        else
+                        if (metadataDef.isCheckbox)
+                        {
+                            var val = metas[meta];
+                            if (val == "true")
+                                val = true;
+                            else
+                            if (val == "false")
+                                val = false;
+
+                            so.set(meta, val);
+                        }
+                        else
+                        {
+                            SetSoField(so, meta, metas[meta]);
+                        }
+                    }
+                }
+            }
+            return so;
+        }
+
+        function SetSoField (so, fieldName, val)
+        {
+            if (val != null && val != "")
+                so[fieldName] = val;
+            else
+            if (so.fieldsToNull == null)
+                so.fieldsToNull = [fieldName];
+            else
+                so.fieldsToNull.push (fieldName);
+        }
+        
+        function NodeIsOnDiagram(theObjId)
+        {
+            var onDiagram = false;
+            for (var it = diagram.nodes; it.next() ; )
+            {
+                var node = it.value;
+                var data = node.data;
+                if (data.objectId == theObjId)
+                {
+                    onDiagram = true;
+                }
+            }
+            return onDiagram;
+        }
+
+        function SortNodes(nodes)
+        {
+            var all = new Object();
+
+            for (var i = 0; i < nodes.length; i++)
+            {
+                var n = nodes[i];
+                var t = n.so.type;
+
+                var prevList = all[t];
+                if (prevList == null)
+                {
+                    prevList = [];
+                    all[t] = prevList;
+                }
+                prevList.push (n);
+            }
+
+            var ret = [];
+
+            for (var typeName in all)
+            {
+                var typeList = all[typeName];
+
+                for (var j = 0; j < typeList.length; j++)
+                {
+                    ret.push (typeList[j]);
+                }
+            }
+            return ret;
+        }
+
+        function LoadMetadata()
+        {
+            if (diagram.nodes.length == 0)
+                return;
+
+            metadataVals = new Object();
+
+            var sobjectTypeToIds = new Object();
+            var sotToRt = new Object();
+            idToNodeKey = new Object();
+
+            for (var it = diagram.nodes.iterator; it.next() ; )
+            {
+                var node = it.value;
+                var data = node.data;
+
+                if (data && data.sObjectType && data.objectId)
+                {
+                    var sobjectType = data.sObjectType;
+
+                    idToNodeKey[data.objectId] = node.data.key;
+
+                    var ids = sobjectTypeToIds[sobjectType];
+                    if (ids == null)
+                        sobjectTypeToIds[sobjectType] = [];
+
+                    sobjectTypeToIds[sobjectType].push ("'" + data.objectId + "'");
+
+                    if (sotToRt[sobjectType] == null)
+                        sotToRt[sobjectType] = new go.Set();
+
+                    sotToRt[sobjectType].add(data.recordType);
+                }
+            }
+
+            sforce.connection.sessionId = '{!$Api.Session_ID}';
+
+            for (var sot in sobjectTypeToIds)
+            {
+                var ids = sobjectTypeToIds[sot].join();
+
+                //console.log ('type ' + sot + ' ids = ' + ids);
+
+                var fields = new go.Set();
+
+                fields.add("Id");
+                fields.add("RecordType.Name");
+
+                for (var it = sotToRt[sot].iterator; it.next() ; )
+                {
+                    var rt = it.value;
+                    var m = metadata[rt];
+                    for (var i = 0; i < m.length; i++)
+                    {
+                        fields.add (m[i].path);
+                    }
+                }
+
+                var soql = "";
+                for (var it = fields.iterator; it.next() ; )
+                {
+                    if (soql != "")
+                        soql += ",";
+
+                    soql += it.value;
+                }
+
+                soql = "SELECT " + soql + " FROM " + sot + " WHERE Id IN (" + ids + ")";
+                //console.log('SOQL ' + soql);
+
+                var result = sforce.connection.query(soql,
+                {
+                    onSuccess : function(results, source)
+                    {
+                        if (results.records instanceof Array)
+                        {
+                            for (var i = 0; i < results.records.length; i++)
+                            {
+                                SaveMetadataVals(results.records[i]);
+                            }
+                        }
+                        else
+                        {
+                            SaveMetadataVals(results.records);
+                        }
+                    },
+
+                    onFailure : function(error, source)
+                    {
+                        console.log ('metadata values load failed: ' + error);
+                        debugger;
+                    }
+                });
+            }
+        }
+
+        function SaveMetadataVals (rec)
+        {
+            var id = rec.Id;
+            var key = idToNodeKey[id];
+            var rt = rec.RecordType.Name;
+            var node = diagram.findNodeForKey(key);
+
+            var metas = metadata[rt];
+            var vals = new Object();
+
+            metadataVals[key] = vals;
+
+            for (var i = 0; i < metas.length; i++)
+            {
+                var meta = metas[i];
+                var path = meta.path;
+                var val = rec[path];
+
+                vals[path] = val;
+                HandleSpecialCases(node, path, val);
+            }
+        }
+
+        function LoadJson()
+        {
+            sforce.connection.sessionId = '{!$Api.Session_ID}';
+            //console.log('Inside Load JSON with Machine ID: ' + '{!MachineSectionId}');
+            var result = sforce.connection.query("SELECT Id, Has_Blade_Cabinet__c, JSON__c FROM Machine_Section__c WHERE ID = '{!MachineSectionId}' LIMIT 1",
+            {
+                onSuccess : function(results, source)
+                {
+                    var record = results.records;
+                    if (record && record.JSON__c != null)
+                    {                        
+                        var tmpJson = record.JSON__c.replaceAll('/resource/', '/KadantAccessPortal/resource/');
+                        //console.log ('loading json: ' + tmpJson);
+
+                        diagram.model = go.Model.fromJson(tmpJson);
+                        PostLoadCleanup();
+
+                        var ids = [];
+                        for (var it = diagram.nodes; it.next() ; )
+                        {
+                            if (it.value.data.objectId)
+                                ids.push (it.value.data.objectId);
+                        }
+                    }
+                    else
+                    {
+                        // fail silently.. the call didn't choke - it just didn't have
+                        // any data, which is probably ok for new diagrams
+                    }
+                },
+                onFailure : function(error, source)
+                {
+                    console.log ('json load failed: ' + error);
+                    alert ('{!$Label.Load_Failed}');
+                }
+            });            
+        }
+
+        function ResnapNodes()
+        {
+            for (var it = diagram.nodes; it.next() ; )
+            {
+                var node = it.value;
+                if (node.data && node.data.snappedTo != null)
+                {
+                    var to = diagram.findNodeForKey (node.data.snappedTo);
+                    SnapTo(node, to);
+                }
+            }
+        }
+
+        function PostLoadCleanup()
+        {
+            for (var it = diagram.nodes; it.next() ; )
+            {
+                var node = it.value;
+                //console.log('node.category: ' + node.category + ", node record type: " + node.data.recordType);
+
+                node.data.dirty = false;
+
+                if (node.category == "roll" && node.data.snapToBelt == null) // upgrade old data
+                    node.data.snapToBelt = true;                
+                
+                if (node.category == "belt")
+                {                                    
+                    var numGuides = node.data.guides.length;
+                    if (node.data.recordType == 'Sheet Path')
+                    {
+                        numGuides = node.data.guides.length - 1;                                        
+                    }
+                    for (var i = 0; i < numGuides; i++)
+                    {
+                        var roll = diagram.findNodeForKey(node.data.guides[i].k);
+                        roll.data.onBelt = node.data.key;
+                    }
+                }
+
+                if (node.data && node.data.name == "Double Arrow" && node.category == "nonresizableArrow")
+                {
+                    // old 'double arrow' got renamed and a new 'double arrow' got created - rename
+                    // old nodes to their new name
+                    node.data.name = "Stretch Arrow";
+                }
+
+                var tb = node.findObject("PALETTE_LABEL");
+                if (tb != null)
+                    tb.visible = false;
+
+
+                var pic = node.findObject('SHAPE');
+                if (pic != null)
+                {
+                    var prev = pic.scale;
+                    pic.scale = GetScale(node.data.recordType);
+                    //console.log("reset scale from " + prev + " to " + pic.scale);
+                }
+
+                SetLinkAllowed(node);
+                FixLabel(node);
+                SetOutOfService(node);
+            }
+            ResnapNodes();
+            updateDirty();
+
+            viewBoundsHeight = diagram.viewportBounds.height;
+            //console.log("ViewBounds Height: " + viewBoundsHeight);             
+            
+            var tmp1 = 1 / diagram.scale;
+            var vh = viewBoundsHeight / tmp1;
+            //console.log("ViewHeight Scale: " + vh); 
+        }
+
+        function SetOutOfService(node) {
+            // If the Category is Cleaning and Out of Service is TRUE then set label color to RED
+            // Eventually this should be made more universal!!  Not for Cleaning only!!
+            if (node.data.objectType == "Cleaning") {
+                var label = node.findObject("LABEL");
+                var out_of_service = "false";
+                var data = node.data;
+                var id = data.objectId;    // Cleaning table ID
+
+                sforce.connection.sessionId = '{!$Api.Session_ID}';
+
+                var sqlStr = "SELECT Out_of_Service__c FROM Machine_Mapping_Cleaning__c WHERE Id = '" + id + "'";
+                var result = sforce.connection.query(sqlStr);
+                var result1 = result.getArray('records');
+
+                //console.log("Cleaning data ID: " + result1[0].Out_of_Service__c);
+                out_of_service = result1[0].Out_of_Service__c;
+
+                if (out_of_service == "true") {
+                    label.stroke = "red";
+                }
+            }
+        }
+
+        function HideText(node)
+        {
+            if (node.category == "roll")
+            {
+            }
+            else
+            {
+                var tb = node.findObject("PALETTE_LABEL");
+                if (tb != null)
+                    tb.visible = false;
+            }
+        }
+
+        function UpdateMetadataValue(e)
+        {                            
+            var att = e != null && e.attributes != null ? e.attributes['data-key'] : null;
+            if (att != null)
+            {                                
+                var nodeKey = att.value;                                
+                if (nodeKey)
+                {
+                    var node = diagram.findNodeForKey(nodeKey);                                     
+                    var meta = metadata[node.data.recordType];  
+                    //console.log('Inside UpdateMetadataValue, node = ' + node + ', meta = ' + meta);                                  
+                    var metadataDef = null;
+
+                    for (var i = 0; i < meta.length && metadataDef == null; i++)
+                    {
+                        if (meta[i].path == e.id)
+                            metadataDef = meta[i];
+                    }
+
+                    var vals = metadataVals[nodeKey];
+                    if (vals == null)
+                    {
+                        vals = new Object();
+                        metadataVals[nodeKey] = vals;
+                    }
+
+                    if (metadataDef.isNumber)
+                    {
+                        if (e.value.length > 0)
+                        {
+                            if (!j$.isNumeric(e.value))
+                            {
+                                alert (metadataDef.label + ": {!$Label.Numbers_Only}");
+                                //console.log('Inside UpdateMetadataValue function!!');
+
+                                e.value = null;
+                                return false;
+                            }
+                        }
+                    }
+
+                    if (metadataDef.isCheckbox)
+                    {
+                        vals[e.id] = e.checked ? "true" : "false";
+                    }
+                    else
+                    {
+                        vals[e.id] = e.value;
+                    }
+
+                    if (!loading)
+                    {
+                        node.data.dirty = true;
+                        updateDirty();
+                    }
+
+                    if (!updatingMetadata)
+                    {
+                        HandleSpecialCases(node, e.id, e.value);
+                    }
+                }
+            }
+            return true;
+        }
+
+        function HandleSpecialCases(node, prop, val)
+        {
+            var config = GetConfig(node.data.recordType);
+            if (config != null && config.Label_Editable__c && prop == config.Label_Field__c)
+            {
+                if (node.category == "roll")
+                {
+                    // special-special case roll for rotary joint positioning
+                    UpdateRollLabel(node, val);
+                }
+                else
+                {
+                    var tb = node.findObject("LABEL");
+                    if (tb != null)
+                        tb.text = val;
+                }
+            }
+
+            switch (node.category)
+            {
+                case "roll":
+                {
+                    switch (prop)
+                    {
+                        case "Belt_Relationship__c":
+                        {
+                            if (val != PICKLIST_UNSET)
+                            {
+                                diagram.startTransaction("change belt side");
+
+                                if (val == "Spare")
+                                {
+                                    MakeSpare (node);
+                                }
+                                else
+                                {
+                                    var inside = val == "Inside";
+
+                                    node.data.outside = !inside;
+                                }
+
+                                diagram.commitTransaction("change belt side");
+
+                                UpdateAllBelts();
+                            }
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+        function UpdateRollLabelFromKey (k)
+        {
+            var roll = diagram.findNodeForKey(k);
+            if (roll)
+                UpdateRollFindLabel (roll);
+        }
+
+        function UpdateRollFindLabel (roll)
+        {
+            if (roll.data)
+            {
+                var vals = metadataVals[roll.data.key];
+
+                if (vals)
+                {
+                    var config = GetConfig(roll.data.recordType);
+
+                    var fieldName = config == null || config.Label_Field__c == null ? "Label__c" : config.Label_Field__c;
+
+                    var label = vals[fieldName];
+
+                    UpdateRollLabel (roll, label);
+                }
+            }
+        }
+
+        function UpdateRollLabel (roll, label)
+        {
+            var rollKey = roll.data.key;
+            var yOffset = 0;
+            var skip = false;
+            diagram.startTransaction("set roll label");
+
+            for (var it = diagram.nodes.iterator; it.next() ; )
+            {
+                var node = it.value;
+                var d = node.data;
+
+                if (d && d.snappedTo == rollKey && d.objectType == "Rotary Joint")
+                {
+                    skip = d.inPalette;
+
+                    yOffset = (node.measuredBounds.height * node.scale) - 1;
+                    //console.log ("node scale = " + node.scale + ", skip = " + skip + ", h = " + node.measuredBounds.height);
+                    break;
+                }
+            }
+            //console.log ("roll " + rollKey + " label to " + label + ", offset " + yOffset);
+            if (!skip)
+            {
+                var tb = roll.findObject("LABEL");
+                if (tb != null)
+                {
+                    tb.text = label;
+                    tb.alignment = new go.Spot (0.5, 0.5, 0, yOffset);
+                }
+            }
+            diagram.commitTransaction("set roll label");
+        }
+
+        function ResetMetadataPanel()
+        {
+            j$('#metadataGroup').empty();            
+            var node = diagram.selection.first();
+
+            var newText = '';
+
+            if (node && node instanceof go.Node && !node.data.isGroup && node.data.recordType)
+            {
+                var rt = node.data.recordType;
+                var ot = node.data.objectType;
+                var sot = node.data.sObjectType;
+                var objId = node.data.objectId;
+                var meta = metadata[rt];
+                var config = GetConfig(rt);                
+
+                var label = node.findObject("LABEL");
+
+                newText += "<div style='width:100%;'>";
+                newText += "<h3 id='metadataHeader'>&nbsp;" + ot + ": " + rt + "</h3>";                
+                newText += "<br/>";
+                newText += "<table id='metadataTable'>";                
+
+                for (var i = 0; meta != null && i < meta.length; i++)
+                {
+                    var m = meta[i];
+                    if (showProperties.includes(m.path))
+                    {
+                        newText += "<tr>";
+                        var label;
+                        var val;                    
+                        var lstuff = "for='" + m.path + "'>" + m.label + "&nbsp;";
+    
+                        var stuff =
+                            " id='" + m.path + "'" +
+                            " onchange='UpdateMetadataValue(this);'" +
+                            " onfocus='StillActive();'" +
+                            " data-key='" + node.data.key + "'";
+    
+                        if (m.isReadOnly || {!IsReadOnly})
+                            stuff += " disabled='disabled'";
+    
+                        var req = m.isRequired ? "<div class='requiredBlock'></div>" : "";
+                        var labelClass = 'colLabel';
+    
+                        if (m.isCheckbox)
+                        {
+                            label = "<label " + lstuff + "</label>";
+                            val = "<td class='colValue'><div class='requiredInput'>" + req + "<input " + stuff + " type='checkbox' /></div></td>";
+                        }
+                        else if (m.isDate)
+                        {
+                            label = "<label " + lstuff + "</label>";
+                            val = "<td class='colValue'><div class='requiredInput'>" + req + "<input " + stuff + " type='date' /></div></td>";
+                        }
+                        else if (m.picks && m.picks.length > 0)
+                        {
+                            label = "<label " + lstuff + "</label>";
+                            val = "<td class='colValue'><div class='requiredInput'>" + req + "<select " + stuff + ">";
+                            val += "<option " + (m.defaultVal == "" ? "selected " : "") +
+                                "value='" + PICKLIST_UNSET +
+                                "'>{!$Label.Picklist_Unset}</option>";
+    
+                            for (var x = 0; x < m.picks.length; x++)
+                            {
+                                var pick = m.picks[x];
+                                var sel = m.defaultVal == pick.value ? "selected " : "";
+                                val += "<option " + sel + "value='" + pick.value + "'>" + pick.label + "</option>";
+                            }
+    
+                            val += "</select></div></td>";
+                        }
+                        else if (m.visibleLines != 1)
+                        {
+                            labelClass = 'colLabelTop';
+                            label = "<label " + lstuff + "</label>";
+                            val = "<td class='colValue'><div class='requiredInput'>" + req +
+                                "<textarea rows='" + m.visibleLines + "' " + stuff + " maxlength='" + m.maxLen + "' /></div></td>";
+                        }       
+                        else
+                        {                            
+                            label = "<label " + lstuff + "</label>";
+                            val = "<td class='colValue'><div class='requiredInput'>" + req + "<input " + stuff + " type='text' maxlength='" + m.maxLen + "' /></div></td>";
+                        }                 
+    
+                        if (m.helpText != null && m.helpText != "") {
+                            newText += "<td class='" + labelClass + "'>";
+                            newText += "<span class='helpButton'>";
+                            newText += label;
+                            newText += "<img src='/s.gif' title=\"" + m.helpText + "\" class='helpOrb'/>"
+                            newText += "</td>";
+                        }
+                        else {
+                            newText += "<td class='" + labelClass + "'>" + label + "</td>";
+                        }
+                        newText += val;
+                        newText += "</tr>";
+                    }
+                }                            
+                newText += "</table>";
+                newText += "</div>";
+
+                if (rt == "Belt")
+                {
+                    // Determine if this is a SheetPath Belt?!?
+                    isSheetPath = false;
+                    //var showerId = node.data.objectId;
+                }
+
+                j$('#metadataGroup').append(newText);
+
+                // if we have an object id but the metadata is blank, load it from sfdc
+                if (node.data.objectId && metadataVals[node.data.key] == null)
+                {
+                    sforce.connection.sessionId = '{!$Api.Session_ID}';
+
+                    var meta = metadata[rt];
+
+                    if (meta && meta.length > 0)
+                    {
+                        var fields = [];
+                        for (var i = 0; i < meta.length; i++)
+                            fields.push (meta[i].path);
+
+                        var ot = node.data.sObjectType;
+
+                        var soql =
+                            "SELECT " + fields.join() +
+                            " FROM " + node.data.sObjectType +
+                            " WHERE Id = '" + node.data.objectId + "'" +
+                            " LIMIT 1";
+
+                        var result = sforce.connection.query(soql,
+                        {
+                            onSuccess : function(results, source)
+                            {
+                                var record = results.records;
+
+                                SaveMetadataVals(record);
+                                ShowMetadataVals(node.data.key, rt);
+                            },
+                            onFailure : function(error, source)
+                            {
+                                console.log("An error has occurred: " + error);
+                            }
+                        });
+                    }
+                }
+                ShowMetadataVals(node.data.key, rt);
+            }
+            else
+            if (node)
+            {
+                var l = "{!$Label.Metadata_No_Values}";
+                if (l != "(empty)")
+                    newText += "<h3 id='metadataHeader'>&nbsp;" + l + "</h3>";
+
+                j$('#metadataGroup').append(newText);
+            }
+            else
+            {
+                var l = "{!$Label.Metadata_Nothing_Selected}";
+                if (l != "(empty)")
+                    newText += "<h3 id='metadataHeader'>&nbsp;" + l + "</h3>";
+
+                j$('#metadataGroup').append(newText);
+            }            
+        }
+
+        function log(title, stuff)
+        {
+            log(title, stuff, false);
+        }
+
+        var logging = true;
+        function log(title, stuff, force) // recursive...
+        {
+            if (force || logging)
+            {
+                if (stuff && stuff instanceof Array)
+                {
+                    for (var i = 0; i < stuff.length; i++)
+                        log (title + '[' + i + ']', stuff[i], force);
+                }
+                else
+                if (typeof stuff === 'object')
+                {
+                    for (var prop in stuff)
+                        log (title + '.' + prop, stuff[prop], force);
+                }
+                else
+                {
+                    //console.log (title + ' = ' + stuff);
+                }
+            }
+        }
+
+        function ShowMetadataVals (key, rt)
+        {
+            var vals = metadataVals[key];
+            if (vals)
+            {
+                var meta = metadata[rt];
+
+                for (var val in vals)
+                {
+                    var prev = j$('#' + val);
+                    if (prev != null && prev.length != 0)
+                    {
+                        if (prev[0].type == "checkbox")
+                            j$('#' + val).prop("checked", vals[val] == "true");
+                        else
+                            j$('#' + val).val(vals[val]);
+                    }
+                    else
+                    {
+                        var i = 0;// debug break;
+                    }
+                }
+            }
+        }
+
+        function InitTypes()
+        {
+            recordTypes = new Object();
+
+            // record type (escaped) key to record type id
+            <apex:repeat value="{!PaletteGroupKeys}" var="pg">
+                palettePrefNames.push("{!pg}");
+                <apex:repeat value="{!PaletteEntries[pg]}" var="pe">
+                    recordTypes["{!pe.RecTypeLabel}"] = "{!pe.RecTypeId}";
+                </apex:repeat>
+            </apex:repeat>
+            palettePrefNames.push("Notes");
+            <apex:repeat value="{!ResourceNames}" var="t">
+                imageInfos["{!t}"] = {mime: "{!KeyToMime[t]}", data: "{!KeyToBase64[t]}"};
+            </apex:repeat>
+        }
+
+
+        function InitDocImages()
+        {
+            docImages = new Object();
+            <apex:repeat value="{!DoctorTypes}" var="d">
+                docImages["{!d}"] = "{!$Resource[KeyToIconR[d]]}";
+            </apex:repeat>
+        }
+
+        function SnapDistanceForNode(node)
+        {
+            var name = node.category == "placeholder" || node.category == "roll" ? "Roll" : node.data.name;
+            var config = GetConfig(name);
+            return config.Snap_Distance__c;
+        }
+
+        function InitPrefs()
+        {
+            userPrefs = new Object();
+            /*
+            <apex:repeat value="{!UserPreferences}" var="pref">
+                userPrefs["{!pref}"] = "{!UserPreferences[pref]}";
+            </apex:repeat>
+            */
+        }
+
+        function InitConfigs()
+        {
+            configs = new Object();
+            var config;
+
+            <apex:repeat value="{!MachinePartConfigs}" var="jsonStr">
+                var config = JSON.parse('{!jsonStr}');
+
+                configs[config.Record_Type__c] = config;
+            </apex:repeat>
+
+            var def = configs["(default)"];
+
+            // force nulls to bools on checkbox defaults
+            def.Allow_Link_From__c = IsCheckboxSet(def.Allow_Link_From__c);
+            def.Allow_Link_To__c   = IsCheckboxSet(def.Allow_Link_To__c);
+            def.Label_Editable__c  = IsCheckboxSet(def.Label_Editable__c);
+            def.Label_Multiline__c = IsCheckboxSet(def.Label_Multiline__c);
+
+            for (rt in configs)
+            {
+                if (rt == "(default)")
+                    continue;
+
+                config = configs[rt];
+
+                if (IsCheckboxSet(config.Link_Use_Defaults__c))
+                {
+                    config.Allow_Link_To__c = def.Allow_Link_To__c;
+                    config.Allow_Link_From__c = def.Allow_Link_From__c;
+                }
+                else
+                {
+                    config.Allow_Link_From__c = IsCheckboxSet(config.Allow_Link_From__c);
+                    config.Allow_Link_To__c   = IsCheckboxSet(config.Allow_Link_To__c);
+                }
+
+                if (IsCheckboxSet(config.Label_Use_Defaults__c))
+                {
+                    config.Label_Editable__c  = def.Label_Editable__c;
+                    config.Label_Multiline__c = def.Label_Multiline__c;
+                }
+                else
+                {
+                    config.Label_Editable__c  = IsCheckboxSet(config.Label_Editable__c);
+                    config.Label_Multiline__c = IsCheckboxSet(config.Label_Multiline__c);
+                }
+
+                if (config.Canvas_Scale__c == null)
+                    config.Canvas_Scale__c = def.Canvas_Scale__c;
+
+                if (config.Doctor_Offset_X__c == null)
+                    config.Doctor_Offset_X__c = def.Doctor_Offset_X__c;
+
+                if (config.Doctor_Offset_Y__c == null)
+                    config.Doctor_Offset_Y__c = def.Doctor_Offset_Y__c;
+
+                if (config.Label_Color__c == null)
+                    config.Label_Color__c = def.Label_Color__c;
+
+                if (config.Label_Offset_X__c == null)
+                    config.Label_Offset_X__c = def.Label_Offset_X__c;
+
+                if (config.Label_Offset_Y__c == null)
+                    config.Label_Offset_Y__c = def.Label_Offset_Y__c;
+
+                if (config.Palette_Scale__c == null)
+                    config.Palette_Scale__c = def.Palette_Scale__c;
+
+                if (config.Snap_Distance__c == null)
+                    config.Snap_Distance__c = def.Snap_Distance__c;
+            }
+        }
+
+        function GetConfig(recType)
+        {
+            var ret = configs[recType];
+            if (ret == null)
+                ret = GetDefaultConfig();
+
+            return ret;
+        }
+
+        function GetDefaultConfig()
+        {
+            return configs["(default)"];
+        }
+
+        function GetScale(rt)
+        {
+            var config = GetConfig(rt);
+            return config.Canvas_Scale__c;
+        }
+
+        function GetPaletteScale(rt)
+        {
+            var config = GetConfig(rt);
+            return config.Palette_Scale__c;
+        }
+
+        function InitMetadata()
+        {
+            metadata = new Object();
+
+            var meta;
+            var fVals;
+
+            sforce.connection.sessionId = '{!$Api.Session_ID}';
+            var l;
+
+            var recTypePicks = new Object();
+
+            <apex:repeat value="{!PartObjectTypeNames}" var="s">
+                l = sforce.connection.describeLayout("{!s}");
+
+                for (var i = 0; i < l.recordTypeMappings.length; i++)
+                {
+                    var rtm = l.recordTypeMappings[i];
+                    if (rtm.picklistsForRecordType && rtm.name != "Master")
+                    {
+                        for (var j = 0; j < rtm.picklistsForRecordType.length; j++)
+                        {
+                            var pvs = rtm.picklistsForRecordType[j];
+
+                            var key = rtm.name + '.' + pvs.picklistName;
+
+                            recTypePicks[key] = pvs;
+                        }
+                    }
+                }
+            </apex:repeat>
+
+            <apex:repeat value="{!MetadataTypes}" var="fields">
+                //console.log ('outer type {!fields}');
+
+                fVals = [];
+
+                <apex:repeat value="{!Metadata[fields]}" var="finfo">
+                    //console.log ('inner type {!finfo}');
+
+                    meta =
+                    {
+                        label: "{!finfo.Label}",
+                        path: "{!finfo.FieldPath}",
+                        isNumber: {!finfo.IsNumber},
+                        isDate: {!finfo.IsDate},
+                        isCheckbox: {!finfo.IsCheckbox},
+                        isReadOnly: {!finfo.IsReadOnly},
+                        isRequired: {!finfo.IsRequired},
+                        visibleLines: {!finfo.VisibleLines},
+                        maxLen: {!finfo.MaxLen},
+                        helpText: "{!finfo.HelpText}",
+                        defaultVal: "{!finfo.DefaultValue}"
+                    };
+
+                    <apex:outputText rendered="{!finfo.IsPicklist = true}">
+                        meta.picks = [];
+
+                        var key = "{!fields}.{!finfo.FieldPath}";
+                        var rtPicks = recTypePicks[key];
+                        if (rtPicks != null)
+                        {
+                            //console.log ("using RT picklist for " + key);
+                            for (var i = 0; i < rtPicks.picklistValues.length; i++)
+                            {
+                                var pe = rtPicks.picklistValues[i];
+                                if (pe.active == "true")
+                                {
+                                    meta.picks.push({label: pe.label, value: pe.value});
+
+                                    if (pe.defaultValue == "true")
+                                    {
+                                        meta.defaultVal = pe.value;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            <apex:repeat value="{!finfo.Picks}" var="pe">
+                                meta.picks.push ({label: '{!pe.Label}', value: '{!pe.Value}'});
+                            </apex:repeat>
+                        }
+                    </apex:outputText>
+                    fVals.push (meta);
+                </apex:repeat>
+                metadata['{!fields}'] = fVals;
+            </apex:repeat>
+        }
+
+        function SetReadOnly()
+        {
+            j$('.no-read-only').addClass('ui-state-disabled');
+
+            diagram.allowClipboard = false;
+            diagram.allowDelete = false;
+            diagram.allowDragOut = false;
+            diagram.allowDrop = false;
+            diagram.allowGroup = false;
+            diagram.allowInsert = false;
+            diagram.allowLink = false;
+            diagram.allowMove = false;
+            diagram.allowRelink = false;
+            diagram.allowReshape = false;
+            diagram.allowResize = false;
+            diagram.allowRotate = false;
+            diagram.allowTextEdit = false;
+            diagram.allowUndo = false;
+            diagram.allowUngroup = false;
+        }
+
+        function OnSelectionChanged(e)
+        {
+            var node = diagram.selection.first();
+
+            if (node && node.category == "dynamicLine")
+            {
+                diagram.toolManager.linkingTool.isUnconnectedLinkValid = true;
+                diagram.toolManager.relinkingTool.isUnconnectedLinkValid = true;
+                diagram.toolManager.relinkingTool.portGravity = 0;
+                diagram.toolManager.draggingTool.dragsLink = true;
+
+                dynamicLineSelected = true;
+
+                var s = node.findObject("SHAPE");
+                var a = node.findObject("ARROWS");
+
+                //console.log("break");
+
+
+            }
+            else
+            if (dynamicLineSelected)
+            {
+                diagram.toolManager.linkingTool.isUnconnectedLinkValid = false;
+                diagram.toolManager.relinkingTool.isUnconnectedLinkValid = false;
+                diagram.toolManager.relinkingTool.portGravity = 100;
+                diagram.toolManager.draggingTool.dragsLink = false;
+
+                dynamicLineSelected = false;
+            }
+
+            if (debug != 0)
+            {
+                var shape;
+                if (node)
+                    shape = node.findObject("SHAPE");
+                //console.log ("break here");
+            }
+            ResetMetadataPanel();
+        }
+
+        function NewPart(node)
+        {
+            //console.log ('new part on ' + node);
+            //if (node.data)
+                //console.log ("new part key: " + node.data.key);
+
+            // be careful to clear out things like the sfdc id and what we're snapped to
+            // but leave other stuff. for metadata, if a value is not set but has a default,
+            // this is where we want to apply that default
+            var d = node.data;
+            var k = d.key;
+
+            if (d.recordType)
+            {
+                d.objectId = null;
+                d.snappedTo = null;
+                d.snapChange = false;
+                d.dirty = true;
+
+                var vals = metadataVals[k];
+                if (vals == null)
+                {
+                    vals = new Object();
+                    metadataVals[k] = vals;
+                }
+
+                var defs = metadata[d.recordType];
+
+                for (var i = 0; i < defs.length; i++)
+                {
+                    var def = defs[i];
+
+                    if (def.defaultVal && def.defaultVal != "" && vals[def.path] == null)
+                    {
+                        //console.log ('need to set default for ' + def.path + ' to ' + def.defaultVal);
+                        vals[def.path] = def.defaultVal;
+                    }
+                }
+            }
+
+            updateDirty();
+        }
+
+        function FixLabel(node)
+        {
+            switch (node.category)
+            {
+                case "belt":
+                case "placeholder":
+                case "group":
+                {
+                    break;
+                }
+
+                case "roll":
+                {
+                    // allow config to set just single/multiline and color on rolls
+                    var label = node.findObject("LABEL");
+                    if (label != null)
+                    {
+                        if (node.data != null && node.data.recordType != null)
+                        {
+                            var config = GetConfig(node.data.recordType);
+
+                            label.isMultiline = config.Label_Multiline__c;
+                            label.stroke = config.Label_Color__c;
+                        }
+                    }
+
+                    break;
+                }
+
+                default:
+                {
+                    var label = node.findObject("LABEL");
+                    if (label != null)
+                    {
+                        if (node.data != null && node.data.recordType != null)
+                        {
+                            var config = GetConfig(node.data.recordType);
+
+                            label.editable = config.Label_Editable__c;
+                            label.isMultiline = config.Label_Multiline__c;
+                            label.stroke = config.Label_Color__c;
+
+                            if ({!DebugLabelPosition} && label.editable && (label.text == null || label.text.trim() == ""))
+                            {
+                                label.background = "#808080";
+                                label.text = " ";
+                            }
+
+                            var pos = new go.Spot();
+                            pos.offsetX = config.Label_Offset_X__c;
+                            pos.offsetY = config.Label_Offset_Y__c;
+
+                            label.alignment = pos;
+                            label.angle = -node.angle;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+        function IsCheckboxSet(cb)
+        {
+            return cb != null && cb == true;
+        }
+
+        function SetLinkAllowed(node)
+        {
+            switch (node.category)
+            {
+                case "belt":
+                case "annotation":
+                case "circleNote":
+                {
+                    break;
+                }
+
+                default:
+                {
+                    var shape = node.findObject("SHAPE");
+                    if (shape != null)
+                    {
+                        var config = GetConfig(node.data.recordType);
+
+                        shape.toLinkable = config.Allow_Link_To__c;
+                        shape.fromLinkable = config.Allow_Link_From__c;
+                        shape.cursor = "pointer";
+                        shape.portId = "";
+                    }
+                    break;
+                }
+            }
+        }
+        
+        function HighLightImage (key, show)
+        {
+            var nodeCat = key.category;
+            if (nodeCat == "cleaning")
+            {
+                var shape = key.findObject("SHAPE");
+                if(show)
+                {                        
+                    shape.scale = 1.05;
+                    return;
+                }
+                shape.scale = GetScale(key.data.recordType);
+            }
+        }
+
+        function Init()
+        {
+            //console.log ('init');
+
+            go.licenseKey = "{!LicenseKey}";
+
+            var annotationAssociationLinkTemplate =
+                g$(go.Link,
+                {
+                    reshapable: true,
+                    relinkableFrom: true,
+                    relinkableTo: true
+                },
+                new go.Binding("points").makeTwoWay(),
+                g$(go.Shape,
+                {
+                    stroke: "black",
+                    strokeWidth: 1,
+                    strokeDashArray: [1, 1]
+                }),
+                g$(go.Shape,
+                {
+                    toArrow: "",
+                    scale: 1,
+                    stroke: "black"
+                },
+                {
+                    mouseEnter: function(e, obj, prev)
+                    {
+                        StillActive();
+                    },
+                    mouseLeave: function(e, obj, next)
+                    {
+                        StillActive();
+                    }
+                })
+            );
+
+            var dynamicLineTemplate =
+                g$(go.Link,
+                {
+                    selectionAdorned: false,
+                    movable: true,
+                    toLinkable: true,
+                    fromLinkable: true,
+                    reshapable: true,
+                    relinkableFrom: true,
+                    relinkableTo: true
+                },
+                new go.Binding("points").makeTwoWay(),
+                g$(go.Shape,
+                {
+                    name: "SHAPE",
+                    isPanelMain: true,
+                    stroke: "black",
+                    strokeWidth: 2
+                }),
+                g$(go.Shape,
+                {
+                    name: "ARROWS",
+                    toArrow: ARROW_NONE,
+                    fromArrow: ARROW_NONE,
+                    stroke: null
+                },
+                new go.Binding("fill").makeTwoWay(),
+                new go.Binding("toArrow").makeTwoWay(),
+                new go.Binding("fromArrow").makeTwoWay())
+            );
+
+
+            var linkTemplateMap = new go.Map();
+            linkTemplateMap.add("annotation", annotationAssociationLinkTemplate);
+            linkTemplateMap.add("circleNote", annotationAssociationLinkTemplate);
+            linkTemplateMap.add("dynamicLine", dynamicLineTemplate);
+            linkTemplateMap.add("", annotationAssociationLinkTemplate);
+
+            diagram = g$(go.Diagram, "diagramDiv",
+            {
+                allowDrop: true,
+                "animationManager.isEnabled": false,
+                "undoManager.isEnabled": true,
+                "grid.visible": false,
+                initialContentAlignment: go.Spot.Center,
+                initialAutoScale: go.Diagram.Uniform,
+                linkTemplateMap: linkTemplateMap,
+                ChangedSelection: OnSelectionChanged,
+                "toolManager.mouseWheelBehavior": go.ToolManager.WheelZoom,
+                "linkingTool.direction": go.LinkingTool.ForwardsOnly,
+
+                "commandHandler.archetypeGroupData": { isGroup: true, category: "group" },
+                "ModelChanged": function(e)
+                {
+                    if (e.isTransactionFinished)
+                    {
+                        var saved = document.getElementById("savedModel");
+                        if (saved)
+                            saved.textContent = diagram.model.toJson();
+                    }
+                },
+                "commandHandler.pasteFromClipboard": function()
+                {
+                    for (var it = diagram.selection.iterator; it.next() ; )
+                    {
+                        var node = it.value;
+                        if (node.data)
+                            node.data.copiedFrom = node.data.key;
+                    }
+
+                    return go.CommandHandler.prototype.pasteFromClipboard.call(this); // .base()
+                },
+                "draggingTool.doDropOnto": function(pt, obj)
+                {
+                    go.DraggingTool.prototype.doDropOnto.call(this, pt, obj); // .base()
+
+                    for (var it = diagram.selection.iterator; it.next() ;)
+                    {
+                        node = it.value;
+                        if (node.data && node.data.snapping)
+                            SetupSnap(node);
+                    }
+                },
+                "draggingTool.moveParts": function(parts, offset, check)
+                {
+                    go.DraggingTool.prototype.moveParts.call(this, parts, offset, check); // .base()
+
+                    diagramDirty = true;
+                    var rolls = new go.Set();
+                    var movedPlaceholder = null;
+                    var updateBelts = false;
+                    var checkAccOnMap = false;
+
+                    for (var it = parts.iterator; it.next() ; )
+                    {
+                        var node = it.key;
+                        if ((node.category == 'belt') && (node.data.recordType == 'Sheet Path'))
+                        {
+                            isSheetPath = true;
+                        }
+                        if (node.data.snapToBelt) // it.key.category == "roll")
+                        {
+                            rolls.add (node.data.key);
+                            if (node.data.onBelt != null || node.data.snappedTo != null)
+                                updateBelts = true;
+                        }
+                        else
+                        if (node.category == 'resizableArrow' || node.category == 'nonresizableArrow')
+                        {
+                            FixArrowShape(node);
+                        }
+
+                        if (node.category == 'cleaning') {
+                            checkAccOnMap = true;
+                        }
+
+                        if (node.category == "placeholder" && movedPlaceholder == null) // take 1st one found
+                        {
+                            if (node.data.onBelt != null)
+                                movedPlaceholder = node;
+                        }
+                    }
+
+                    if (movedPlaceholder != null)
+                    {
+                        var snapTo = NearestNode(movedPlaceholder, "roll");
+
+                        UnHighlight();
+                        if (snapTo != null)
+                            Highlight(snapTo.data.key);
+                    }
+
+                    if (updateBelts)
+                        UpdateAllBelts();
+
+                    if (rolls.size > 0)
+                    {
+                        for (var it = diagram.nodes.iterator; it.next() ; )
+                        {
+                            if (it.key.data.snappedTo && rolls.has(it.key.data.snappedTo))
+                            {
+                                SnapToKey(it.key, it.key.data.snappedTo);
+                            }
+                        }
+                    }
+                    else if (checkAccOnMap)
+                    {
+                        for (var it = diagram.nodes.iterator; it.next() ; )
+                        {
+                            if (it.key.data.snappedTo)
+                            {
+                                SnapToKey(it.key, it.key.data.snappedTo);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var f = parts.first().key;
+
+                        if (f.data && f.data.snapping)
+                        {
+                            var snapTo = NearestNode (f, f.data.snapTo);
+                            if (snapTo != null)
+                            {
+                                var snapKey = snapTo.data.key;
+
+                                // don't bother re-highlighting if already lit
+                                var lit = false;
+                                for (var i = 0; i < highlights.length && !lit; i++)
+                                    lit |= highlights[i] == snapKey;
+
+                                if (!lit)
+                                {
+                                    UnHighlight();
+                                    Highlight (snapKey);
+                                }
+                            }
+                            else
+                            {
+                                UnHighlight();
+                            }
+                        }
+                    }
+                    updateDirty();
+                },
+                "resizingTool.resize": function (newR)
+                {
+                    go.ResizingTool.prototype.resize.call(this, newR); // .base()
+
+                    var updateBelts = false;
+                    for (var it = diagram.selection.iterator; it.next() ; )
+                    {
+                        var node = it.value;
+
+                        if (node.data)
+                        {
+                            var nodeKey = node.data.key;                                            
+
+                            for (var it = diagram.nodes.iterator; it.next() ; )
+                            {
+                                if (it.key.data.snappedTo == nodeKey)
+                                {
+                                    SnapToKey(it.key, nodeKey);
+                                }
+                            }
+                        }
+
+                        if (node.data.onBelt != null)
+                            updateBelts = true;
+                    }
+                    if (updateBelts)
+                        UpdateAllBelts();
+                },
+                "rotatingTool.rotate": function (newAngle)
+                {
+                    go.RotatingTool.prototype.rotate.call(this, newAngle); // .base()
+
+                    for (var it = diagram.selection.iterator; it.next() ; )
+                    {
+                        var node = it.value;
+                        if (node.data)
+                        {
+                            node.data.dirty = true;
+
+                            var to = node.data.snappedTo;
+
+                            if (to && node.data.snapping == "outside")
+                            {
+                                SnapToKey(node, to);
+                            }
+
+                            FixLabel(node);
+                        }
+                    }
+                    updateDirty();
+                },
+                "SelectionDeleted": function(e)
+                {
+                    UpdateAllBelts();
+                }
+            });
+
+            diagram.linkTemplate = g$(go.Link, g$(go.Shape));
+            diagram.model.linkKeyProperty = "key";
+
+            // separate layer for each palette group
+            var forelayer = diagram.findLayer("Foreground");
+            <apex:repeat value="{!PaletteGroupKeys}" var="pg">
+                diagram.addLayerBefore(g$(go.Layer, { name: "{!pg}" }), forelayer);
+            </apex:repeat>
+
+            diagram.addLayerBefore(g$(go.Layer, { name: "Notes" }), forelayer);
+
+            var config = GetDefaultConfig();
+
+            var allowLinkTo = config.Allow_Link_To__c;
+            var allowLinkFrom = config.Allow_Link_From__c;
+
+            var templateMap = new go.Map();
+
+            var defaultNodeTemplate =
+                g$(go.Node, "Spot",
+                    {
+                        rotatable: true,
+                        locationObjectName: "SHAPE",
+                        //toLinkable: true,
+                        portId: "",
+                        movable: true,
+                        locationSpot: go.Spot.Center
+                    },
+                    new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
+                    new go.Binding("angle", "rotate").makeTwoWay(),
+                    new go.Binding("scale", "scale").makeTwoWay(),
+                    new go.Binding("layerName", "lName"),
+                g$(go.Picture,
+                    {
+                        name: "SHAPE",
+                        margin: 5,
+                        fromLinkable: allowLinkFrom,
+                        toLinkable: allowLinkTo,
+                        alignmentFocus: go.Spot.Center
+                    },
+                    new go.Binding("source"),
+                    new go.Binding("scale", "scale").makeTwoWay(),
+                    new go.Binding("scale", "imageScale").makeTwoWay(),
+                    new go.Binding("flip", "flip").makeTwoWay()
+                ),
+                g$(go.TextBlock, "",
+                    {
+                        width: 60,
+                        name: "PALETTE_LABEL",
+                        font: "{!PaletteFont}",
+                        textAlign: "center",
+                        wrap: go.TextBlock.WrapFit,
+                        alignment: new go.Spot(1.0, 0.5, 35, 0)
+                    },
+                    new go.Binding("text", "name")
+                ),
+                g$(go.TextBlock, "",
+                    {
+                        name: "LABEL",
+                        text: " ",
+                        textAlign: "center",
+                        alignmentFocus: go.Spot.Center
+                    },
+                    new go.Binding("text").makeTwoWay()
+                ),
+                {
+                    mouseEnter: function(e, obj, prev)
+                    {
+                        StillActive();
+                    },
+                    mouseLeave: function(e, obj, next)
+                    {
+                        StillActive();
+                    },
+                    mouseDragEnter: function(e, node, prev) 
+                    { 
+                        HighLightImage(node, true);                                 
+                    },
+                    mouseDragLeave: function(e, node, next) 
+                    { 
+                        HighLightImage(node, false); 
+                    },
+                    mouseDrop: function(e, node)
+                    {
+                        HighLightImage(node, false); 
+                    }
+                }
+            );
+
+            var rollTemplate =
+                g$(go.Node,
+                {
+                    rotatable: false,
+                    locationSpot: go.Spot.Center,
+                    locationObjectName: "GUIDE",
+                    resizable: true,
+                    resizeObjectName: "GUIDE",
+                    selectionAdorned: false,
+                    //toLinkable: true,
+                    fromLinkable: false,
+                    movable: true,
+
+                    contextMenu: g$
+                    (
+                        go.Adornment,
+                        "Vertical",
+                        g$("ContextMenuButton", g$(go.TextBlock, "{!$Label.Change_Belt_Side}"),
+                        {
+                            click: function(e, obj)
+                            {
+                                diagram.startTransaction("change belt side");
+
+                                var contextmenu = obj.part;
+                                var nodedata = contextmenu.data;
+
+                                var newVal = !nodedata.outside;
+
+                                nodedata.outside = newVal;
+                                diagram.model.setDataProperty(nodedata, "outside", newVal);
+
+                                var rollKey = nodedata.key;
+
+                                for (var it = diagram.nodes.iterator; it.next() ; )
+                                {
+                                    var node = it.value;
+                                    if (node.category == "placeholder" && node.data.snappedTo == rollKey)
+                                    {
+                                        node.data.outside = !newVal;
+                                    }
+                                }
+
+                                diagram.commitTransaction("change belt side");
+
+                                UpdateBeltType (newVal ? "Inside" : "Outside");
+                                UpdateAllBelts();
+                            }
+                        },
+                        new go.Binding("visible", "", function(o, e)
+                        {
+                            return o.onBelt != null;
+                        })),
+                        g$("ContextMenuButton", g$(go.TextBlock, "Debug Label"),
+                        {
+                            click: function (e, obj)
+                            {
+                                diagram.startTransaction("debug label");
+
+                                var key = obj.part.data.key;
+                                var roll = diagram.findNodeForKey(key);
+                                if (roll)
+                                {
+                                    var tb = roll.findObject("LABEL");
+                                    if (tb != null)
+                                        tb.text = '' + obj.part.data.key;
+                                }
+
+                                diagram.commitTransaction("debug label");
+                            }
+                        },
+                        new go.Binding("visible", "", function(o, e)
+                        {
+                            return "{!$User.FirstName} {!$User.LastName}" == "Gears CRM";
+                        })),
+                        g$("ContextMenuButton", g$(go.TextBlock, "Open Tab"),
+                        {
+                            click: function (e, obj)
+                            {
+                                diagram.startTransaction("open tab");
+
+                                if (obj && obj.part && obj.part.data && obj.part.data.objectId)
+                                {
+                                    window.open("/" + obj.part.data.objectId, "_blank");
+                                }
+
+                                diagram.commitTransaction("open tab");
+                            }
+                        },
+                        new go.Binding("visible", "", function(o, e)
+                        {
+                            return "{!$User.FirstName} {!$User.LastName}" == "Gears CRM";
+                        })),
+                        g$("ContextMenuButton", g$(go.TextBlock, "{!$Label.Menu_Unsnap_From_Belt}"),
+                        {
+                            click: function (e, obj)
+                            {
+                                diagram.startTransaction("unsnap from belt");
+
+                                MakeSpare (obj.part);
+                                UpdateBeltType("Spare");
+                                UpdateAllBelts();
+
+                                diagram.commitTransaction("unsnap from belt");
+                            }
+                        },
+                        new go.Binding("visible", "", function(o, e)
+                        {
+                            if (o.recordType == "Roll")
+                            {
+                                var k = o.key;
+
+                                for (var it = diagram.nodes.iterator; it.next() ; )
+                                {
+                                    var node = it.value;
+                                    if (node.category == "placeholder" && node.data.snappedTo == k)
+                                        return false;
+                                }
+                            }
+
+                            return o != null && (o.snappedTo != null || o.onBelt != null);
+                        })),
+
+                        g$("ContextMenuButton", g$(go.TextBlock, "{!$Label.Menu_Unsnap_Placeholders}"),
+                        {
+                            click: function (e, obj)
+                            {
+                                diagram.startTransaction("unsnap placeholders");
+
+                                var rollKey = obj.part.data.key;
+
+                                var roll = diagram.findNodeForKey(rollKey);
+
+                                var newSize = roll.measuredBounds.width * 0.75;
+
+                                for (var it = diagram.nodes.iterator; it.next() ; )
+                                {
+                                    var node = it.value;
+                                    if (node.category == "placeholder" && node.data.snappedTo == rollKey)
+                                    {
+                                        node.movable = true;
+                                        node.data.snappedTo = null; // still on belt, though
+
+                                        var shape = node.findObject("GUIDE");
+                                        shape.visible = true;
+                                        shape.strokeDashArray = [6, 3];
+
+                                        shape.width = newSize;
+                                        shape.height = newSize;
+                                    }
+                                }
+
+                                UpdateAllBelts();
+
+                                diagram.commitTransaction("unsnap placeholders");
+                            }
+                        },
+                        new go.Binding("visible", "", function(o, e)
+                        {
+                            if (o.recordType == "Roll")
+                            {
+                                var k = o.key;
+
+                                for (var it = diagram.nodes.iterator; it.next() ; )
+                                {
+                                    var node = it.value;
+                                    if (node.category == "placeholder" && node.data.snappedTo == k)
+                                        return true;
+                                }
+                            }
+
+                            return false;
+                        })),
+
+                        g$("ContextMenuButton", g$(go.TextBlock, "{!$Label.Menu_Make_Not_Free}"),
+                        {
+                            click: function (e, obj)
+                            {
+                                diagram.startTransaction("make not free");
+
+                                obj.part.data.isFreeRoll = false;
+
+                                diagram.commitTransaction("make not free");
+                            }
+                        },
+                        new go.Binding("visible", "", function(o, e)
+                        {
+                            return o.isFreeRoll == true && node.category == "roll";
+                        })),
+
+                        g$("ContextMenuButton", g$(go.TextBlock, "{!$Label.Menu_Make_Free_Roll}"),
+                        {
+                            click: function(e, obj)
+                            {
+                                var roll = obj.part;
+
+                                diagram.startTransaction("make free roll");
+
+                                roll.data.isFreeRoll = true;
+
+                                if (roll.data.snappedTo != null)
+                                {
+                                    MakeSpare (roll);
+                                    UpdateBeltType ("Spare");
+                                    UpdateAllBelts();
+                                }
+
+                                diagram.commitTransaction("make free roll");
+                            }
+                        },
+                        new go.Binding("visible", "", function(o, e)
+                        {
+                            var k = o.key;
+
+                            for (var it = diagram.nodes.iterator; it.next() ; )
+                            {
+                                var node = it.value;
+                                if (node.category == "placeholder" && node.data.snappedTo == k)
+                                    return false;
+                            }
+
+                            var node = diagram.findNodeForKey(k);
+
+                            return node.category == "roll" && (o.isFreeRoll == null || o.isFreeRoll == false);
+                        }))
+                    )
+                },
+                new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
+                new go.Binding("angle", "rotate").makeTwoWay(),
+                new go.Binding("scale", "scale").makeTwoWay(),
+                new go.Binding("layerName", "lName").makeTwoWay(),
+                g$(go.Panel, "Spot",
+                    g$(go.Shape, "Circle",
+                    {
+                        name: "GUIDE",
+                        fill: "transparent",
+                        width: {!FirstAutoRollSize} * {!RollSizeMultiplier},
+                        height: {!FirstAutoRollSize} * {!RollSizeMultiplier},
+                        geometryStretch: go.GraphObject.Uniform,
+                        strokeWidth: 1
+                    },
+                    new go.Binding("scale").makeTwoWay(),
+                    new go.Binding("scale", "imageScale").makeTwoWay(),
+                    new go.Binding("width").makeTwoWay(),
+                    new go.Binding("height").makeTwoWay(),
+                    new go.Binding("stroke", "isSelected", function(selected, node)
+                    {
+                        var ret;
+                        if (selected)
+                            ret = COLOR_SELECTED;
+                        else
+                        if (node.part && node.part.data.beltError && !node.part.data.isFreeRoll)
+                            ret = COLOR_ERROR;
+                        else
+                            ret = COLOR_NORMAL;
+
+                        return ret;
+                    }).ofObject(),
+                    new go.Binding("strokeWidth", "isSelected", function(selected, node)
+                    {
+                        var ret;
+                        if (selected)
+                            ret = WIDTH_SELECTED;
+                        else
+                        if (node.part && node.part.data.beltError && !node.part.data.isFreeRoll)
+                            ret = WIDTH_ERROR;
+                        else
+                            ret = WIDTH_NORMAL;
+
+                        return ret;
+                    }).ofObject()),
+
+                    g$(go.Panel, "Viewbox",
+                        {
+                            scale: 0.65
+                        },
+                        new go.Binding('width'),
+                        new go.Binding('height'),
+                        g$(go.TextBlock, 
+                        {
+                            spacingAbove: 1.5,
+                            name: "LABEL",
+                            font: "{!LabelFont}",
+                            stroke: "{!LabelColor}",
+                            editable: true,
+                            isMultiline: GetConfig("Roll").Label_Multiline__c,
+                            textAlign: "center"
+                        },
+                        new go.Binding ("text").makeTwoWay())),
+                ),
+                g$(go.TextBlock, "",
+                    {
+                        name: "PALETTE_LABEL",
+                        margin: 5,
+                        font: "{!PaletteFont}",
+                        width: 75
+                    },
+                    new go.Binding("text", "name"),
+                ),
+                {
+                    mouseEnter: function(e, obj, prev)
+                    {
+                        StillActive();
+                    },
+                    mouseLeave: function(e, obj, next)
+                    {
+                        StillActive();
+                    }
+                }
+            );
+
+            var beltTemplate =
+                g$(go.Node,
+                {
+                    selectionAdorned: false,
+                    layerName: "Background",
+                    copyable: true,
+                    movable: false,
+                    //toLinkable: true,
+                    fromLinkable: false,
+                    mouseDragEnter: function(e, belt)
+                    {
+                        var dragNode = diagram.toolManager.draggingTool.draggingParts.first();
+                        if (dragNode == null ||
+                            !dragNode.data.snapToBelt ||
+                            dragNode.data.isFreeRoll == true ||
+                            dragNode.data.onBelt != null ||
+                            dragNode.data.snappedTo != null)
+                        {
+                            return;
+                        }
+
+                        var drag = dragNode.data.key;
+                        var guides = belt.data.guides;
+                        var nGuides = guides.length;
+
+                        if (nGuides < 2)
+                        {
+                            if (nGuides == 1 && guides[0].k != drag)
+                            {
+                                Highlight (guides[0].k);
+                            }
+                        }
+                        else
+                        {
+                            var shortest = FindSegment (e, belt);
+                            if (shortest != null)
+                            {
+                                UnHighlight();
+
+                                var prev = null;
+
+                                for (var i = 0; i < nGuides; i++)
+                                {
+                                    if (guides[i].k == shortest.k)
+                                        break;
+
+                                    prev = guides[i];
+                                }
+
+                                if (prev == null)
+                                    prev = guides[nGuides - 1];
+
+                                //console.log ('between ' + shortest.k + ' and ' + prev.k);
+
+                                if (shortest.k != drag && prev.k != drag)
+                                {
+                                    Highlight (shortest.k);
+                                    Highlight (prev.k);
+                                }
+                            }
+                        }
+                    },
+                    mouseDragLeave: function(e, belt)
+                    {
+                        var dragNode = diagram.toolManager.draggingTool.draggingParts.first();
+                        if (dragNode == null ||
+                            !dragNode.data.snapToBelt ||
+                            dragNode.data.isFreeRoll == true ||
+                            dragNode.data.onBelt != null ||
+                            dragNode.data.snappedTo != null)
+                        {
+                            return;
+                        }
+
+                        var guides = belt.data.guides;
+                        var nGuides = guides.length;
+                        
+                        if (nGuides < 2)
+                        {
+                            UnHighlight();
+                        }
+                        else
+                        {
+                            UnHighlight();
+                        }
+                    },
+                    mouseDrop: function (e, belt)
+                    {
+                        var dragNode = diagram.toolManager.draggingTool.draggingParts.first();
+                        if (dragNode == null ||
+                            !dragNode.data.snapToBelt ||
+                            dragNode.data.isFreeRoll == true ||
+                            dragNode.data.onBelt != null ||
+                            dragNode.data.snappedTo != null)
+                        {
+                            return;
+                        }
+
+                        var guides = belt.data.guides;
+                        var nGuides = guides.length;
+                        var drag =  dragNode.data.key;
+
+                        //console.log ("drop " + drag + " onto belt");
+
+                        var alreadyOnBelt = false;
+                        for (var i = 0; i < nGuides; i++)
+                        {
+                            if (guides[i].k == drag)
+                            {
+                                alreadyOnBelt = true;
+                                break;
+                            }
+                        }
+
+                        if (nGuides < 2)
+                        {
+                            UnHighlight();
+                            MakeSpare (dragNode);
+
+                            if (nGuides == 0 || guides[0].k != drag)
+                            {
+                                dragNode.data.snappedTo = belt.data.key;
+                                dragNode.data.snapChange = true;
+                                dragNode.data.onBelt = belt.data.key;
+
+                                guides.push ({k: drag, from: null, to: null});
+
+                                UpdateAllBelts();
+                            }
+                        }
+                        else
+                        {
+                            var shortest = FindSegment (e, belt);
+                            if (shortest != null)
+                            {
+                                var prev = null;
+
+                                for (var i = 0; i < nGuides; i++)
+                                {
+                                    if (guides[i].k == shortest.k)
+                                        break;
+
+                                    prev = guides[i];
+                                }
+
+                                if (prev == null)
+                                    prev = guides[nGuides - 1];
+
+                                //console.log ('drop between ' + shortest.k + ' and ' + prev.k);
+
+                                if (shortest.k != drag && prev.k != drag)
+                                {
+                                    UnHighlight();
+                                    MakeSpare (dragNode);
+
+                                    dragNode.data.snappedTo = belt.data.key;
+                                    dragNode.data.snapChange = true;
+                                    dragNode.data.onBelt = belt.data.key;
+
+                                    for (var i = 0; i < nGuides; i++)
+                                    {
+                                        if (guides[i].k == shortest.k)
+                                        {
+                                            guides.splice (i, 0, {k: drag, from: null, to: null});
+                                            break;
+                                        }
+                                    }
+                                    UpdateAllBelts();
+                                }
+                            }
+                        }
+                    }
+                },
+                g$(go.Shape,
+                {
+                    name: "BELT",
+                    fill: "transparent",
+                    strokeWidth: BELT_WIDTH_NORMAL
+                },
+                new go.Binding("stroke", "isSelected", function(s, e) { return BeltColor(s, e.part); }).ofObject(),
+                {
+                    mouseEnter: function(e, obj, prev)
+                    {
+                        StillActive();
+                    },
+                    mouseLeave: function(e, obj, next)
+                    {
+                        StillActive();
+                    }
+                })
+            );
+
+            var annotationStr = "M 150,0L 0,0L 0,600L 150,600 M 800,0";
+            var annotationGeo = go.Geometry.parse(annotationStr);
+            annotationGeo.normalize();
+            go.Shape.defineFigureGenerator("Annotation", function(shape, w, h)
+            {
+                var geo = annotationGeo.copy();
+
+                // calculate how much to scale the Geometry so that it fits in w x h
+                var bounds = geo.bounds;
+
+                var scaleW = w / bounds.width;
+                var scaleH = h / bounds.height;
+
+                geo.scale(scaleW, scaleH);
+
+                return geo;
+            });
+
+            var circleNoteTemplate =
+                g$(go.Node, "Auto",
+                {
+                    locationSpot: go.Spot.Center,
+                    resizable: false,
+                    resizeObjectName: "SHAPE"
+                },
+                new go.Binding("layerName", "lName"),
+                new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
+                g$(go.Shape, "Circle",
+                {
+                    name: "SHAPE",
+                    portId: "",
+                    fromLinkable: true,
+                    cursor: "pointer",
+                    fill: "{!CircleNoteBackground}",
+                    strokeWidth: 0,
+                    width: {!CircleNoteSize},
+                    height: {!CircleNoteSize}
+                }),
+                g$(go.TextBlock, "{!$Label.Default_Note_Text}",
+                {
+                    font: "{!CircleNoteFont}",
+                    stroke: "{!CircleNoteForeground}",
+                    margin: 0,
+                    editable: true,
+                    isMultiline: false
+                },
+                new go.Binding("text").makeTwoWay(),
+                {
+                    mouseEnter: function(e, obj, prev)
+                    {
+                        StillActive();
+                    },
+                    mouseLeave: function(e, obj, next)
+                    {
+                        StillActive();
+                    }
+                })
+            );
+
+            var annotationTemplate =
+                g$(go.Node, "Auto",
+                {
+                    background: GradientLightGray,
+                    locationSpot: go.Spot.Center
+                },
+                new go.Binding("layerName", "lName"),
+                new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
+                g$(go.Shape, "Annotation", // A left bracket shape
+                {
+                    portId: "",
+                    fromLinkable: true,
+                    cursor: "pointer",
+                    strokeWidth: 2,
+                    stroke: "gray"
+                }),
+                g$(go.TextBlock, "{!$Label.Default_Note_Text}",
+                {
+                    font: "{!BoxNoteFont}",
+                    margin: 5,
+                    editable: true
+                },
+                new go.Binding("text").makeTwoWay(),
+                {
+                    mouseEnter: function(e, obj, prev)
+                    {
+                        StillActive();
+                    },
+                    mouseLeave: function(e, obj, next)
+                    {
+                        StillActive();
+                    }
+                })
+            );
+
+            var resizableArrowTemplate =
+                g$(go.Node, "Auto",
+                {
+                    //rotatable: true,
+                    movable: true,
+                    resizable: true, resizeObjectName: "SHAPE", // user can resize the Shape
+                    locationObjectName: "SHAPE",
+                    //toLinkable: true,
+                    fromLinkable: false,
+                    locationSpot: go.Spot.Center,
+                    resizeAdornmentTemplate: g$(go.Adornment, "Spot", // specify what resize handles there are and how they look
+                        g$(go.Placeholder), // takes size and position of adorned object
+                        g$(go.Shape, "Rectangle", // left resize handle
+                        {
+                            alignment: go.Spot.Left,
+                            cursor: "col-resize",
+                            desiredSize: new go.Size(6,6),
+                            fill: "lightblue",
+                            stroke: "dodgerblue"
+                        }),
+                        g$(go.Shape, "Rectangle", // right resize handle
+                        {
+                            alignment: go.Spot.Right,
+                            cursor: "col-resize",
+                            desiredSize: new go.Size(6,6),
+                            fill: "lightblue",
+                            stroke: "dodgerblue"
+                        })),
+                    selectionAdorned: false
+                },
+                new go.Binding("angle").makeTwoWay(),
+                new go.Binding("layerName", "lName").makeTwoWay(),
+                new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
+                g$(go.Shape,
+                {
+                    name: "SHAPE",
+                    //fill: "transparent",
+                    strokeWidth: ARROW_WIDTH_NORMAL
+                },
+                new go.Binding("scale", "imageScale").makeTwoWay(),
+                {
+                    mouseEnter: function(e, obj, prev)
+                    {
+                        StillActive();
+                    },
+                    mouseLeave: function(e, obj, next)
+                    {
+                        StillActive();
+                    }
+                })
+            );
+
+            var nonresizableArrowTemplate =
+                g$(go.Node, "Auto",
+                {
+                    rotatable: true,
+                    movable: true,
+                    resizable: false,
+                    locationObjectName: "SHAPE",
+                    //toLinkable: true,
+                    fromLinkable: false,
+                    locationSpot: go.Spot.Center
+                },
+                new go.Binding("angle").makeTwoWay(),
+                new go.Binding("layerName", "lName").makeTwoWay(),
+                new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
+                g$(go.Shape,
+                {
+                    name: "SHAPE",
+                    //fill: "transparent",
+                    margin: 5,
+                    strokeWidth: ARROW_WIDTH_NORMAL,
+                    geometryStretch: go.GraphObject.None
+                },
+                new go.Binding("scale", "imageScale").makeTwoWay(),
+                {
+                    mouseEnter: function(e, obj, prev)
+                    {
+                        StillActive();
+                    },
+                    mouseLeave: function(e, obj, next)
+                    {
+                        StillActive();
+                    }
+                })
+            );
+
+            templateMap.add("", defaultNodeTemplate);
+            templateMap.add("roll", rollTemplate);
+            templateMap.add("placeholder", rollTemplate);
+            templateMap.add("belt", beltTemplate);
+            templateMap.add("annotation", annotationTemplate);
+            templateMap.add("circleNote", circleNoteTemplate);
+            templateMap.add("resizableArrow", resizableArrowTemplate);
+            templateMap.add("nonresizableArrow", nonresizableArrowTemplate);
+
+            diagram.nodeTemplateMap = templateMap;
+
+            go.Shape.defineFigureGenerator("BpmnActivityLoop", function (shape, w, h) {
+                        var geo = new go.Geometry(); var r = .5; var cx = 0;
+                        // offset from Center x
+                        var cy = 0;
+                        // offset from Center y
+                        var d = r * KAPPA;
+                        var mx1 = (.4 * Math.SQRT2 / 2 + .5);
+                        var my1 = (.5 - .5 * Math.SQRT2 / 2);
+                        var x1 = 1;
+                        var y1 = .5;
+                        var x2 = .5;
+                        var y2 = 0;
+                        var fig = new go.PathFigure(mx1 * w, (1 - my1) * h, false);
+                        geo.add(fig);
+                        fig.add(new go.PathSegment(go.PathSegment.Bezier, x1 * w, y1 * h, x1 * w, .7 * h, x1 * w, y1 * h));
+                        fig.add(new go.PathSegment(go.PathSegment.Bezier, (x2 + cx) * w, (y2 + cx) * h, (.5 + r + cx) * w, (.5 - d + cx) * h, (.5 + d + cx) * w, (.5 - r + cx) * h));
+                        fig.add(new go.PathSegment(go.PathSegment.Bezier, (.5 - r + cx) * w, (.5 + cy) * h, (.5 - d + cx) * w, (.5 - r + cy) * h, (.5 - r + cx) * w, (.5 - d + cy) * h));
+                        fig.add(new go.PathSegment(go.PathSegment.Bezier, (.35 + cx) * w, .9 * h, (.5 - r + cx) * w, (.5 + d + cy) * h, (.5 - d + cx) * w, .9 * h));
+                        // Arrowheadfig.add(new go.PathSegment(go.PathSegment.Move, (.25 + cx) * w, 0.8 * h));
+                        fig.add(new go.PathSegment(go.PathSegment.Line, (.35 + cx) * w, 0.9 * h));
+                        fig.add(new go.PathSegment(go.PathSegment.Line, (.20 + cx) * w, 0.95 * h));
+                        return geo;
+                    });
+
+
+            diagram.groupTemplate =
+                g$(go.Group, "Auto", //"Vertical",
+                    {
+                        selectionObjectName: "PANEL",  // selection handle goes around shape, not label
+                        ungroupable: true,
+                        rotatable: false,
+                        rotateObjectName: "GROUPSHAPE",
+                        rotateAdornmentTemplate:
+                        g$(go.Adornment,
+                            {
+                                locationSpot: go.Spot.Center,
+                                background: "transparent"
+                            },
+                            g$(go.Shape, "BpmnActivityLoop",
+                            {
+                                width: 12,
+                                height: 12,
+                                stroke: COLOR_SELECTED,
+                                strokeWidth: 2
+                            })
+                        )
+                    },
+                g$(go.Panel, "Auto",
+                    {
+                        name: "PANEL"
+                    },
+                    g$(go.Shape, "Rectangle",  // the rectangular shape around the members
+                    {
+                        name: "GROUPSHAPE",
+                        fill: "rgba(224,224,224,0.1)",
+                        stroke: "gray",
+                        strokeWidth: 0.5,
+                        portId: "",
+                        //cursor: "pointer"//,  // the Shape is the port, not the whole Node
+
+                        //fromLinkableSelfNode: true,
+                        //fromLinkableDuplicates: true,
+                        //toLinkable: true,
+                        fromLinkable: false
+                        //toLinkableSelfNode: true,
+                        //toLinkableDuplicates: true
+                    }),
+                    g$(go.Placeholder,
+                    {
+                        margin: 10,
+                        background: "transparent"
+                    })  // represents where the members are
+                )
+            ); 
+
+            diagram.addDiagramListener("ClipboardChanged", function(e)
+            {
+                //console.log ('clipboard changed');
+
+                for (var it = e.subject.iterator; it.next() ; )
+                {
+                    it.value.data.copiedFrom = it.value.data.key;
+                }
+            });            
+
+            diagram.addDiagramListener("InitialLayoutCompleted", function(e)
+            {
+                //console.log ("InitialLayoutCompleted");
+                LoadMetadata();
+                UpdateAllBelts();
+
+                for (var it = diagram.nodes.iterator; it.next() ; )
+                {
+                    var node = it.value;
+                    if (node.data.snapping)
+                    {
+                        if (node.category == "resizableArrow" || node.category == "nonresizableArrow")
+                            FixArrowShape (node);
+                    }
+                }
+
+                // weird things happen to stuff like roll widths if i don't it unwind before
+                // fixing up the snappings
+                setTimeout (FixNodes, 1);
+            });
+
+            diagram.addDiagramListener("LinkRelinked", function(e)
+            {
+                //console.log("LinkRelinked");
+
+                diagramDirty = true;
+
+                if (e && e.parameter)
+                {
+                    var part = e.parameter.part;
+
+                    if (part && part.data && part.data.filterNumber)
+                    {
+                        delete part.data.filterNumber;
+                        part.data.filterChange = true;
+                    }
+
+                    HandleLinkDrawn(e);
+                }
+            });
+
+            diagram.addDiagramListener("LinkDrawn", function(e)
+            {
+                HandleLinkDrawn(e);
+            });
+
+            diagram.addDiagramListener("ObjectDoubleClicked", function (e)
+            {
+                var part = e.subject.part;
+                var to = part.data ? part.data.snappedTo : null;
+                if (part.category == "belt" && part.data.guides)
+                {
+                    var rolls = new go.List();
+                    var guides = part.data.guides;
+
+                    for (var i = 0; i < guides.length; i++)
+                    {
+                        var roll = diagram.findNodeForKey(guides[i].k);
+
+                        rolls.add (roll);
+                    }
+
+                    diagram.clearSelection();
+                    diagram.selectCollection(rolls);
+                }
+                else
+                if (part.category == "group")
+                {
+                    var parts = new go.List();
+                    var groupKey = e.subject.part.data.key;
+
+                    for (var it = diagram.nodes.iterator; it.next() ; )
+                    {
+                        if (it.key.data.group == groupKey)
+                        {
+                            parts.add (it.key);
+                        }
+                    }
+                    diagram.clearSelection();
+                    diagram.selectCollection(parts);
+                }
+            });
+
+            diagram.addDiagramListener("ViewportBoundsChanged", function(e)
+            {
+                FixViewport(e.diagram);
+            });
+
+            function FixNodes()
+            {
+                diagram.startTransaction("post load fixup");
+
+                for (var it = diagram.nodes.iterator; it.next() ; )
+                {
+                    var node = it.value;
+                    if (node.data.snapping)
+                    {
+                        SnapToKey (node, node.data.snappedTo);
+                    }
+                }
+
+                diagram.commitTransaction("post load fixup");
+            }            
+
+            var w = new go.Layer();
+            w.name = 'Watermarks';
+            w.isTemporary = true;
+
+            diagram.addLayer(w);
+
+            diagram.add(
+                g$(go.Part,
+                {
+                    layerName: "Watermarks",
+                    _viewPosition: new go.Point(-1, -1),
+                    selectable: false,
+                    name: 'title'
+                },
+                g$(go.TextBlock, "{!MapTitle}",
+                {
+                    font: "bold 10pt sans-serif"
+                })
+            ));
+
+            diagram.add(
+                g$(go.Part,
+                {
+                    layerName: "Watermarks",
+                    _viewPosition: new go.Point(-1, -1),
+                    selectable: false,
+                    name: 'copyright'
+                },
+                g$(go.TextBlock, "© " + new Date().getFullYear() + " Kadant, Inc", // todo: why doesn't &copy; work?
+                {
+                    font: "bold 10pt sans-serif"
+                })
+            ));
+
+            diagram.add(
+                g$(go.Part,
+                {
+                    layerName: "Watermarks",
+                    _viewPosition: new go.Point(-1, -1),
+                    selectable: false,
+                    name: 'kadantImage'
+                },
+                g$(go.Picture,
+                {
+                    width: (265 / 2),
+                    height: (46 / 2),
+                    source: '{!$Resource.KadantLogo}'
+                })
+            ));
+        } // init
+
+
+        function HandleLinkDrawn(e)
+        {
+            //console.log("HandleLinkDrawn");
+
+            var subj = e.subject;
+            if (subj && subj.fromNode)
+            {
+                if (subj.fromNode.category === "annotation")
+                    subj.category = "annotation";
+                else
+                if (subj.fromNode.category === "circleNote")
+                    subj.category = "circleNote";
+                else
+                if (subj.fromNode.data && subj.toNode.data)
+                {
+                    var filter;
+                    var other;
+
+                    if (subj.fromNode.data.sObjectType == FILTER_CLASS)
+                    {
+                        filter = subj.fromNode.data;
+                        other  = subj.toNode.data;
+                    }
+                    else
+                    if (subj.toNode.data.sObjectType == FILTER_CLASS)
+                    {
+                        filter = subj.toNode.data;
+                        other  = subj.fromNode.data;
+                    }
+
+                    if (filter && other)
+                    {
+                        var config = GetConfig(other.recordType);
+                        if (config && config.Filter_Field__c && config.Filter_Field__c != "")
+                        {
+                            //console.log("link filter " + filter.key + " to " + other.key +
+                                //" on field " + other.sObjectType + "." + config.Filter_Field__c);
+
+                            other.filterNumber = filter.key;
+                            other.filterChange = true;
+                        }
+                    }
+                }
+
+                switch (subj.fromNode.category)
+                {
+                    case "annotation":
+                    case "circleNote":
+                        subj.fromNode.layerName = subj.toNode.part.layerName;
+                        subj.fromNode.data.lName = subj.toNode.part.layerName;
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        }
+
+        function BeltColor (isSelected, belt)
+        {
+            if (isSelected)
+                return COLOR_SELECTED;
+
+            var guides = belt.data.guides;
+            if (guides.length < 1)
+                return COLOR_ERROR;
+
+            if (guides.length < 2)
+                return COLOR_ERROR2;
+
+            if (belt.data.color)
+                return belt.data.color;
+
+            return COLOR_NORMAL;
+        }
+
+        function MakeSpare (node)
+        {
+            var key = node.data.key;
+            var madeChange = false;
+            diagram.startTransaction("make spare");
+
+            for (var it = diagram.nodes; it.next() && !madeChange ; )
+            {
+                var belt = it.value;
+
+                if (belt && belt.category == "belt")
+                {
+                    var guides = belt.data.guides;
+
+                    for (var i = 0; i < guides.length && !madeChange; i++)
+                    {
+                        if (guides[i].k == key)
+                        {
+                            node.data.snapChange = true;
+                            node.data.snappedTo = null;
+                            node.data.onBelt = null;
+
+                            guides.splice (i, 1);
+                            madeChange = true;
+                        }
+                    }
+                }
+
+                if (node.category == "placeholder")
+                {
+                    node.movable = true;
+
+                    var shape = node.findObject("GUIDE");
+                    shape.visible = true;
+                    shape.strokeDashArray = [6, 3];
+                }
+            }
+
+            var shape = diagram.findNodeForKey(key).findObject("GUIDE");
+            if (shape != null)
+            {
+                shape.stroke = COLOR_NORMAL;
+                shape.strokeWidth = WIDTH_NORMAL;
+            }
+            diagram.commitTransaction("make spare");
+        }
+
+        function FindSegment (e, node)
+        {
+            var x0 = e.documentPoint.x;
+            var y0 = e.documentPoint.y;
+
+            var guides = node.data.guides;
+            var nGuides = guides.length;
+            var shortest = null;
+            var shortestLen;
+
+            for (var i = 0; i < nGuides; i++)
+            {
+                var g = guides[i];
+
+                if (g.from == null || g.to == null)
+                    return null;
+
+                var x1 = g.from.x;
+                var y1 = g.from.y;
+
+                var x2 = g.to.x;
+                var y2 = g.to.y;
+
+                var dx = x2 - x1;
+                var dy = y2 - y1;
+
+                var dist = Math.abs(dy * x0 - dx * y0 - x1 * y2 + x2 * y1) / Math.sqrt((dx * dx) + (dy * dy));
+
+                if (shortest == null || dist < shortestLen)
+                {
+                    shortest = g;
+                    shortestLen = dist;
+                }
+            }
+            return shortest;
+        }
+
+        function Highlight(key)
+        {
+            ChangeStyle (key, 'red', 'white');
+            highlights.push (key);
+        };
+
+        function UnHighlight()
+        {
+            for (var i = 0; i < highlights.length; i++)
+                ChangeStyle (highlights[i], 'transparent', 'red');
+
+            highlights = [];
+        };
+
+        function ChangeStyle (key, fill, textColor)
+        {
+            var node = diagram.findNodeForKey(key);
+            var shape;
+
+            shape = node.findObject("GUIDE");
+            if (shape != null)
+                shape.fill = fill;
+
+            shape = node.findObject("PALETTE_LABEL"); // ?
+            if (shape != null)
+                shape.stroke = textColor;
+        }
+
+        function UpdateAllBelts()
+        {
+            diagram.startTransaction("update all belts");
+
+            for (var it = diagram.nodes; it.next() ; )
+            {
+                var node = it.value;
+                if (node.data.snapToBelt)
+                    node.data.forceBeltError = false;
+            }
+
+            diagram.nodes.each(function(n)
+            {
+                if (n.category === "belt")
+                    UpdateBelt(n);
+            });
+
+            diagram.commitTransaction("update all belts");
+        }
+
+        function UpdateBelt(belt)
+        {
+            var d = belt.diagram;
+
+            var guideinfos = belt.data.guides;
+
+            var guides = [];
+            var keys = new go.Set();
+            var shape = belt.findObject("BELT");
+
+            isSheetPath = false;                            
+            if (belt.data.recordType == 'Sheet Path')
+            {
+                isSheetPath = true;
+            }
+
+            for (var i = 0; i < guideinfos.length; i++)
+            {
+                var guide = guideinfos[i];
+                var key = guide.k;
+
+                var guidenode = d.findNodeForKey(key);
+                if (guidenode == null || keys.contains(key))
+                {
+                    // node was deleted - shoot the guide, too
+                    //console.log ('key ' + key + ' no longer found or dup');
+                    guideinfos.splice (i--, 1);
+                }
+                else
+                {
+                    keys.add (key);
+
+                    var guideShape = null;
+
+                    if (guidenode.category == "placeholder" && guidenode.data.snappedTo != null)
+                    {
+                        var actualKey = guidenode.data.snappedTo;
+                        var actualNode = d.findNodeForKey(actualKey);
+
+                        guideShape = actualNode.findObject("GUIDE");
+                    }
+
+                    if (guideShape == null)
+                        guideShape = guidenode.findObject("GUIDE");
+
+                    if (guideShape == null || guideShape.measuredBounds == null)
+                    {
+                        console.log ("no shape!");
+                    }
+
+                    var radius = (guideShape.measuredBounds.width / 2) - 0.5;
+
+                    // todo: can we cache these so we redraw only what's needed?
+                    guide.from = null;
+                    guide.to = null;
+
+                    var tmp =
+                    {
+                        name: key,
+                        node: guidenode,
+                        guide: guideShape,
+                        location: guidenode.location.copy(),
+                        radius: radius,
+                        outside: !!guidenode.data.outside,
+                        from: null,
+                        to: null
+                    };
+
+                    guides.push (tmp);
+                }
+            }
+
+            var shape = belt.findObject("BELT");
+            if (shape != null)
+                shape.stroke = BeltColor (false, belt);
+
+            if (guides.length < 2)
+            {
+                var geo = new go.Geometry();
+                var fig;
+
+                if (guides.length === 1)
+                {
+                    // single guide - draw a circle around it
+                    var guide = guides[0];
+                    var guideNode = guide.node;
+
+                    var nodeShape = guideNode.findObject("GUIDE");
+
+                    var w = nodeShape.width + 10;
+                    var h = nodeShape.height + 10;
+                    var r = w / 2;
+
+                    fig = new go.PathFigure(r, 0);
+                    fig.add(new go.PathSegment(go.PathSegment.Arc, 0, 360, 0, 0, r, r));
+
+                    geo.add(fig);
+
+                    shape.geometry = geo;
+                    shape.stroke = "darkred";
+                    shape.strokeWidth = BELT_WIDTH_ERROR;
+                    shape.strokeDashArray = BELT_DASH_ERROR;
+
+                    var halfS = shape.strokeWidth / 2;
+
+                    belt.location = new go.Point(guide.location.x - r - halfS, guide.location.y - r - halfS);
+                }
+                else
+                {
+                    var w = 30;
+                    var h = 30;
+                    var r = w / 2;
+
+                    fig = new go.PathFigure(r, 0);
+                    fig.add(new go.PathSegment(go.PathSegment.Arc, 0, 360, 0, 0, r, r));
+
+                    geo.add(fig);
+
+                    shape.geometry = geo;
+                    shape.stroke = COLOR_ERROR;
+                    shape.strokeWidth = BELT_WIDTH_ERROR;
+                    shape.strokeDashArray = BELT_DASH_ERROR;
+                }
+
+                return;
+            }
+
+            // compute the contact points
+            for (var i = 0; i < guides.length; i++)
+            {
+                var guide = guides[i];
+                var next = guides[(i + 1) % guides.length];
+                computeContacts(guide, next);
+            }
+
+            var prev = null;
+            for (var i = 0; i <= guides.length; i++)
+            {
+                var x = i % guides.length;
+                var guide = guides[x];
+
+                if (prev != null)
+                    guideinfos[x].from = prev.from;
+
+                guideinfos[x].to = guide.to;
+
+                prev = guide;
+            }
+
+            var geo = new go.Geometry();
+            var fig = null;
+            
+            // Add Sheet Path handling here!!  minus 1 from guides
+            var numGuides = guides.length;
+            if (isSheetPath)
+            {
+                numGuides = guides.length - 1;
+            }
+
+            for (var i = 0; i < numGuides; i++)
+            {
+                var guide = guides[i];
+                var next = guides[(i + 1) % guides.length];
+                var follow = guides[(i + 2) % guides.length];
+
+                var wasError = next.guide.part.data.beltError;
+                var isError = PointsIntersect(guide.from, next.to, next.from, follow.to) || next.node.data.forceBeltError;
+
+                if (isError && next.node.category == "placeholder" && next.node.data.snappedTo != null)
+                {
+                    // a snapped placeholder is in error - force the error onto the actual roll
+                    var actualKey = next.node.data.snappedTo;
+                    var actualNode = d.findNodeForKey(actualKey);
+
+                    actualNode.data.forceBeltError = true;
+                }
+
+                if (wasError != isError)
+                {
+                    next.guide.part.data.beltError = isError;
+
+                    if (isError)
+                    {
+                        next.guide.stroke = COLOR_ERROR;
+                        next.guide.strokeWidth = WIDTH_ERROR;
+                    }
+                    else
+                    {
+                        next.guide.stroke = next.node.isSelected ? COLOR_SELECTED : COLOR_NORMAL;
+                        next.guide.strokeWidth = next.node.isSelected ? WIDTH_SELECTED : WIDTH_NORMAL;
+                    }
+                }
+
+                if (fig === null)
+                {
+                    fig = new go.PathFigure(guide.from.x, guide.from.y, true);
+                    geo.add(fig);
+                }
+
+                fig.add(new go.PathSegment(go.PathSegment.Line, next.to.x, next.to.y));
+
+                var startang = next.location.directionPoint(next.to);
+                var endang = next.location.directionPoint(next.from);
+                var sweep = (endang > startang) ? endang - startang : (360 - startang) + endang;
+
+                var sw = next.outside ? (sweep - 360) : sweep;
+
+                if (next.outside)
+                {
+                    // go counter-clockwise
+                    fig.add(new go.PathSegment(go.PathSegment.Arc, startang, sweep - 360, next.location.x, next.location.y, next.radius, next.radius));
+                }
+                else
+                {
+                    // positive sweep angle
+                    fig.add(new go.PathSegment(go.PathSegment.Arc, startang, sweep,    next.location.x, next.location.y, next.radius, next.radius));
+                }
+            }
+
+            // update the belt's Shape.geometry
+            if (shape !== null)
+            {
+                var pos = geo.normalize();
+                shape.geometry = geo;
+                shape.strokeDashArray = BELT_DASH_NORMAL;
+                shape.strokeWidth = BELT_WIDTH_NORMAL;
+                belt.position = new go.Point(-pos.x - shape.strokeWidth / 2, -pos.y - shape.strokeWidth / 2);
+            }
+        }
+
+        function comparePointWithLine(a1x, a1y, a2x, a2y, p1x, p1y)
+        {
+            var x2 = a2x - a1x;
+            var y2 = a2y - a1y;
+            var px = p1x - a1x;
+            var py = p1y - a1y;
+            var ccw = px * y2 - py * x2;
+
+            if (ccw === 0)
+            {
+                ccw = px * x2 + py * y2;
+
+                if (ccw > 0)
+                {
+                    px -= x2;
+                    py -= y2;
+                    ccw = px * x2 + py * y2;
+
+                    if (ccw < 0)
+                        ccw = 0;
+                }
+            }
+            return (ccw < 0) ? -1 : ((ccw > 0) ? 1 : 0);
+        }
+
+        function computeContacts(guideA, guideB)
+        {
+            var locA = guideA.location;
+            var x1 = locA.x;
+            var y1 = locA.y;
+            var r1 = guideA.radius;
+            var locB = guideB.location;
+            var x2 = locB.x;
+            var y2 = locB.y;
+            var r2 = guideB.radius;
+
+            // this assumes that belts only go clockwise
+            var g = Math.atan2(y2 - y1, x2 - x1);
+            var d = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+
+            var bb = ((guideA.outside === guideB.outside) ? (r2 - r1) : (r2 + r1)) / d;
+
+            if (bb < -1)
+                bb = -1;
+            else
+            if (bb > 1)
+                bb = 1;
+
+            var b = Math.asin(bb);
+
+            if (guideB.outside)
+            {
+                if (guideA.outside)
+                {
+                    // both outside
+                    var a = Math.PI / 2 - b - g;
+                    var cosa = Math.cos(a);
+                    var sina = Math.sin(a);
+                    guideA.from = new go.Point(x1 - r1 * cosa, y1 + r1 * sina);
+                    guideB.to = new go.Point(x2 - r2 * cosa, y2 + r2 * sina);
+                }
+                else
+                {
+                    // inside A, outside B
+                    var a = Math.PI / 2 - Math.abs(b) - g;
+                    var cosa = Math.cos(a);
+                    var sina = Math.sin(a);
+                    guideA.from = new go.Point(x1 + r1 * cosa, y1 - r1 * sina);
+                    guideB.to = new go.Point(x2 - r2 * cosa, y2 + r2 * sina);
+                }
+            }
+            else
+            {
+                if (guideA.outside)
+                {
+                    // outside A, inside B
+                    var a = Math.abs(b) - Math.PI / 2 - g;
+                    var cosa = Math.cos(a);
+                    var sina = Math.sin(a);
+                    guideA.from = new go.Point(x1 + r1 * cosa, y1 - r1 * sina);
+                    guideB.to = new go.Point(x2 - r2 * cosa, y2 + r2 * sina);
+                }
+                else
+                {
+                    // both inside
+                    var a = Math.PI / 2 + b - g;
+                    var cosa = Math.cos(a);
+                    var sina = Math.sin(a);
+                    guideA.from = new go.Point(x1 + r1 * cosa, y1 - r1 * sina);
+                    guideB.to = new go.Point(x2 + r2 * cosa, y2 - r2 * sina);
+                }
+            }
+        }
+
+        function PointsIntersect(p1, p2, p3, p4)
+        {
+            return LinesIntersect (p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y);
+        }
+
+        function LinesIntersect(x1, y1, x2, y2, x3, y3, x4, y4)
+        {
+            var a1, a2, b1, b2, c1, c2;
+            var r1, r2 , r3, r4;
+            var denom, offset, num;
+
+            // Compute a1, b1, c1, where line joining points 1 and 2
+            // is "a1 x + b1 y + c1 = 0".
+            a1 = y2 - y1;
+            b1 = x1 - x2;
+            c1 = (x2 * y1) - (x1 * y2);
+
+            // Compute r3 and r4.
+            r3 = ((a1 * x3) + (b1 * y3) + c1);
+            r4 = ((a1 * x4) + (b1 * y4) + c1);
+
+            // Check signs of r3 and r4. If both point 3 and point 4 lie on
+            // same side of line 1, the line segments do not intersect.
+            if ((r3 !== 0) && (r4 !== 0) && SameSign(r3, r4))
+                return 0; //return that they do not intersect
+
+            // Compute a2, b2, c2
+            a2 = y4 - y3;
+            b2 = x3 - x4;
+            c2 = (x4 * y3) - (x3 * y4);
+
+            // Compute r1 and r2
+            r1 = (a2 * x1) + (b2 * y1) + c2;
+            r2 = (a2 * x2) + (b2 * y2) + c2;
+
+            // Check signs of r1 and r2. If both point 1 and point 2 lie
+            // on same side of second line segment, the line segments do
+            // not intersect.
+            if ((r1 !== 0) && (r2 !== 0) && (SameSign(r1, r2)))
+                return 0; //return that they do not intersect
+
+            //Line segments intersect: compute intersection point.
+            denom = (a1 * b2) - (a2 * b1);
+
+            if (denom === 0)
+                return 1; //collinear
+
+            // lines_intersect
+            return 1; //lines intersect, return true
+        }
+
+        function SameSign(a, b)
+        {
+            return (a < 0 && b < 0) || (a == 0 && b == 0) || (a > 0 && b > 0);
+        }
+
+        function UpdateBeltType (to)
+        {
+            updatingMetadata = true;
+            j$("#Belt_Relationship__c").val(to);
+            updatingMetadata = false;
+        }
+
+        function RotatePoint (p, center, degrees)
+        {
+            var rads = degrees * (Math.PI / 180);
+            var cosT = Math.cos(rads);
+            var sinT = Math.sin(rads);
+            var x = cosT * (p.x - center.x) - sinT * (p.y - center.y) + center.x;
+            var y = sinT * (p.x - center.x) + cosT * (p.y - center.y) + center.y;
+            return new go.Point (x, y);
+        }
+
+        function SnapToKey (node, toKey)
+        {
+            var snapTo = toKey != null ? diagram.findNodeForKey(toKey) : null;
+            SnapTo (node, snapTo);
+        }
+
+        function SnapTo (node, snapTo)
+        {
+            if (node.category == "resizableArrow" || node.category == "nonresizableArrow")
+                MakeArrowShape (node, snapTo);
+
+            if (snapTo != null)
+            {
+                if (node.data.snapping == "outside")
+                {
+                    var palType = node.data.objectType;
+                    var accBool = false;
+                    var newLoc = snapTo.location.copy();
+                    if (palType == "Accessory")
+                    {
+                        accBool = true;
+                    }
+                    else
+                    {
+                        // GUIDE is the ROLL template
+                        var toShape = snapTo.findObject("GUIDE");
+
+                        var toDiam = toShape.measuredBounds.width - toShape.strokeWidth + 1;
+                        var toRadius = toDiam / 2;                                    
+
+                        newLoc.x += toRadius;
+                    }
+
+                    var shape = node.findObject("SHAPE");
+                    var a = node.angle;
+                    var config = GetConfig(node.data.recordType);
+                    var offset;
+
+                    if (node.data.objectType == "Doctor")
+                    {
+                        var docWidth = shape.measuredBounds.width * shape.scale;
+                        
+                        if (docWidth == 0)
+                        {
+                            // unwind then re-call ourselves to get the real value (wth gojs?)
+                            setTimeout(function()
+                            {
+                                SnapTo (node, snapTo);
+                            }, 1);
+
+                            return;
+                        }
+
+                        newLoc.x += docWidth / 2;
+                        
+                        if (config == null)
+                            offset = {x: 0, y:0};
+                        else
+                            offset = {x: config.Doctor_Offset_X__c, y: config.Doctor_Offset_Y__c};
+
+                        if (shape.flip != null && (shape.flip == go.GraphObject.FlipVertical || shape.flip == go.GraphObject.Both))
+                        {
+                            offset.y *= -1;
+                        }
+                        newLoc.x += offset.x;
+                        newLoc.y += offset.y;
+                    }
+                    else
+                    if (accBool)
+                    {
+                        //var docWidth = shape.measuredBounds.width * shape.scale;
+                        var docWidth = 50 * shape.scale;
+                        newLoc.x += docWidth / 2;
+
+                        if (config == null)
+                            offset = {x: 0, y:0};
+                        else
+                            offset = {x: config.Doctor_Offset_X__c, y: config.Doctor_Offset_Y__c};
+
+                        newLoc.x += offset.x;
+                        newLoc.y += offset.y;
+                    }
+                    else // arrow
+                    {
+                        newLoc.x += {!OutsideArrowDistance};
+                    }
+                    newLoc = RotatePoint (newLoc, snapTo.location, a);
+                    node.location = newLoc;
+                }
+                else
+                if (node.data.snapping == "inside")
+                {
+                    node.location = snapTo.location;
+                }
+                else
+                if (node.data.snapping == "under")
+                {
+                    var pShape = node.findObject("GUIDE");
+                    var rShape = snapTo.findObject("GUIDE");
+
+                    pShape.width  = rShape.measuredBounds.width;
+                    pShape.height = rShape.measuredBounds.height;
+                    node.position = snapTo.position.copy();
+                    node.data.snappedTo = snapTo.data.key;
+                    node.data.outside = !snapTo.data.outside;
+                    node.movable = false
+                    pShape.visible = false;
+                    setTimeout(UpdateAllBelts, 1);
+                }
+            }
+        }
+
+        function SetupSnap(node)
+        {
+            if (node && node.data && node.data.snapping)
+            {
+                var snapTo = NearestNode (node, node.data.snapTo);
+                if (snapTo != null)
+                {
+                    var snapKey = snapTo.data.key;
+
+                    if (node.data.snappedTo != snapKey)
+                        node.data.snapChange = true;
+
+                    node.data.snappedTo = snapKey;
+
+                    SnapTo(node, snapTo);
+
+                    // on things like dropping a rotary joint from the palette
+                    // directly onto a roll, gojs doesn't have the height until
+                    // after we unwind (wth?) so defer the label a little
+                    setTimeout (UpdateRollFindLabel, 5, snapTo);
+                }
+                else
+                {
+                    if (node.category == "resizableArrow" || node.category == "nonresizableArrow")
+                        MakeArrowShape (node, snapTo);
+
+                    var prev = node.data.snappedTo;
+
+                    if (node.data.snappedTo != null)
+                        node.data.snapChange = true;
+
+                    node.data.snappedTo = null;
+
+                    if (prev)
+                        UpdateRollLabelFromKey(prev);
+                }
+                UnHighlight();
+            }
+        }
+
+        function FixArrowShape (node)
+        {
+            if (node.category == "resizableArrow" || node.category == "nonresizableArrow")
+            {
+                var snapKey = node.data.snapTo;
+                if (snapKey)
+                {
+                    var snapTo = diagram.findNodeForKey(snapKey);
+                    MakeArrowShape (node, snapTo);
+                }
+            }
+        }
+
+        function MakeArrowShape(arrow, snapTo)
+        {
+            var shape = arrow.findObject("SHAPE");
+
+            if (snapTo != null)
+            {
+                if (arrow.data.snapSize == null || arrow.data.snapSize == 0)
+                {
+                    // ugh..
+                    if (arrow.data.snapHack == null)
+                    {
+                        arrow.data.snapHack = true;
+
+                        setTimeout (function()
+                        {
+                            MakeArrowShape(arrow, snapTo);
+                        }, 1);
+
+                        return;
+                    }
+                }
+            }
+
+            if ((snapTo == null && arrow.data.snapSize != 0) ||
+                (snapTo != null && arrow.data.snapSize == 0) ||
+                (snapTo != null && arrow.data.snapSize != snapTo.measuredBounds.width) ||
+                (shape.geometry.figures == null || shape.geometry.figures.length == 0))
+            {
+                var geo = new go.Geometry();
+                var fig;
+
+                var size;
+                if (snapTo == null)
+                {
+                    size = ARROW_DEFAULT_SIZE;
+                    arrow.data.snapSize = 0;
+                }
+                else
+                {
+                    //console.log("MakeArrowShape, snapTo: " + snapTo);
+                    // ISSUE: Had to change the following line of code because wasn't drawing the Arrows correctly!!!
+                    // SAM --> 19-OCT-2020
+                    //size = snapTo.measuredBounds.width * snapTo.scale;
+                    size = snapTo.findObject("GUIDE").actualBounds.width * snapTo.scale;
+                    arrow.data.snapSize = size;
+                }
+
+                var arrowPoints = // points left to 9:00
+                [
+                    new go.Point (0, -(ARROW_HEAD_WIDTH / 2)),
+                    new go.Point (-ARROW_HEAD_WIDTH, 0),
+                    new go.Point (0, (ARROW_HEAD_WIDTH / 2)),
+                    new go.Point (0, 0),
+                ];
+
+                if (arrow.data.snapping == "inside") //straight arrow
+                {
+                    if (snapTo == null)
+                    {
+                        if (arrow.data.arrowBegin)
+                        {
+                            fig = new go.PathFigure(0, 0, true);
+                            RotateAndAdd (arrowPoints, 0, fig);
+                            geo.add(fig);
+                        }
+
+                        fig = new go.PathFigure (0, 0, false);
+                        fig.add(new go.PathSegment(go.PathSegment.Line, size, 0));
+                        geo.add(fig);
+
+                        if (arrow.data.arrowEnd)
+                        {
+                            fig = new go.PathFigure(size, 0, true);
+                            RotateAndAdd (arrowPoints, 180, fig);
+                            geo.add(fig);
+                        }
+                    }
+                    else
+                    {
+                        var diameter = size - shape.strokeWidth;
+                        var radius = diameter / 2;
+
+                        var minLen = 25;
+                        var maxLen = 60;
+
+                        var endPoint = radius;
+                        if (endPoint < minLen)
+                            endPoint = minLen;
+                        else
+                        if (endPoint > maxLen)
+                            endPoint = maxLen;
+
+                        endPoint += radius;
+                        endPoint -= ARROW_HEAD_WIDTH;
+
+                        fig = new go.PathFigure(radius - 1, 0, false);
+                        fig.add(new go.PathSegment(go.PathSegment.Line, endPoint, 0));
+                        geo.add(fig);
+
+                        fig = new go.PathFigure(endPoint, 0, true);
+                        RotateAndAdd(arrowPoints, 180, fig);
+                        geo.add(fig);
+
+                        fig = new go.PathFigure(-radius, 0, false);
+                        fig.add (new go.PathSegment(go.PathSegment.Line, -endPoint, 0));
+                        geo.add(fig);
+
+                        fig = new go.PathFigure(-endPoint, 0, true);
+                        RotateAndAdd(arrowPoints, 0, fig);
+                        geo.add(fig);
+
+                        shape.scale = 1.0;
+                    }
+                }
+                else // outside/arc
+                {
+                    if (snapTo != null)
+                    {
+                        var toShape = snapTo.findObject("GUIDE");
+
+                        size = (toShape.measuredBounds.width + ({!OutsideArrowRadiusAdjust} * 2));
+                    }
+
+                    var deg = {!OutsideArrowDegrees};
+                    var radius = size / 2;
+
+                    arrow.scale = 1.0;
+
+                    fig = new go.PathFigure(radius, 0, false);
+                    fig.add(new go.PathSegment(go.PathSegment.Arc, 0, deg, 0, 0, radius, radius));
+                    geo.add(fig);
+
+                    var p;
+
+                    p = LastPosition(fig);
+                    fig = new go.PathFigure(p.x, p.y, true);
+                    RotateAndAdd (arrowPoints, -(90 - deg), fig);
+                    geo.add(fig);
+
+                    fig = new go.PathFigure(radius, 0, false);
+                    fig.add(new go.PathSegment(go.PathSegment.Arc, 0, -deg, 0, 0, radius, radius));
+                    geo.add(fig);
+
+                    p = LastPosition(fig);
+                    fig = new go.PathFigure(p.x, p.y, true);
+                    RotateAndAdd (arrowPoints, 90 - deg, fig);
+                    geo.add(fig);
+                }
+                geo.normalize();
+                shape.geometry = geo;
+            }
+        }
+
+        function LastPosition(fig)
+        {
+            var offsetX = fig.startX;
+            var offsetY = fig.startY;
+
+            for (var it = fig.segments.iterator; it.next() ; )
+            {
+                var seg = it.value;
+
+                if (seg.type == go.PathSegment.Arc)
+                {
+                    var offset = RotatePoint (new go.Point (offsetX, offsetY), new go.Point(seg.centerX, seg.centerY), seg.sweepAngle);
+
+                    offsetX = offset.x;
+                    offsetY = offset.y;
+                }
+                else
+                {
+                    offsetX = seg.endX;
+                    offsetY = seg.endY;
+                }
+            }
+            return new go.Point(offsetX, offsetY);
+        }
+
+        function RotateAndAdd(arrow, degrees, toFig)
+        {
+            var p = LastPosition(toFig);
+            var offsetX = p.x;
+            var offsetY = p.y;
+            var center = new go.Point(0, 0);
+
+            for (var i = 0; i < arrow.length; i++)
+            {
+                var rot = RotatePoint (arrow[i], center, degrees);
+
+                toFig.add (new go.PathSegment(go.PathSegment.Line, rot.x + offsetX, rot.y + offsetY));
+            }
+        }
+
+        function NearestNode (node, ofType)
+        {
+            var min = SnapDistanceForNode(node);
+            var roll = null;
+
+            if (min > 0)
+            {
+                var myBelt = null;
+                var beltKeys = [];
+
+                // if we snap to a belt (roll/placeholder), find the belt we're on and the other
+                // nodes on the same belt and prevent silly things like resnapping to the same
+                // belt (mostly for placeholder sanity)
+                if (node.data.snapToBelt)
+                {
+                    for (var it = diagram.nodes.iterator; it.next() ; )
+                    {
+                        var belt = it.key;
+                        if (belt.category == "belt")
+                        {
+                            var guides = belt.data.guides;
+                            for (var i = 0; i < guides.length; i++)
+                            {
+                                if (guides[i].k == node.data.key)
+                                {
+                                    myBelt = belt;
+
+                                    for (var j = 0; j < guides.length; j++)
+                                        beltKeys.push (guides[j].k);
+
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                var nodeX = node.location.x;
+                var nodeY = node.location.y;
+
+                for (var it = diagram.nodes.iterator; it.next() ; )
+                {
+                    var other = it.value;
+                    if (other.category == ofType)
+                    {
+                        var sameBelt = false;
+                        for (var r = 0; r < beltKeys.length && !sameBelt; r++)
+                        {
+                            if (beltKeys[r] == other.data.key)
+                                sameBelt = true;
+                        }
+
+                        if (!sameBelt)
+                        {
+                            var x = nodeX - other.location.x;
+                            var y = nodeY - other.location.y;
+
+                            var dist = Math.sqrt(x * x + y * y);
+
+                            if (dist < min)
+                            {
+                                min = dist;
+                                roll = other;
+                            }
+                        }
+                        else
+                        {
+                            console.log ("NearestNode: skipping " + other.data.snappedTo + " - on same belt " + myBelt.data.key);
+                        }
+                    }
+                }
+            }
+            return roll;
+        }
+
+        function FixViewport(d)
+        {
+            StillActive();
+
+            if (printing)
+                resetWatermarks = true;
+
+            d.startTransaction("fix watermarks");
+
+            var dscale = 1 / d.scale;
+            var height = d.viewportBounds.height;
+            var width = d.viewportBounds.width;
+
+            var vw = width / dscale;
+            var vh = height / dscale;
+
+            var watermarks = d.findLayer("Watermarks");
+            if (watermarks != null)
+            {
+                watermarks.parts.each (function(part)
+                {
+                    // It'd be nice (ie: more efficient) to only update the watermarks when needed
+                    // but it's too weird to get right all the time. Browser issues, gojs issues,
+                    // etc issues - better to have it work reliably
+
+                    if (true)//resetWatermarks || (part._viewPosition && part._viewPosition.x == -1 && part._viewPosition.y == -1))
+                    {
+                        var pw = part.measuredBounds.width / dscale;
+                        var ph = part.measuredBounds.height / dscale;
+
+                        switch (part.name)
+                        {
+                            case "title":
+                                part._viewPosition.x = (vw / 2) - (pw / 2);
+                                part._viewPosition.y = 2;
+                                break;
+
+                            case "copyright":
+                                part._viewPosition.x = 2;
+                                part._viewPosition.y = (vh - ph - 2);
+                                break;
+
+                            case "kadantImage":
+                                part._viewPosition.x = vw - (265 / 2);
+                                part._viewPosition.y = vh - ( 46 / 2) - 2;
+                                break;
+                        }
+                    }
+
+                    part.visible = !printing || printIncludeWatermarks;
+                    part.position = d.transformViewToDoc(part._viewPosition);
+                    part.scale = dscale;
+                });
+            }
+            resetWatermarks = false;
+            d.commitTransaction("fix watermarks");
+        }
+
+        function FixWidth()
+        {
+            var w = 100;
+
+            //if (j$("#palette").is(":visible"))
+                //w -= 15;
+
+            if (j$("#metadataGroup").is(":visible"))
+                w -= 35;
+
+            //console.log ("change canvas width to " + w + '%');
+
+            j$("#diagramDiv").width(w + "%");
+
+            resetWatermarks = true;
+            diagram.requestUpdate();
+        }
+
+        function AlignSelection(to)
+        {
+            diagram.startTransaction('align ' + to);
+
+            var lastNode = null;
+            for (var it = diagram.selection.iterator; it.next() ; )
+            {
+                lastNode = it.value;
+            }
+
+            if (lastNode)
+            {
+                for (var it = diagram.selection.iterator; it.next() ; )
+                {
+                    var node = it.value;
+
+                    switch (to)
+                    {
+                        case "horizontal":
+                            node.location = new go.Point (node.location.x, lastNode.location.y);
+                            break;
+
+                        case "vertical":
+                            node.location = new go.Point (lastNode.location.x, node.location.y);
+                            break;
+                    }
+                }
+            }
+
+            diagram.commitTransaction('align ' + to);
+        }
+
+        function Toast(message)
+        {
+            var didIt = false;
+
+            try
+            {
+                var toast = $A.get("e.force:showToast");
+                if (toast)
+                {
+                    toast.setParams(
+                    {
+                        "message": message
+                    });
+
+                    toast.fire();
+                    didIt = true;
+                }
+            }
+            catch (err)
+            {
+                // ignore and drop thru
+            }
+
+
+            if (!didIt)
+            {
+                var x = document.getElementById("toast");
+
+                x.className = "show";
+                x.innerHTML = message;
+
+                setTimeout(function()
+                {
+                    x.className = x.className.replace("show", "");
+                }, 2000);
+            }
+        }
+
+        function FixHeight()
+        {
+            if (!printing)
+            {
+                // Set the height of the window to support a small amount of space at bottom of screen
+                var windowHeight = window.innerHeight - 75;
+
+                j$("#palette").height(windowHeight);
+                j$("#metadataGroup").height(windowHeight);
+                j$("#diagramDiv").height(windowHeight);
+
+                resetWatermarks = true;
+                //setTimeout(diagram.requestUpdate, 1);
+                diagram.requestUpdate();
+            }
+        }
+
+        function sendToLightning(type, val)
+        {
+            if (lcHost)
+            {
+                var message = { "type": type, "value": val };
+
+                //console.log("sendToLightning: " + type + " = " + val + " to " + lcHost);
+
+                parent.postMessage(JSON.stringify(message), lcHost);
+            }
+        }
+
+        function handleMessage(event)
+        {
+            if (event && event.origin == lcHost)
+            {
+                var j = JSON.parse(event.data);
+
+                //console.log("VF handleMessage: " + j.type + " = " + j.value);
+
+                switch (j.type)
+                {
+                    case "clearEdit":
+                    {
+                        if (!{!IsReadOnly})
+                        {
+                            ClearEditInfo("handleMessage", null);
+                        }
+
+                        break;
+                    }
+                }
+            }
+        }
+
+        function getHost(whole, before)
+        {
+            var i = whole.indexOf(before, whole.indexOf("."));
+
+            return i == -1 ? whole : whole.substring(0, i);
+        }
+
+        function updateDirty()
+        {
+            var isDirty = diagramDirty;
+
+            for (var it = diagram.nodes; !isDirty && it.next() ; )
+            {
+                var node = it.value;
+                if (node instanceof go.Node && node.data.dirty)
+                    isDirty = true;
+            }
+
+            if (wasDirty != isDirty)
+            {
+                //console.log("dirty now = " + isDirty);
+
+                sendToLightning("dirty", isDirty);
+                wasDirty = isDirty;
+            }            
+        }
+    </script>
+</apex:page>

@@ -1,0 +1,7 @@
+<aura:component  implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" controller="KPP_Function_Library">
+	<aura:attribute name="DocumentDetail" type="String"/>
+	<aura:handler name="init" value="{!this}" action="{!c.getDocumentDetail}"/>   
+  
+    <h2 class="headlineTitleText textcenter"><lightning:icon iconName="utility:company" size="large" />&nbsp;<lightning:formattedText value="{!v.DocumentDetail[0][1]}" class="HeadText" /></h2>
+    
+</aura:component>

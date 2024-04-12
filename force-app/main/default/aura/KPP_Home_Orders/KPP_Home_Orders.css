@@ -1,0 +1,70 @@
+.THIS {
+    background-color:#ffffff !important;
+        padding:1em;
+        border: solid 1px #000000;
+    	border-color: #d7d7d7;
+    	border-radius:4px;
+}
+
+.THIS .OrderHeader > td{
+    padding-top:1em;    
+}
+
+.THIS .ButtonSection{
+    border:0px;
+    width:4px;
+}
+
+.THIS td {
+   overflow: hidden;
+   white-space: nowrap;
+    background-color:#ffffff !important;
+}
+
+.THIS th {
+    overflow: hidden;
+    padding: 10px !important;
+    border-bottom: 1px solid #c5c5c5;
+    white-space: nowrap;
+    
+}
+
+.THIS .OrderLinesx > td{
+    padding-top:1em;
+    /*border-bottom:3px solid black;*/
+}
+
+
+.THIS .OrderLinesHeaderx{
+    /*background-color:#f5f5f5;    */
+}
+
+.THIS .OrderLinesHeaderx td{
+    font-weight:bold;
+}
+
+
+.THIS OrderLinesx >tr  {
+    border-bottom:3px solid black;
+}
+
+.THIS YearFilter{
+	width:90% !important;    
+}
+
+@media screen and (max-width: 1200px) and (min-width: 1px) {
+    .THIS td {
+   		overflow: hidden;
+   		white-space: nowrap;
+        font-size: 0.6rem !important;
+    }
+    
+    .THIS .ButtonSection{    	
+    	height:10px;
+	}
+    
+    .THIS .ButtonSection svg{
+    	width:10px;
+    	height:10px;
+	}
+}

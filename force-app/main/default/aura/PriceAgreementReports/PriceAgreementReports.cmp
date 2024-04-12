@@ -1,0 +1,49 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global">
+
+    <aura:attribute name="paRecord" type="Object" />
+    <aura:attribute name="recordLoadError" type="String"/>
+    
+    <!-- making RecordId and RecordType.Name, Name and Site available and adding them to the attribute accountrecord -->
+    <force:recordData aura:id="recordLoader"
+    recordId="{!v.recordId}"
+    fields="PA_StdTerms__c"
+    targetFields="{!v.paRecord}"
+    targetError="{!v.recordLoadError}"
+    />
+
+    <!-- Show error message on page -->
+     <aura:if isTrue="{!not(empty(v.recordLoadError))}">
+     <div class="recordError">
+     {!v.recordLoadError}</div>
+   	 </aura:if>
+    
+    
+<table style="width:100%">
+            <tr>
+                <th width="50%"><strong>External</strong></th>
+                <th width="50%"><strong>Internal</strong></th>
+            </tr>
+        	<tr>  <!-- lightning:formattedurl renders an <a href=""></a> tag. Change the ID below for the report and 
+					the fvX for the filter position 0 = first, 1 = second filter etc. -->
+            	<td>• <lightning:formattedurl value="{!'/apex/SDOC__SDCreate1?id='+v.recordId+'&amp;Object=Price_Agreement__c&amp;doclist=a5b0z000000GqwoAAC&amp;oneclick=true&amp;fid='+v.paRecord.PA_StdTerms__c+''}" target="_blank" label= "PDF Version" /></td>          
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z0000050wmvEAA/view?fv0='+v.recordId+''}" target="_blank" label= "Internal Version" /></td>
+			</tr>
+			<tr>
+                <td>• <lightning:formattedurl value="{!'/apex/SDOC__SDCreate1?id='+v.recordId+'&amp;Object=Price_Agreement__c&amp;doclist=a5b0z000002AJGjAAO&amp;oneclick=true&amp;fid='+v.paRecord.PA_StdTerms__c+''}" target="_blank" label= "Detailed PDF Version" /></td>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z00000515HrEAI/view?fv0='+v.recordId+''}" target="_blank" label= "Excel Version" /></td>
+			</tr>
+			<tr>
+                <td>• <lightning:formattedurl value="{!'/apex/SDOC__SDCreate1?id='+v.recordId+'&amp;Object=Price_Agreement__c&amp;doclist=a5b4W000000xDT9QAM&amp;oneclick=true&amp;fid='+v.paRecord.PA_StdTerms__c+''}" target="_blank" label= "Simple PDF Version - UP/Discount" /></td>
+                <td>• <lightning:formattedurl value="{!'/lightning/r/Report/00O0z0000050wtSEAQ/view?fv0='+v.recordId+''}" target="_blank" label= "Missing Data Version" /></td>
+            </tr>
+            <tr>
+                <td>• <lightning:formattedurl value="{!'/apex/SDOC__SDCreate1?id='+v.recordId+'&amp;Object=Price_Agreement__c&amp;doclist=a5b0z000002AIwQAAW&amp;oneclick=true&amp;fid='+v.paRecord.PA_StdTerms__c+''}" target="_blank" label= "Simple PDF Version" /></td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>• <lightning:formattedurl value="{!'/apex/SDOC__SDCreate1?id='+v.recordId+'&amp;Object=Price_Agreement__c&amp;doclist=a5b0z000000v5A2AAI&amp;oneclick=true&amp;fid='+v.paRecord.PA_StdTerms__c+''}" target="_blank" label= "UK Simple PDF Version" /></td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>    
+	
+</aura:component>

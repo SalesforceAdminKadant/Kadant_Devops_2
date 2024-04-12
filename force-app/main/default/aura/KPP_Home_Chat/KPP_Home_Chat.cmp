@@ -1,0 +1,64 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" controller="KPP_Function_Library">
+<aura:attribute name="DataSet" type="String" />
+<aura:handler name="init" value="{!this}" action="{!c.onLoad}"/> 
+    
+<table><tr><td class="MainScreen">   
+    
+<aura:iteration items="{!v.DataSet}" var="row"> 
+ <aura:if isTrue="{!row[0]=='Topic'}">
+     <hr/>
+ </aura:if>
+    
+    
+	<!--section role="log" class="slds-chat" style="width:100%"-->
+  <ul class="slds-chat-list">
+      
+    <aura:if isTrue="{!row[0]=='Topic'}">
+    <li class="slds-chat-listitem slds-chat-listitem_inbound">
+      <div class="slds-chat-message">
+        <div class="slds-chat-message__body">
+          <div class="xslds-chat-message__text xslds-chat-message__text_inbound">
+              <h3 class="TopicText"><span>{!row[6]}&nbsp;</span></h3>
+          </div>
+            <div class="slds-chat-message__meta" aria-label="{!row[4]+ ' • ' + row[5]}">{!row[4]+ ' • ' + row[5]}<br/>
+                <aura:if isTrue="{!row[8]=='Cus'}">
+                <a href="{!'customer?page=cus&amp;docid='+row[2]+'&amp;tabset-7d7af=773f0'}">{!row[7]}</a>
+                </aura:if>
+            </div>
+        </div>
+      </div>      
+    </li>
+        
+    <li class="slds-chat-listitem slds-chat-listitem_outbound">
+      <div class="slds-chat-message" style="width:50%">
+        <div class="slds-chat-message__body" style="width:100%">
+          <div style="text-align:right;">
+
+          </div>
+          
+        </div>
+      </div>
+    </li> 
+    </aura:if>
+      
+    <aura:if isTrue="{!row[0]=='Comment'}">
+        <li class="slds-chat-listitem slds-chat-listitem_outbound">
+      <div class="slds-chat-message"  style="width:50%">
+        <div class="slds-chat-message__body" style="width:100%">
+          <div style="text-align:right;">
+              <span ><b>{!row[6]}</b></span>
+          </div>
+          <div style="text-align:right;" class="slds-chat-message__meta" aria-label="{!row[4]+ ' • ' + row[5]}">{!row[4]+ ' • ' + row[5]}</div>
+        </div>
+      </div>
+    </li>  
+    </aura:if>
+   
+  </ul>
+ <!--/section-->
+    
+ </aura:iteration>
+
+
+</td></tr></table>
+</aura:component>

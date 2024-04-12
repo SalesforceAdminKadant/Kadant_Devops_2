@@ -1,0 +1,3 @@
+<apex:page standardController="Opportunity" showHeader="false">
+<XFILES:XFileList />
+</apex:page>

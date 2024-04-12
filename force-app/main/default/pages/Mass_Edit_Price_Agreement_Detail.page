@@ -1,0 +1,75 @@
+<apex:page standardController="Price_Agreement_Detail__c" recordSetVar="pads" lightningStylesheets="true" extensions="PriceAgreementDetailControllerExtension,MassEditExtension,SaveAndReturnController">
+
+    <apex:includeScript value="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
+    <apex:includeScript value="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.29.5/js/jquery.tablesorter.min.js" />
+    <apex:stylesheet value="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.29.5/css/theme.blue.css" />
+    <apex:stylesheet value="//mottie.github.io/tablesorter/css/theme.default.css" />
+    <script src="{!$Resource.jqueryfixedheadertable}"></script>
+    <apex:stylesheet value="{!$Resource.jqueryfixedheaderbase}" />
+    <apex:stylesheet value="{!$Resource.jqueryfixedheaderthemefile}" />
+
+    <apex:form id="theform">  
+
+        <apex:pageBlock title="Mass Edit Price Agreement" mode="edit">
+        <apex:pageMessages />
+        <apex:pageblockButtons location="top">
+            <apex:commandButton value="Save" action="{!save}" onclick="SaveAndRefreshTable()"/>
+            <apex:commandButton value="Return" action="{!cancel}"/>
+            <apex:commandButton value="Cancel" action="{!cancel}"/>
+        </apex:pageBlockButtons>
+            <apex:pageBlockTable value="{!PADS}" var="a" id="padsTable" styleclass="tablesorter fixme">
+                <apex:column value="{!a.Name}"/>
+                <apex:column headerValue="Line No.">
+                    <apex:inputField value="{!a.Line_No__c}"/>
+                </apex:column>
+                <apex:column value="{!a.Product__c}"/>
+                <apex:column value="{!a.Product_Description__c}"/>
+                <apex:column headerValue="Customer Price">
+                    <apex:inputField value="{!a.Price__c}"/>
+                </apex:column>
+                <apex:column headerValue="Discount">
+                    <apex:inputField value="{!a.Discount__c}"/>
+                </apex:column>
+                <apex:column headerValue="Customer Item">
+                    <apex:inputField value="{!a.Customer_Item__c}"/>
+                </apex:column>
+                <apex:column value="{!a.ICP_Price__c}"/>
+                <apex:column headerValue="Override ICP">
+                    <apex:inputField value="{!a.Override_ICP__c}"/>
+                </apex:column>
+                <apex:column headerValue="Leadtime">
+                    <apex:inputField value="{!a.Lead_Time__c}"/>
+                </apex:column>
+                <apex:column headerValue="D/W">
+                    <apex:inputField value="{!a.Lead_Time_UOM__c}"/>
+                </apex:column>
+                <apex:column headerValue="Target Qty.">
+                    <apex:inputField value="{!a.Target_Quantity__c}"/>
+                </apex:column>
+                <apex:column value="{!a.Previous_Price__c}"/>
+                <apex:column value="{!a.Current_List_Price__c}"/>
+                <apex:column headerValue="List Price">
+                    <apex:inputField value="{!a.List_Price__c}"/>
+                </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+
+    </apex:form>
+    
+<script>
+    $(document).ready(function()
+    {
+        $("[id$='padsTable']").tablesorter({theme: "blue", widgets: ["zebra"], dateFormat : "dd/mm/yyyy"});
+
+        $('.fixme').fixheadertable({
+            height  : 450
+        });
+    });
+
+    function SaveAndRefreshTable () {
+        var table = document.getElementById ("padsTable");
+        table.refresh ();
+    }
+
+</script>
+</apex:page>

@@ -1,0 +1,11 @@
+.short {
+    height: 300px;
+}
+
+.long {
+    height: 600px;
+}
+
+.slds-button_brand{
+    background-color: aqua !important;
+}

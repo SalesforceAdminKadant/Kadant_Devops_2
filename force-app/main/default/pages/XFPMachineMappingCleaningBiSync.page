@@ -1,0 +1,3 @@
+<apex:page standardController="Machine_Mapping_Cleaning__c" standardStylesheets="false" showHeader="false">
+<XFILES:XfilesProBiSync />
+</apex:page>

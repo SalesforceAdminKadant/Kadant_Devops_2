@@ -1,0 +1,145 @@
+<apex:page controller="ServiceReportEquipmentItemsController" applyBodyTag="false" showHeader="false" title="Service Report" renderAs="pdf">
+<head>
+    <style>
+        .custHeader {
+            font-family: 'Arial Unicode MS'; 
+            font-size: 11pt;
+        }
+        .techHeader {
+            font-family: 'Arial Unicode MS'; 
+            font-size: 15pt;            
+            text-align: right;
+        }
+        .acctHeader {
+            font-weight: bold; 
+            font-family: sans-serif; 
+            font-size: 15pt;            
+            text-align: right;
+        }
+        .objHeader {
+            font-family: sans-serif; 
+            font-size: 10pt;
+            font-weight: bold; 
+            text-align: center;
+        }
+        .objLabel {
+            font-weight: bold; 
+            font-family: sans-serif; 
+            font-size: 11pt;
+        }
+        .objText {
+            font-family: 'Arial Unicode MS'; 
+            font-size: 11pt;
+        }  
+        .openActionHeader {
+            font-family: 'Arial Unicode MS'; 
+            font-size: 10pt;
+            font-weight: bold; 
+            background-color: #DCDCDC;
+            text-align: center;
+        }
+        .openActionTableText {
+            font-family: 'Arial Unicode MS'; 
+            font-size: 9pt;
+            border: 0.5px solid #DCDCDC;
+            border-collapse: collapse;
+        } 
+        .boldMed {
+            font-weight: bold; 
+            font-family: sans-serif; 
+            font-size: 11pt;"
+        }  
+        .logoReg {            
+            font-family: 'Arial Unicode MS'; 
+            font-size: 11pt;
+            padding-left: 4px;
+            padding-bottom: -8px;
+        }  
+        @page { 
+            size: 8.5in 11in;            
+            @bottom-right {
+                content: "Page " counter(page) " of " counter(pages);  
+                font-family: 'Arial Unicode MS'; 
+                font-size: 9pt; 
+            }
+        }
+        .displayDate {
+            font-family: 'Arial Unicode MS'; 
+            font-size: 12pt;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+<div class="headerPage" style="page-break-after: always">
+<table>
+    <tr>
+        <td rowspan="7"><hr style="margin-right:0; width:0.5px; height:170px; border: 0.5px solid rgb(230, 71, 9);" /></td>
+        <td style="padding-bottom: 4px;">
+            <apex:image url="{!$Resource.KadantLogo}" width="159" height="28"/>
+        </td>
+    </tr>
+    <tr><td class="boldMed" style="padding-left: 4px;">KADANT SOLUTIONS DIVISION</td></tr>
+    <tr><td class="logoReg">35 Sword Street</td></tr>
+    <tr><td class="logoReg">Auburn, MA 01501 USA</td></tr>
+    <tr><td class="logoReg">Tel: +1 508-791-8171</td></tr>
+    <tr><td class="logoReg">Fax: +1 508-757-1507</td></tr>
+    <tr><td class="logoReg">www.kadant.com</td></tr>
+</table>
+<p class="displayDate" style="padding-top: 120px;">
+    <apex:outputText value="{0,date,MMMM' 'd', 'yyyy}">
+        <apex:param value="{!today()}" />
+    </apex:outputText>
+</p>
+<p class="techHeader">Equipment History<br />{!section} - {!position}</p>
+<br />
+<p>
+    <hr style="margin-right:0; width: 400px; border: 0.5px solid black;" />
+</p>
+<br />
+<div>    
+    <p class="acctHeader">{!accountSite}</p>
+</div>
+<br />
+<p>
+    <hr style="width: 100%; border: 0.5px solid black;" />
+</p>
+<p style="font-family: 'Arial Unicode MS'; font-size: 9pt; padding-top: 261px;">
+        &copy;&nbsp;<apex:outputText value="{0,date,yyyy}"><apex:param value="{!today()}" /> </apex:outputText> Kadant Solutions Division. All rights reserved. Confidential and proprietary information of Kadant Solutions
+        Division and provided subject to Terms of Condition of Kadant Solutions Division. This document may not be reproduced or disclosed to third parties without the prior written consent of Kadant Solutions Division.    
+</p>
+</div>
+
+<apex:outputText value="{!htmlCode}" escape="false" />
+<br />
+<div class="pageSection">
+<apex:repeat value="{!srps}" id="srpRepeat" var="srpItem">
+<table width="100%">
+    <tr>
+        <td width="100%">
+            <span class="boldMed">
+                Service dated&nbsp;
+                    <apex:outputText value="{0, date, MMM-dd-YYYY}">
+                        <apex:param value="{!srpItem.visitDate}" />
+                    </apex:outputText>&nbsp;by&nbsp;
+                    <apex:outputText value="{!srpItem.visitPerson}" escape="false"/>
+            </span>
+            <br /> 
+            <apex:repeat value="{!srpItem.sriSummary}" var="cLine">
+                <span style="font-family: Arial Unicode MS; font-size: 11pt;"><apex:outputText value="{!cLine}" /></span><br />
+            </apex:repeat>            
+        </td>
+    </tr>
+    <apex:repeat value="{!srpItem.sriImages}" var="img" id="theRepeat">
+        <tr>
+            <td align="center" width="100%"><apex:image value="{!img.imageUrl}" height="{!srpItem.imageSize}%" width="{!srpItem.imageSize}%"/></td>            
+        </tr>
+        <tr>
+            <td class="objHeader"><apex:outputText value="{!img.captionDescription}"/></td>
+        </tr>
+    </apex:repeat>
+</table>
+</apex:repeat>
+</div>
+</body>
+</apex:page>

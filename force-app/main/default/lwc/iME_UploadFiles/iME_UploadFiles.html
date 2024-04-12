@@ -1,0 +1,27 @@
+<template>
+      <lightning-card title="Upload File" icon-name="standard:file">
+        <!-- recordId: {recordId} -->
+        <!-- ServiceAppointmentId: {ServiceAppointmentId} -->
+        <div class="slds-var-p-around_small" style="height: 97%;">
+          <!-- Insert empty character in the label to compensate on a different behavior of the component between Android and iOS -->
+          <template if:false={fileData}>
+          <lightning-input
+            type="file"
+            accept=".xlsx, .xls, .csv, .png, .doc, .docx, .pdf"
+            label="&zwnj;"
+            onchange={handleFilesSelected}
+          >
+          </lightning-input>
+        </template>
+        <template if:true={fileData}>
+          <div>
+            <p>You have selected:   <b>{fileData.filename}</b></p>
+          </div>
+          <br />
+          <br />
+          <lightning-button variant="brand" label="Upload" title="Upload" onclick={handleClick} class="slds-p-right_x-small" style="bottom: 100; right: 100;"></lightning-button>
+      </template>
+      </div>  
+      </lightning-card>
+      
+</template>

@@ -1,0 +1,65 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global" controller="KAI_Search_Products_Engine">
+	<aura:attribute name="ProductId" type="String" default=""/>
+    <aura:attribute name="ProductInfo" type="String" />
+    <aura:attribute name="ProductPrice" type="String" />
+    <aura:attribute name="ProductType" type="String" default=""/>
+    
+    <aura:attribute name="SelectedDivisionsContainer" type="Map" default="{}"/> 
+    <aura:attribute name="SelectedPartMap" type="Map" default="{}"/> 
+    <aura:attribute name="SelectedPartMapQty" type="Map" default="{}"/> 
+    
+    <aura:handler name="init" value="{!this}" action="{!c.loadScreen}"/>
+    
+    <h1>Product specifications</h1>
+    <br/>
+    
+    <table class="slds-table slds-table_cell-buffer slds-table_bordered" style="width:85%">
+        <aura:iteration items="{!v.ProductInfo}" var="item"> 
+            <aura:if isTrue="{!v.ProductId==item[1]}">
+            <tr><td>Part Id</td><td>{!item[1]}</td></tr>
+            <tr><td>Description</td><td>{!item[2]}</td></tr>
+            <tr><td>Product code</td><td>{!item[3]}</td></tr>
+            
+            <aura:if isTrue="{!v.ProductType=='Joints'}">
+            <tr><td>Joint M-size</td><td>{!item[4]}</td></tr>
+            <tr><td>Joint P-size</td><td>{!item[5]}</td></tr>
+            <tr><td>Joint S-size</td><td>{!item[6]}</td></tr>
+            <tr><td>Sealring</td><td>{!item[7]}</td></tr>
+            <tr><td>Max. Temperature</td><td>{!item[8]}</td></tr> 
+            <tr><td>Max. Pressure</td><td>{!item[9]}</td></tr>
+            </aura:if>
+            
+            <aura:if isTrue="{!v.ProductType=='Blades'}">
+            <tr><td>Material</td><td>{!item[14]}</td></tr>
+            <tr><td>Width</td><td>{!item[16]}</td></tr>
+            <tr><td>Thickness</td><td>{!item[15]}</td></tr>
+            <tr><td>Bevel angle</td><td>{!item[11]}</td></tr>
+            <tr><td>Length</td><td>{!item[13]}</td></tr>
+            </aura:if>
+                
+                
+            </aura:if>
+        </aura:iteration>
+    </table>
+    <br/>
+    <h1>Price information</h1>
+    <br/>
+    
+    <table class="slds-table slds-table_cell-buffer slds-table_bordered" style="width:85%">
+        <aura:iteration items="{!v.ProductPrice}" var="item"> 
+            <!--aura:if isTrue="{!v.ProductId==item[0]}"-->  
+                <aura:if isTrue="{!item[3]>0}"> 
+            		<tr><td>List price</td><td>{!item[3]}&nbsp;{!item[4]}</td></tr>
+                </aura:if>
+                <aura:if isTrue="{!item[3]=='0.00'}"> 
+            		<tr><td>List price</td><td>On request</td></tr>
+                </aura:if>
+				<tr><td>Vendor</td><td></td></tr>
+            <!--/aura:if-->
+            
+
+        </aura:iteration>
+    </table>
+    
+    
+</aura:component>

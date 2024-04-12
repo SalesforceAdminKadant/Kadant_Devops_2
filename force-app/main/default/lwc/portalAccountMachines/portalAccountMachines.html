@@ -1,0 +1,109 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <lightning-card>
+        <div class="slds-card__body slds-card__body_inner">
+            <table class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th scope="col">
+                            <a class="slds-th__action slds-text-link_reset" href="javascript:void(0);" role="button" tabindex="0" data-index="0"  data-id="name" onclick={doSorting}>
+                                <span class="slds-assistive-text">Sort by: </span>
+                                <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                    <span class="slds-truncate" title="Machine Name">Machine Name</span>
+                                    <lightning-button-icon variant="bare" data-icon-id="name" alternative-text="Connected" size="medium" title="small size"></lightning-button-icon>
+                                </div>
+                            </a>
+                        </th>
+                        <th scope="col">
+                            <a class="slds-th__action slds-text-link_reset" href="javascript:void(0);" role="button" tabindex="0" data-index="1" data-id="gradeCategory" onclick={doSorting}>
+                                <span class="slds-assistive-text">Sort by: </span>
+                                <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                    <span class="slds-truncate" title="Grade">Grade</span>
+                                    <lightning-button-icon variant="bare" data-icon-id="gradeCategory" alternative-text="Connected" size="medium" title="small size"></lightning-button-icon>
+                                </div>
+                            </a>
+                        </th>
+                        <th scope="col">
+                            <a class="slds-th__action slds-text-link_reset" role="button" tabindex="0" data-index="2" data-id="primaryGrade" onclick={doSorting}>
+                                <span class="slds-assistive-text">Sort by: </span>
+                                <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                    <span class="slds-truncate" title="Primary Grade">Primary Grade</span>
+                                    <lightning-button-icon variant="bare" data-icon-id="primaryGrade" alternative-text="Connected" size="medium" title="small size"></lightning-button-icon>
+                                </div>
+                            </a>
+                        </th>
+                        <th scope="col">
+                            <a class="slds-th__action slds-text-link_reset" href="javascript:void(0);" role="button" tabindex="0" data-index="3" data-id="status" onclick={doSorting}>
+                                <span class="slds-assistive-text">Sort by: </span>
+                                <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                    <span class="slds-truncate" title="Status">Status</span>
+                                    <lightning-button-icon  variant="bare" data-icon-id="status"  alternative-text="Connected" size="medium" title="small size"></lightning-button-icon>
+                                </div>
+                            </a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                <template for:each={machines} for:item="machine" for:index="machineIndex">
+                    <tr key={machine.id} class="slds-hint-parent">
+                        <td role="gridcell">
+                            <div class="slds-truncate">
+                                <lightning-button-icon icon-name="utility:chevronright" variant="bare" class="slds-m-right_x-small" alternative-text="Expand Machines" title="Expand Machines" data-machine-id={machine.id} data-index={machineIndex} onclick={openSectionsAction}></lightning-button-icon>
+                                <lightning-formatted-text value={machine.name}></lightning-formatted-text>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate">
+                                <lightning-formatted-text value={machine.gradeCategory}></lightning-formatted-text>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate">
+                                <lightning-formatted-text value={machine.primaryGrade}></lightning-formatted-text>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate">
+                                <lightning-formatted-text value={machine.status}></lightning-formatted-text>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr if:true={machine.toggleOpen} key={machine.Id} class="slds-hint-parent">
+                        <td colspan="4" style="padding-left: 100px; padding-right: 0;">
+                            <table class="slds-table slds-table_fixed-layout slds-table_bordered">
+                                <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Machine Section Name">Machine Section Name</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Section Type">Section Type</div>
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <template for:each={machine.macSection} for:item="section" for:index="macSectionIndex">
+                                    <tr key={section.sectionId} class="slds-hint-parent">
+                                        <td>
+                                            <div class="slds-truncate">
+                                                <lightning-formatted-url value={section.sfUrl} label={section.sectionName} target="_blank"></lightning-formatted-url>
+                                                <!-- <a href="javascript:void(0);" data-section-id={macSection.Id} onclick={openMapAction}>{macSection.Name}</a><br/> -->
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-truncate">
+                                                <lightning-formatted-text value={section.sectionType}></lightning-formatted-text>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </template>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </template>
+                </tbody>
+            </table>
+        </div>
+    </lightning-card>
+    </template>

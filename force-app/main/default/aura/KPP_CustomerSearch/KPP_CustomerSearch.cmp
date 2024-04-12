@@ -1,0 +1,21 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global">
+
+<aura:attribute name="Searchfilter" type="String" />
+<aura:attribute name="SearchFilterMap" type="Map" default="{}"/>
+    
+<span class="HideMsgChannel"><lightning:messageChannel type="test__c" aura:id="sampleMessageChannel" /></span>
+
+<table ><tr><td class="LeftScreen">
+
+    <ui:inputText label="Name" labelClass="uiLabel-top" required="false" aura:id="name" keyup="{!c.CreateFilter}" updateOn="keyup"/>
+	<br/>
+    <ui:inputText label="City" labelClass="uiLabel-top" required="false" aura:id="shippingcity" keyup="{!c.CreateFilter}" updateOn="keyup"/>
+	<br/>
+    <ui:inputText label="Country" labelClass="uiLabel-top" required="false" aura:id="shippingcountry" keyup="{!c.CreateFilter}" updateOn="keyup"/>
+	<br/>
+    <ui:button aura:id="SearchButton" buttonTitle="Search products" class="slds-button slds-button_brand" label="Search" press="{!c.handleClick}"/>
+    <br/>
+    <lightning:formattedText value="{!v.Searchfilter}" />
+</td></tr></table>
+
+</aura:component>

@@ -1,0 +1,68 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" controller="KPP_Function_Library">
+    
+    <aura:attribute name="CurrentUser" type="String" />
+    <aura:attribute name="DataSet" type="String"  />
+    <aura:attribute name="OrderScope" type="String" />
+    <aura:attribute name="ShowSpinner" type="Boolean" default="false"/>
+    <aura:handler name="init" value="{!this}" action="{!c.onLoad}"/>    
+
+    <div>
+    <table class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols">
+        <thead>
+        <tr>
+                <th>&nbsp;</th>
+				<th>Order</th>
+            	<th>Date</th>
+            	<th>Status</th>
+            	<th>Customer</th>            	
+            	<th>Tracking</th>
+            	<th style="text-align:right !important;padding-right:4px;">Total</th>
+            	<th class="FilterRight"></th>
+        </tr>
+        </thead>
+       	<aura:iteration items="{!v.DataSet}" var="rowH"> 
+        <aura:if isTrue="{!rowH[5]=='H'}">
+			<tr class="OrderHeader">
+                <td><lightning:button class="ButtonSection" value="{!rowH[0]}" iconName="utility:chevronright" iconPosition="left" onclick="{! c.expandOrder }" aura:id="SectionButton"/></td>
+				<td><a href="{!'order?page=ord&amp;docid='+rowH[0]+'&amp;cusid='+rowH[12]}">{!rowH[3]}</a></td>
+            	<td>{!rowH[9]}</td>                
+            	<td>{!rowH[2]}</td>
+                <td><a href="{!'customer?page=cus&amp;docid='+rowH[12]}">{!rowH[4]}</a></td>
+                <td><ui:outputRichText value="{!rowH[8]}"/></td>
+            	<td style="text-align:right !important;"><ui:outputCurrency aura:id="ordertotal" value="{!rowH[6]}" format="$##,##,###,###.00"/></td>           
+                <td style="text-align:right !important;"></td>
+        	</tr> 
+            <tbody style="display:none;" id="{!'sec-'+rowH[0]}" class="OrderLinesBody">
+            <tr class="OrderLinesHeader">
+                <td style="border:0px !important;">&nbsp;</td>
+				<td>Line</td>
+                <td>Qty</td>
+            	<td>Product</td>
+            	<td>Description</td>
+            	<td style="text-align:right !important;">Unit price</td>            
+            	<td style="text-align:right !important;">Line total</td> 
+                <td>&nbsp;</td> 
+        	</tr>               
+            <aura:iteration items="{!v.DataSet}" var="rowL"> 
+                <aura:if isTrue="{!and(rowL[5]=='L',rowH[0]==rowL[0])}">                
+                <tr class="OrderLines">
+                	<td style="border:0px !important;">&nbsp;</td>
+					<td>{!rowL[7]}</td>
+            		<td>{!rowL[3]}</td>
+            		<td>{!rowL[2]}</td>
+                    <td>{!rowL[8]}</td>
+            		<td style="text-align:right !important;"><ui:outputCurrency aura:id="unitprice" value="{!rowL[4]}" format="$##,##,###,###.00"/></td>            
+            		<td style="text-align:right !important;"><ui:outputCurrency aura:id="linetotal" value="{!rowL[6]}" format="$##,##,###,###.00"/></td> 
+                    <td>&nbsp;</td> 
+        		</tr> 
+                </aura:if>
+            </aura:iteration>
+                <tr><td>&nbsp;</td><td colspan="7"><hr/></td></tr>
+            </tbody>
+        </aura:if>
+        </aura:iteration>
+
+    </table>
+    </div>
+     
+</aura:component>

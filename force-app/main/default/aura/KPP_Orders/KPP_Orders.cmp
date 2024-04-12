@@ -1,0 +1,90 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" controller="KPP_Function_Library">
+
+    <aura:attribute name="CurrentUser" type="String" />
+    <aura:attribute name="OrderHistory" type="String"  />
+    <aura:attribute name="OrderScope" type="String" />
+    <aura:attribute name="ShowSpinner" type="Boolean" default="false"/>
+    <ltng:require scripts="{!$Resource.ChartJSportal}" afterScriptsLoaded="{!c.onLoad}"/>
+
+    <table class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols">
+    <tr>
+    <td style="width:33%"><canvas id="pie-chart1"  height="180"></canvas></td>
+    <td style="width:33%"><canvas id="pie-chart2"  height="180"></canvas></td>
+    <td style="width:33%"><canvas id="pie-chart3"  height="180"></canvas></td>
+    </tr>
+    </table>
+  
+    <!-- width="950" height="250"-->
+
+    
+
+
+		<aura:if isTrue="{! v.ShowSpinner }">
+                <lightning:spinner alternativeText="Loading" />
+        </aura:if>
+    
+    
+    <aura:if isTrue="{!2==2}"> 
+    
+    <div>
+    <table class="OrderTable">
+        <tr class="OrderTableHeader">
+                <th>&nbsp;</th>
+				<th>Order</th>
+            	<th>Date</th>
+            	<th>Status</th>
+            	<th>Customer</th>            	
+            	<th>Shipment tracking</th>
+            	<th style="text-align:right !important;padding-right:4px;">Total</th>
+            	<th class="FilterRight">
+            	</th>
+        </tr>
+
+       	<aura:iteration items="{!v.OrderHistory}" var="rowH"> 
+        <aura:if isTrue="{!rowH[5]=='H'}">
+			<tr class="OrderHeader">
+                <td><lightning:button class="ButtonSection" value="{!rowH[0]}" iconName="utility:chevronright" iconPosition="left" onclick="{! c.expandOrder }" aura:id="SectionButton"/></td>
+				<td><a href="{!'order?page=ord&amp;docid='+rowH[0]+'&amp;cusid='+rowH[12]}">{!rowH[9]}</a></td>
+            	<td>{!rowH[1]}</td>                
+            	<td>{!rowH[2]}</td>
+                <td>{!rowH[4]}</td>
+                <td><ui:outputRichText value="{!rowH[8]}"/></td>
+            	<td style="text-align:right !important;"><ui:outputCurrency aura:id="ordertotal" value="{!rowH[6]}" format="$##,##,###,###.00"/></td>           
+                <td style="text-align:right !important;"><lightning:button class="ButtonReOrder" variant="brand" label="Reorder" title="Reorder" onclick="{! c.ReOrder }"/></td>
+        	</tr> 
+            <tbody style="display:none;" id="{!'sec-'+rowH[0]}" class="OrderLinesBody">
+            <tr class="OrderLinesHeader">
+                <td style="border:0px !important;">&nbsp;</td>
+				<td>Line</td>
+                <td>Qty</td>
+            	<td>Product</td>
+            	<td>Description</td>
+            	<td style="text-align:right !important;">Unit price</td>            
+            	<td style="text-align:right !important;">Line total</td> 
+                <td>&nbsp;</td> 
+        	</tr>               
+            <aura:iteration items="{!v.OrderHistory}" var="rowL"> 
+                <aura:if isTrue="{!and(rowL[5]=='L',rowH[0]==rowL[0])}">                
+                <tr class="OrderLines">
+                	<td style="border:0px !important;">&nbsp;</td>
+					<td>{!rowL[7]}</td>
+            		<td>{!rowL[3]}</td>
+                    <td><a href="{!'product?page=prd&amp;docid='+rowL[13]+'&amp;cusid='+rowH[12]}">{!rowL[2]}</a></td>
+                    <td>{!rowL[8]}</td>
+            		<td style="text-align:right !important;"><ui:outputCurrency aura:id="unitprice" value="{!rowL[4]}" format="$##,##,###,###.00"/></td>            
+            		<td style="text-align:right !important;"><ui:outputCurrency aura:id="linetotal" value="{!rowL[6]}" format="$##,##,###,###.00"/></td> 
+                    <td>&nbsp;</td> 
+        		</tr> 
+                </aura:if>
+            </aura:iteration>
+                <tr><td>&nbsp;</td><td colspan="7"><hr/></td></tr>
+            </tbody>
+        </aura:if>
+        </aura:iteration>
+
+    </table>
+    </div>
+        
+    </aura:if>
+        
+</aura:component>

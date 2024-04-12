@@ -1,0 +1,44 @@
+<apex:page standardController="Machine__c" lightningStyleSheets="true">
+
+<table>
+    <table style="width:100%">
+        <tr>
+            <th width="25%"><strong>Doctors</strong></th>
+            <th width="25%"><strong>C &amp; C</strong></th>
+            <th width="25%"><strong>Filtration</strong></th> 
+            <th width="25%"><strong>Other</strong></th>
+        </tr>
+        <tr>
+                <td><a href='/apex/LaunchReport?Reportid=00O0z000004hegc&ReportParms=***PARM***v1={!URLENCODE(LEFT(Machine__c.Id,15))}' target="_blank">Blades</a></td>
+                <td><a href='/apex/LaunchReport?Reportid=00O0z0000051E4c&ReportParms=***PARM***v1={!URLENCODE(LEFT(Machine__c.Id,15))}' target="_blank">Nozzle Cabinets</a></td>
+                <td><a href='/apex/LaunchReport?Reportid=00O0z000004hemL&ReportParms=***PARM***v1={!URLENCODE(LEFT(Machine__c.Id,15))}' target="_blank">Filters</a></td>
+                <td><a href='/apex/LaunchReport?Reportid=00O0z000005ElWREA0&ReportParms=***PARM***v1={!URLENCODE(LEFT(Machine__c.Id,15))}' target="_blank">Belt Clothing</a></td>
+            </tr>
+            <tr>
+                <td valign="top"><a href='/apex/LaunchReport?Reportid=00O0z000004dzy3EAA&ReportParms=***PARM***v1={!URLENCODE(LEFT(Machine__c.Id,15))}' target="_blank">Holders</a></td>
+                <td valign="top"><a href='/apex/LaunchReport?Reportid=00O0z00000521t0EAA&ReportParms=***PARM***v1={!URLENCODE(LEFT(Machine__c.Id,15))}' target="_blank">Showers Data Collection</a></td>
+                <td valign="top"><a href='/apex/LaunchReport?Reportid=00O0z0000051HyY&ReportParms=***PARM***v1={!URLENCODE(LEFT(Machine__c.Id,15))}' target="_blank">Filters with Showers</a></td>
+                <td valign="top"><a href='/apex/LaunchReport?Reportid=00O0z000004hemVEAQ&ReportParms=***PARM***v1={!URLENCODE(LEFT(Machine__c.Id,15))}' target="_blank">Rolls with Doctors</a></td>
+            </tr>
+            <tr>
+                <td><a href='/apex/LaunchReport?Reportid=00O0z000004hekU&ReportParms=***PARM***v1={!URLENCODE(LEFT(Machine__c.Id,15))}' target="_blank">Doctors</a></td>
+                <td><a href='/apex/LaunchReport?Reportid=00O0z000004heft&ReportParms=***PARM***v1={!URLENCODE(LEFT(Machine__c.Id,15))}' target="_blank">Showers</a></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td><a href='/apex/LaunchReport?Reportid=00O0z000004e00iEAA&ReportParms=***PARM***v1={!URLENCODE(LEFT(Machine__c.Id,15))}' target="_blank">Bearings</a></td>
+                <td><a href='/apex/LaunchReport?Reportid=00O0z000005XnM6EAK&ReportParms=***PARM***v1={!URLENCODE(LEFT(Machine__c.Id,15))}' target="_blank">Shower Oscillators</a></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td><a href='/apex/LaunchReport?Reportid=00O0z000005EjgyEAC&ReportParms=***PARM***v2={!URLENCODE(LEFT(Machine__c.Id,15))}' target="_blank">Uhle Box</a></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+    </table>
+</table>
+
+</apex:page>

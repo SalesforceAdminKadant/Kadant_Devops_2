@@ -1,0 +1,42 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global">    
+    
+    <aura:attribute name="WORecord" type="Object" />
+    <aura:attribute name="recordLoadError" type="String"/>
+    
+    <!-- making RecordTypeId available and adding them to the attribute WORecord -->
+    <force:recordData aura:id="recordLoader"
+    recordId="{!v.recordId}"
+    fields="RecordTypeId"
+    targetFields="{!v.WORecord}"
+    targetError="{!v.recordLoadError}"
+    />
+
+    <!-- Show error message on page -->
+     <aura:if isTrue="{!not(empty(v.recordLoadError))}">
+     <div class="recordError">
+     {!v.recordLoadError}</div>
+   	 </aura:if>
+        
+    
+    <table style="width:100%">
+            <tr>
+                <br></br>
+            </tr>
+        	<aura:if isTrue="{!v.WORecord.RecordTypeId!='0124W0000016RfwQAE'}">
+            	<tr>
+                	<td valign="top">• <lightning:formattedurl value="{!'/lightning/r/Report/00O4W000007xdMfUAI/view?fv0='+v.recordId+''}" target="_blank" label="Time Sheet Entries" /></td>
+            	</tr>
+            </aura:if>
+        	<aura:if isTrue="{!v.WORecord.RecordTypeId=='0124W0000016RfwQAE'}">
+            	<tr>
+                	<td valign="top">• <lightning:formattedurl value="{!'/lightning/r/Report/00ONv0000002ILpMAM/view?fv0='+v.recordId+''}" target="_blank" label="Time Sheet Entries" /></td>
+            	</tr>
+            </aura:if>
+            <tr>
+                <br></br>
+            </tr>
+            <tr>
+                <td valign="top">• <lightning:formattedurl value="{!'/lightning/r/Report/00O4W000007xdumUAA/view?fv0='+v.recordId+''}" target="_blank" label="Expense Entries" /></td>
+            </tr>
+        </table>
+</aura:component>

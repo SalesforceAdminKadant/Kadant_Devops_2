@@ -1,0 +1,31 @@
+<template>
+    <div class="slds-grid slds-grid_vertical">
+        <div class="slds-col">
+            <legend class="slds-form-element__legend slds-form-element__label">Machine Category</legend>
+            <lightning-input variant="label-hidden" value={machine_cat} read-only></lightning-input>
+        </div>
+        <div class="slds-col">
+            <legend class="slds-form-element__legend slds-form-element__label">Position</legend>
+            <lightning-input variant="label-hidden" value={position} read-only></lightning-input>
+        </div>
+        <div class="slds-col">
+            <legend class="slds-form-element__legend slds-form-element__label">Topic</legend>
+            <lightning-input variant="label-hidden" value={topic} read-only></lightning-input>
+        </div>
+        <div class="slds-col">
+            <legend class="slds-form-element__legend slds-form-element__label">Summary</legend>
+            <lightning-textarea 
+                name="txtSummary" 
+                variant="label-hidden" 
+                value={summary} 
+                onchange={handleSummaryChange}
+                style="--sds-c-textarea-sizing-min-height:300px;"></lightning-textarea>
+        </div>     
+        <div class="slds-col">
+            <lightning-button label="Save" variant="brand" onclick={updateTopic}></lightning-button>
+        </div>           
+        <template if:true={error}>
+            <p>{error}</p>
+        </template> 
+    </div>
+</template>

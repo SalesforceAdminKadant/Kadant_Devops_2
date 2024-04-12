@@ -1,0 +1,58 @@
+<template>
+    <lightning-card title="Service Report Line Item" icon-name="custom:custom14">
+      <div class="slds-m-around_medium">        
+        <div class="slds-grid">
+            <div class="slds-col slds-size_3-of-3">
+              <span><lightning-combobox class="slds-col slds-size_2-of-6" name="sections" label="Sections" value={value} 
+                placeholder="Select Section" options={sectionsOptions} 
+                onchange={sectionHandler} required></lightning-combobox></span>
+            </div>
+        </div>
+        <template if:true={productVisible}>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_3-of-3">
+                <span><lightning-combobox class="slds-col slds-size_2-of-6" name="product" label="Product" value={value} 
+                    placeholder="Select a Product" options={productOptions} 
+                    onchange={productHandler} required></lightning-combobox></span>
+                </div>
+            </div>      
+        </template>                        
+        <template if:true={itemVisible}>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_2-of-3">
+                  <span><lightning-combobox class="slds-col slds-size_2-of-6" name="productItem" label="Item"
+                    placeholder="Select Item" options={itemOptions} 
+                    onchange={setProductItem} required></lightning-combobox></span>
+                </div>
+                <div class="slds-col slds-size_1-of-3">
+                    <span>
+                        <template if:true={bladeTrialCheckbox}>
+                            <lightning-input type="checkbox" label="Blade Trial"
+                                value="bladeTrial" onchange={showBladeTrialOption}></lightning-input>
+                        </template>
+                    </span>
+                </div>
+            </div>
+        </template>
+        <template if:true={showBladeTrial}>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_3-of-3">
+                <span><lightning-combobox class="slds-col slds-size_2-of-6" name="bladeTrialItem" label="Blade Trial Item" value={value} 
+                    placeholder="Select Item" options={bladeTrialOptions} onchange={setBladeTrialOption}></lightning-combobox></span>
+                </div>
+            </div>               
+        </template>        
+        <div class="slds-align_absolute-center">
+            <lightning-button label="Create Line Item" class="slds-m-top--medium" variant="brand" onclick={createClick} disabled={btn_disabled}></lightning-button>&nbsp;&nbsp;
+            <lightning-button label="Reset" class="slds-m-top--medium" variant="brand" onclick={resetClick}></lightning-button>
+        </div>       
+      </div>
+      <p style="color:white;">{the_mac}, {the_lnum}, {the_blade}, {the_contruction}, {the_bladeContact}, {the_loadPli}, {the_pressureUnits}, {the_loadPressure},  {the_dr_rec_type}, {the_metal}, {the_tba}, {the_bat}, {the_bad}, {the_bl}</p>
+    </lightning-card>
+    <template if:true={error}>
+        <p>{error}</p>        
+    </template>  
+    <template if:true={app}>
+        Test Me: {testMe}
+    </template>  
+  </template>

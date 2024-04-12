@@ -1,0 +1,21 @@
+<aura:component access="global" implements="force:hasRecordId,force:hasSObjectName,force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes">
+	
+    <!--SELECT id, Machine__c, Machine_Map__c, JSON__c from Machine_Section__c where id='a0A0z00000bfNuUEAU'-->
+    
+    <aura:attribute name="DocRecordId" type="String" default="a0A0z00000bfNuUEAU"/>
+    <aura:attribute name="ImageMap" type="String"/>
+    <aura:attribute name="JSONDATA" type="String"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.onLoad}"/>
+
+    <h1>Machine map drawing test</h1>
+    
+    <div aura:id="svg_content">
+        <![CDATA[{!v.ImageMap}]]>
+	</div>
+
+    <hr></hr>
+
+    <canvas id="canvas1" width="960" height="700"></canvas>
+  
+</aura:component>

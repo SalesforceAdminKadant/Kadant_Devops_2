@@ -1,0 +1,161 @@
+<apex:page standardController="Machine__c" extensions="MachineReportController" applyBodyTag="false" showHeader="false" title="Machine Report" renderAs="pdf">
+<head>
+    <style>
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 4px;
+            border-collapse: collapse;
+        }
+        .custHeader {
+            font-family: 'Arial Unicode MS'; 
+            font-size: 10pt;
+        }
+        .drPosHeader {
+            font-family: 'Arial Unicode MS'; 
+            font-size: 10pt;
+            font-weight: bold;            
+            background-color: #90EE90;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        .shrPosHeader {
+            font-family: 'Arial Unicode MS'; 
+            font-size: 10pt;
+            font-weight: bold;            
+            background-color: #ADD8E6;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        .tdHeader {
+            font-family: 'Arial Unicode MS'; 
+            font-size: 10pt;
+            text-align: left;
+            background-color: #f4f6f6;
+        }        
+        .tdText {
+            font-family: 'Arial Unicode MS'; 
+            font-size: 8pt;
+            vertical-align: top;            
+            height: 40px;
+        } 
+        .tdBottom {
+            font-family: 'Arial Unicode MS'; 
+            font-size: 8pt;
+            vertical-align: top;
+            border-bottom: solid 2px black;
+        }                
+        @page { 
+            size: 11in 8.5in; 
+            size: landscape;
+            @bottom-right {
+                content: "Page " counter(page) " of " counter(pages);  
+                font-family: 'Arial Unicode MS'; 
+                font-size: 9pt; 
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="pageSection">
+    <span style="font-family: Arial Unicode MS; font-size: 12pt;">{!accountSite} - {!machineNumber}</span><br />
+    <apex:repeat value="{!macSects}" id="macRepeat1" var="macItem">
+        <span style="font-family: Arial Unicode MS; font-size: 11pt;">{!macItem.Name} - Doctors</span><br />
+        <table>            
+            <apex:repeat value="{!macItem.drs}" id="drRepeat" var="drItem">
+                <tr>
+                    <th class="drPosHeader">Position</th>
+                    <th class="tdHeader">Blade Supplier</th>
+                    <th class="tdHeader">Blade Kadant #</th>
+                    <th class="tdHeader">Blade Cust #</th>
+                    <th class="tdHeader">Blade Description</th>
+                    <th class="tdHeader">Holder Type</th>
+                    <th class="tdHeader">Holder Supplier</th>
+                    <th class="tdHeader">Holder Description</th>
+                    <th class="tdHeader">Doctor Supplier</th>                    
+                </tr>
+                <tr>
+                    <td class="tdText">{!drItem.position}</td>
+                    <td class="tdText">{!drItem.bladeSupplier}</td>
+                    <td class="tdText">{!drItem.bladeKadantNum}</td>
+                    <td class="tdText">{!drItem.bladeCustNum}</td>
+                    <td class="tdText">{!drItem.bladeDesc}</td>
+                    <td class="tdText">{!drItem.holderType}</td>
+                    <td class="tdText">{!drItem.holderSupplier}</td>
+                    <td class="tdText">{!drItem.holderDesc}</td>
+                    <td class="tdText">{!drItem.drSupplier}</td>                    
+                </tr>
+                <tr>
+                    <td class="tdHeader">Dr. Back Loading</td>
+                    <td class="tdHeader">Loading Pressure</td>
+                    <td class="tdHeader">Bearing Kadant #</td>
+                    <td class="tdHeader">Tube Tray</td>
+                    <td class="tdHeader">Tube Supplier</td>
+                    <td class="tdHeader">Bearing Description</td>
+                    <td class="tdHeader">Oscillator Kadant #</td>
+                    <td class="tdHeader" colspan="2">Oscillator Description</td>
+                </tr>
+                <tr>
+                    <td class="tdText">{!drItem.drBackLoading}</td>
+                    <td class="tdText">{!drItem.drBackLoading}</td>
+                    <td class="tdText">{!drItem.bearingKadantNum}</td>
+                    <td class="tdText">{!drItem.tubeType}</td>
+                    <td class="tdText">{!drItem.tubeSupplier}</td>
+                    <td class="tdText">{!drItem.bearingDesc}</td>
+                    <td class="tdText">{!drItem.oscKadantNum}</td>
+                    <td class="tdText" colspan="2">{!drItem.oscDesc}</td>
+                </tr>
+                <tr><td class="tdBottom" colspan="10">Notes: {!drItem.drNotes}</td></tr>
+            </apex:repeat>
+        </table>
+    </apex:repeat>
+    <br />
+    <div style="page-break-before:always;">
+        <apex:repeat value="{!macSects}" id="mac2Repeat" var="macItem">        
+        <span style="font-family: Arial Unicode MS; font-size: 11pt;">{!macItem.Name} - Showers</span><br />
+            <table>            
+                <apex:repeat value="{!macItem.shrs}" id="shrRepeat" var="shrItem">
+                    <tr>
+                        <th class="shrPosHeader">Position</th>
+                        <th class="shrPosHeader">Application</th>
+                        <th class="tdHeader">Record Type</th>
+                        <th class="tdHeader">Shower Manufacturer</th>
+                        <th class="tdHeader">Nozzle Supplier</th>
+                        <th class="tdHeader">Nozzle Code</th>
+                        <th class="tdHeader">Nozzle Qty</th>  
+                        <th class="tdHeader">Nozzle Spacing</th>                                    
+                    </tr>
+                    <tr>
+                        <td class="tdText">{!shrItem.position}</td>
+                        <td class="tdText">{!shrItem.application}</td>
+                        <td class="tdText">{!shrItem.recType}</td>                        
+                        <td class="tdText">{!shrItem.shrManufacturer}</td>
+                        <td class="tdText">{!shrItem.nozzleSupplier}</td>
+                        <td class="tdText">{!shrItem.nozzleCode}</td>
+                        <td class="tdText">{!shrItem.nozzleQty}</td>  
+                        <td class="tdText">{!shrItem.nozzleSpacing}</td>                                      
+                    </tr>  
+                    <tr>
+                        <td class="tdHeader">Fluid Source</td>   
+                        <td class="tdHeader">Fabric Distance</td>
+                        <td class="tdHeader">Pipe Diameter</td>
+                        <td class="tdHeader">Brush Installed</td>
+                        <td class="tdHeader">Out Of Service</td>                 
+                        <th class="tdHeader" colspan="2">Shower Pressure</th>                     
+                    </tr>
+                    <tr>
+                        <td class="tdText">{!shrItem.fluidSource}</td>
+                        <td class="tdText">{!shrItem.distFabric}</td>
+                        <td class="tdText">{!shrItem.pipeDiameter}</td>
+                        <td class="tdText">{!shrItem.brushInstalled}</td>
+                        <td class="tdText">{!shrItem.outOfService}</td>                       
+                        <td class="tdText" colspan="2">{!shrItem.shrPressure}</td>                     
+                    </tr>              
+                    <tr><td class="tdBottom" colspan="10">Notes: {!shrItem.drNotes}</td></tr>
+                </apex:repeat>
+            </table>
+        </apex:repeat>
+    </div>
+    <br /><span style="font-family: Arial Unicode MS; font-size: 8pt; font-color: RED;"><apex:outputText value="{!errorMessage}" escape="false"/></span>
+</div>
+</body>
+</apex:page>

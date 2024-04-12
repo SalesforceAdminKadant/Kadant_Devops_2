@@ -1,0 +1,45 @@
+<template>
+    <template if:true={showTitle}>
+        <header class="slds-modal__header">                    
+            <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Shower Coverage Calculator</h2>
+        </header> 
+    </template>    
+    <div class="slds-grid" style="background: white; padding: 25px;">
+        <div class="slds-col slds-size_1-of-3">
+            <lightning-input name="sprayHeight" label="Spray Height (h)" type="number" min="0.00" max="100.00" step=".01" value={sheight}></lightning-input>
+            <lightning-input name="sprayAngle" label="Spray Angle (&alpha;)" type="number" min="15" max="120" step="5" value={nozangle}></lightning-input>
+            <lightning-input name="rotationAngle" label="Rotation Angle (&beta;)" type="number" min="0" max="10" step="1" value={nozcode}></lightning-input>
+            <lightning-input name="distanceToNozzles" label="Distance to Nozzles (p)" type="number" min="0.00" max="100.00" step=".01" value={nozspace}></lightning-input>
+            <lightning-input name="numberOfNozzles" label="Number of Nozzles" type="number" min="3" max="300" step="1" value={noznum}></lightning-input>
+            <div class="slds-align_absolute-center">
+                <lightning-button label="Calculate" class="slds-m-top--medium" variant="brand" onclick={calculateClick}></lightning-button>
+            </div>
+        </div>
+        <div class="slds-col slds-size_2-of-3" style="padding: 10px;">
+            <img height="95%" src={shower_spray} width="95%">
+            <br />
+            <img height="60%" src={nozzle_angle} width="60%">
+        </div>
+    </div>
+    <div style="background: white; padding: 25px;">
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+            <thead>
+                <tr class="slds-line-height_reset"><th colspan="2" class="" scope="col">General Output</th></tr>
+            </thead>
+            <tr><td>Nozzle Spray Width (w):</td><td><div style="text-align: right;">{swidth}in.</div></td></tr>
+            <tr><td>Total Spray Width (L):</td><td><div style="text-align: right;">{twidth}in.</div></td></tr>
+        </table>
+        <br />
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+            <thead>
+                <tr class="slds-line-height_reset"><th colspan="2" class="" scope="col">Nozzle Cover</th></tr>
+            </thead>
+            <tr><td>No Cover:</td><td><div style="text-align: right;">{nocover}%</div></td></tr>
+            <tr><td>Single Cover:</td><td><div style="text-align: right;">{single}%</div></td></tr>
+            <tr><td>Double Cover:</td><td><div style="text-align: right;">{double}%</div></td></tr>
+            <tr><td>Triple Cover:</td><td><div style="text-align: right;">{triple}%</div></td></tr>
+            <tr><td>Four Double Cover:</td><td><div style="text-align: right;">{fourth}%</div></td></tr>
+            <tr><td>Total Cover:</td><td><div style="text-align: right;">{total}%</div></td></tr>
+        </table>
+    </div>
+</template>

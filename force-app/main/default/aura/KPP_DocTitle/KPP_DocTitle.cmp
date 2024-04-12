@@ -1,0 +1,30 @@
+<aura:component  implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" controller="KPP_Function_Library">
+	<aura:attribute name="DocumentDetail" type="String"/>
+    <aura:attribute name="PageName" type="String"/>
+	<aura:handler name="init" value="{!this}" action="{!c.getDocumentDetail}"/>   
+  
+    <aura:if isTrue="{!v.PageName=='opp'}">
+    <h2 class="headlineTitleText textcenter"><lightning:icon iconName="utility:company" size="large" />&nbsp;<lightning:formattedText value="{!v.DocumentDetail[0][1]}" /></h2>
+    </aura:if>
+    
+    <aura:if isTrue="{!v.PageName=='cas'}">
+    <h2 class="headlineTitleText textcenter"><lightning:icon iconName="utility:live_message" size="large" />&nbsp;<lightning:formattedText value="{!v.DocumentDetail[0][1]}" /></h2>
+    </aura:if>
+    
+    <aura:if isTrue="{!v.PageName=='ast'}">
+    <h2 class="headlineTitleText textcenter"><lightning:icon iconName="utility:product_workspace" size="large" />&nbsp;<lightning:formattedText value="{!v.DocumentDetail[0][0]}" />&nbsp;<lightning:formattedText value="{!v.DocumentDetail[0][3]}" /></h2>
+    </aura:if>    
+
+    <aura:if isTrue="{!v.PageName=='ord'}">
+    <h2 class="headlineTitleText textcenter"><lightning:icon iconName="utility:paste" size="large" />&nbsp;Order:&nbsp;<lightning:formattedText value="{!v.DocumentDetail[0][0]}" /></h2>
+    </aura:if>  
+    
+    <aura:if isTrue="{!v.PageName=='quo'}">
+    <h2 class="headlineTitleText textcenter"><lightning:icon iconName="utility:retail_execution" size="large" />&nbsp;Quote:&nbsp;<lightning:formattedText value="{!v.DocumentDetail[0][0]}" /></h2>
+    </aura:if>  
+
+    <aura:if isTrue="{!v.PageName=='prd'}">
+    <h2 class="headlineTitleText textcenter"><lightning:icon iconName="utility:retail_execution" size="large" />&nbsp;Product:&nbsp;<lightning:formattedText value="{!v.DocumentDetail[0][1]}" /></h2>
+    </aura:if>
+    
+</aura:component>

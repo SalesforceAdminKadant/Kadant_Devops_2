@@ -1,0 +1,169 @@
+<template>
+    <lightning-card>
+        <div class="slds-card__body slds-card__body_inner" style="overflow:scroll; height:400px;">
+            <table class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th scope="col">
+                            <a class="slds-th__action slds-text-link_reset" href="javascript:void(0);" role="button" tabindex="0" data-index="0"  data-id="Name" onclick={doSorting}>
+                                <span class="slds-assistive-text">Sort by: </span>
+                                <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                    <span class="slds-truncate" title="Order Number">Order Number</span>
+                                    <lightning-button-icon variant="bare" data-icon-id="Name" alternative-text="Connected" size="medium" title="small size"></lightning-button-icon>
+                                </div>
+                            </a>
+                        </th>
+                        <th scope="col">
+                            <a class="slds-th__action slds-text-link_reset" href="javascript:void(0);" role="button" tabindex="0" data-index="1" data-id="Division__c" onclick={doSorting}>
+                                <span class="slds-assistive-text">Sort by: </span>
+                                <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                    <span class="slds-truncate" title="Division">Division</span>
+                                    <lightning-button-icon variant="bare" data-icon-id="Division__c" alternative-text="Connected" size="medium" title="small size"></lightning-button-icon>
+                                </div>
+                            </a>
+                        </th>
+                        <th scope="col">
+                            <a class="slds-th__action slds-text-link_reset" role="button" tabindex="0" data-index="2" data-id="PoNumber" onclick={doSorting}>
+                                <span class="slds-assistive-text">Sort by: </span>
+                                <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                    <span class="slds-truncate" title="PO Number">PO Number</span>
+                                    <lightning-button-icon variant="bare" data-icon-id="PoNumber" alternative-text="Connected" size="medium" title="small size"></lightning-button-icon>
+                                </div>
+                            </a>
+                        </th>
+                        <th scope="col">
+                            <a class="slds-th__action slds-text-link_reset" role="button" tabindex="0" data-index="3" data-id="EffectiveDate" onclick={doSorting}>
+                                <span class="slds-assistive-text">Sort by: </span>
+                                <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                    <span class="slds-truncate" title="Order Date">Order Date</span>
+                                    <lightning-button-icon variant="bare" data-icon-id="EffectiveDate" alternative-text="Connected" size="medium" title="small size"></lightning-button-icon>
+                                </div>
+                            </a>
+                        </th>
+                        <th scope="col">
+                            <a class="slds-th__action slds-text-link_reset" role="button" tabindex="0" data-index="4" data-id="Last_Ship_Date__c" onclick={doSorting}>
+                                <span class="slds-assistive-text">Sort by: </span>
+                                <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                    <span class="slds-truncate" title="Shipped Date">Shipped Date</span>
+                                    <lightning-button-icon variant="bare" data-icon-id="Last_Ship_Date__c" alternative-text="Connected" size="medium" title="small size"></lightning-button-icon>
+                                </div>
+                            </a>
+                        </th>
+                        <th scope="col">
+                            <a class="slds-th__action slds-text-link_reset" href="javascript:void(0);" role="button" tabindex="0" data-index="5" data-id="TotalAmount" onclick={doSorting}>
+                                <span class="slds-assistive-text">Sort by: </span>
+                                <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                    <span class="slds-truncate" title="Amount">Amount</span>
+                                    <lightning-button-icon  variant="bare" data-icon-id="TotalAmount"  alternative-text="Connected" size="medium" title="small size"></lightning-button-icon>
+                                </div>
+                            </a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                <template for:each={orders} for:item="order" for:index="orderIndex">
+                    <tr key={order.Id} class="slds-hint-parent">
+                        <td key={order.Id} role="gridcell">
+                            <div class="slds-truncate">
+                                <lightning-button-icon key={order.Id} icon-name="utility:chevronright" variant="bare" class="slds-m-right_x-small" alternative-text="Expand Orders"
+                                                       title="Expand Orders" data-order-id={order.Id} data-index={orderIndex} onclick={openOrdersAction}></lightning-button-icon>
+
+                                <lightning-formatted-text value={order.Name}></lightning-formatted-text>
+                            </div>
+                        </td>
+                        <td key={order.Id}>
+                            <div class="slds-truncate">
+                                <lightning-formatted-text value={order.Division__c}></lightning-formatted-text>
+                            </div>
+                        </td>
+                        <td key={order.Id}>
+                            <div class="slds-truncate">
+                                <lightning-formatted-text value={order.PoNumber}></lightning-formatted-text>
+                            </div>
+                        </td>
+                        <td key={order.Id}>
+                            <div class="slds-truncate">
+                                <lightning-formatted-text value={order.EffectiveDate}></lightning-formatted-text>
+                            </div>
+                        </td>
+                        <td key={order.Id}>
+                            <div class="slds-truncate">
+                                <lightning-formatted-text value={order.Last_Ship_Date__c}></lightning-formatted-text>
+                            </div>
+                        </td>
+                        <td key={order.Id}>
+                            <div class="slds-truncate">
+                                <lightning-formatted-number format-style="currency" currency-code="USD" value={order.TotalAmount}></lightning-formatted-number>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr if:true={order.toggleOpen} key={order.Id} class="slds-hint-parent">
+                        <td colspan="6" style="padding-left: 100px; padding-right: 0;">
+                            <table class="slds-table slds-table_fixed-layout slds-table_bordered">
+                                <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Line">Line</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Quantity">Quantity</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Part Number">Part Number</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Description">Description</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Total Price">Total Price</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Tracking Number">Tracking Number</div>
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <template for:each={order.OrderItems} for:item="orderLine" for:index="orderLineIndex">
+                                    <tr key={orderLine.Id} class="slds-hint-parent">
+                                        <td>
+                                            <div class="slds-truncate">
+                                                <lightning-formatted-number value={orderLine.Line_No__c}></lightning-formatted-number>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-truncate">
+                                                <lightning-formatted-number value={orderLine.Quantity}></lightning-formatted-number>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-truncate">
+                                                <lightning-formatted-text value={orderLine.Our_Item_Number__c}></lightning-formatted-text>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-truncate">
+                                                <lightning-formatted-text value={orderLine.Description}></lightning-formatted-text>
+                                            </div>
+                                        </td>    
+                                        <td>
+                                            <div class="slds-truncate">
+                                                <lightning-formatted-number format-style="currency" currency-code="USD" value={orderLine.TotalPrice}></lightning-formatted-number>
+                                            </div>
+                                        </td> 
+                                        <td>
+                                            <div class="slds-truncate">
+                                                <lightning-formatted-url value={orderLine.Portal_Tracking__c} tooltip="tracking info" label="tracking info" target="_blank"></lightning-formatted-url>
+                                            </div>
+                                        </td>                                 
+                                    </tr>
+                                </template>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </template>
+                </tbody>
+            </table>
+        </div>
+    </lightning-card>
+    </template>

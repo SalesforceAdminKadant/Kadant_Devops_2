@@ -1,0 +1,30 @@
+.THIS .OrderHeader > td{
+    padding-top:1em;    
+}
+
+.THIS .OrderTableHeader{
+    
+}
+
+.THIS .OrderLines > td{
+    padding-top:1em;
+    /*border-bottom:3px solid black;*/
+}
+
+
+.THIS .OrderLinesHeader{
+    /*background-color:#f5f5f5;    */
+}
+
+.THIS .OrderLinesHeader td{
+    font-weight:bold;
+}
+
+
+.THIS OrderLines >tr  {
+    border-bottom:3px solid black;
+}
+
+.THIS YearFilter{
+	width:90% !important;    
+}

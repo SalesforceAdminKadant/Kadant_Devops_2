@@ -1,0 +1,127 @@
+<apex:page standardController="Account_Sales_Targets__c" recordSetVar="asts" lightningstylesheets="true" extensions="AccountSalesTargetsControllerExtension,MassEditExtension,SaveAndReturnController">
+
+ <style>
+ 
+   .stickycolumn {
+    position: -webkit-sticky !important;
+   position: sticky !important;
+    min-width: 300px !important;
+   left:0;
+    z-index:1;
+    background-color:#ffffff !important;
+}
+    .stickyheader {
+   position: -webkit-sticky !important;
+   position: sticky !important;
+   left:0;
+   z-index:1;
+     background-color:#fafaf9 !important;
+    }
+       .stickyfooter {
+position: -webkit-sticky !important;
+ position: sticky !important;
+  left:0;
+ z-index:1;
+    background-color:#fafaf9 !important;
+    } 
+    
+    normalheader{
+    
+    }
+    normalfooter {
+
+    background-color:#fafaf9 !important;
+    } 
+     
+    .tablediv {
+    max-height: 28px !important;
+    }
+    .inputboxes{
+    max-height: 28px !important;
+    width: 135px !important;
+    }
+    
+      .formclass{
+
+    }  
+    
+      .pbBody{
+      display:block !important; 
+      height: calc(100vh - 85px);
+      overflow:auto !important;
+    } 
+
+</style>   
+    
+<apex:form styleClass="formclass" id="theform">  
+
+        
+<apex:pageBlock title="Mass Edit Sales Budget" mode="edit">
+        <apex:pageMessages />
+        <apex:pageblockButtons location="top">
+            <apex:commandButton value="Save" action="{!save}" onclick="SaveAndRefreshTable()"/>
+            <apex:commandButton value="Return" action="{!cancel}"/>
+            <apex:commandButton value="Cancel" action="{!cancel}"/>
+
+        </apex:pageBlockButtons>
+                 <!--div style="overflow: scroll; width: auto; height: auto;"-->  
+            <apex:pageBlockTable value="{!asts}" var="a" id="acctsTable">
+                <apex:column headerClass="stickyheader" styleClass="stickycolumn" headerValue="Account" footervalue="Account" footerClass="stickyfooter" >
+                    <apex:outputLink value="/lightning/r/{!a.Account__c}/view" target="_blank" >{!a.Account__r.name}</apex:outputLink>
+                    </apex:column>
+                <apex:column headerValue="Opportunities" footerClass="normalfooter" footervalue="Opportunities"  >
+                    <apex:outputLink value="/lightning/r/{!a.Account__c}/related/Opportunities/view" target="_blank">Opportunities</apex:outputLink>
+                    </apex:column>
+                                <apex:column headerValue="Report" footerClass="normalfooter" footervalue="Report"  >
+                    <apex:outputLink value="/lightning/r/Report/00O4W000004QDC8UAO/view?queryScope=userFolders&fv0={!a.Account__c}" target="_blank">Detail</apex:outputLink>
+                    </apex:column>
+                <apex:column value="{!a.Account__r.FY_Sales_2_Years_Ago__c}"  />
+              <apex:column value="{!a.Account__r.FY_Sales_Previous__c}"  />
+                <apex:column value="{!a.Account__r.FY_Sales_Current__c}"  />
+                <apex:column headerValue="Total Budget" footerClass="normalfooter" footervalue="Total Budget" value="{!a.PSG_E_Total__c}"  />
+                <apex:column headerValue="FL-KL-Aftermarket" footerClass="normalfooter" footervalue="FL-KL-Aftermarket" > 
+                    <div class="tablediv"><apex:inputField value="{!a.FL_KL_Aftermarket__c}" styleclass="inputboxes"/></div>
+                </apex:column>
+                <apex:column headerValue="FL-KL-Capital" footerClass="normalfooter" footervalue="FL-KL-Capital" > 
+                    <div class="tablediv"><apex:inputField value="{!a.FL_KL_Capital__c}" styleclass="inputboxes"/></div>
+                </apex:column>
+                              
+            </apex:pageBlockTable>
+            <!--/div-->
+        </apex:pageBlock>
+
+    </apex:form>
+ 
+<script>
+                        /* $(document).ready(function()
+    {
+        $("[id$='acctsTable']").tablesorter({theme: "blue", widgets: ["zebra"], dateFormat : "dd/mm/yyyy"});
+
+        $('.fixme').fixheadertable({
+            height  : 450
+        });
+    });
+
+    function SaveAndRefreshTable () {
+        var table = document.getElementById ("acctsTable");
+        table.refresh ();
+        
+       
+    } */
+
+</script>
+  <script type="text/javascript">
+/*   j$ = jQuery.noConflict();
+        j$(document).ready(function () {
+            j$('[id$=theTable]').DataTable( {
+                "bSort" : true,
+                "bPaginate": false,
+                "bFilter": false,
+                "bInfo": false,
+                "scrollY": 200,
+                "scrollX": true
+            } );
+        });  */
+    </script> 
+
+</apex:page>

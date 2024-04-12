@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="27pt" version="1.1" xmlns="http://www.w3.org/2000/svg" height="27.15pt" viewBox="0 0 27 27.15" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs>
+  <clipPath id="Clip0">
+   <path d="M0 28.2948 L28.282 28.2948 L28.282 0 L0 0 L0 28.2948 Z" transform="translate(0, -1.25)"/>
+  </clipPath>
+  <clipPath id="Clip1">
+   <path d="M0 28.2948 L28.282 28.2948 L28.282 0 L0 0 L0 28.2948 Z" transform="translate(0, -1.25)"/>
+  </clipPath>
+  <clipPath id="Clip2">
+   <path d="M0 28.2948 L28.282 28.2948 L28.282 4e-05 L0 4e-05 L0 28.2948 Z" transform="translate(0, -1.25)"/>
+  </clipPath>
+ </defs>
+ <g id="Background">
+  <g id="Group3" clip-path="url(#Clip0)">
+   <g id="Background" clip-path="url(#Clip1)">
+    <g id="Layer_1" clip-path="url(#Clip2)">
+     <path style="fill:none;stroke:#424244; stroke-width:1.20192; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:none;" d="M6.388 19.7744 C1.6664 17.1056 0 11.1128 2.6728 6.3864 C5.3456 1.6624 11.3376 0 16.0632 2.668 C20.7864 5.3472 22.4512 11.3368 19.7784 16.0632 C18.9008 17.6136 17.6128 18.8952 16.0632 19.7752 " transform="translate(5.22988, -0.64904)"/>
+     <path style="fill:#96989b; fill-rule:evenodd;stroke:none;" d="M9.6752 0 L9.6752 1.2744 L8.4496 1.2744 L7.6136 7.636 L1.364 7.636 L3.232 5.896 L3.232 1.2744 L0 1.2744 L0 0 L9.6752 0 Z" transform="translate(11.6179, 19.1254)"/>
+     <path style="fill:none;stroke:#424244; stroke-width:0.56696; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:none;" d="M9.6752 1.2744 L9.6752 0 L0 0 L0 1.2744 " transform="translate(11.6179, 19.1254)"/>
+     <path style="fill:none;stroke:#424244; stroke-width:0.56696; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:none;" d="M0.836 0 L0 6.3616 " transform="translate(19.2315, 20.3998)"/>
+     <path style="fill:none;stroke:#424244; stroke-width:0.56696; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:none;" d="M6.2496 0 L0 0 " transform="translate(12.9819, 26.1944)"/>
+     <path style="fill:none;stroke:#424244; stroke-width:0.56696; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:none;" d="M0 1.74 L1.868 0 " transform="translate(12.9819, 25.0214)"/>
+     <path style="fill:#424244; fill-rule:evenodd;stroke:none;" d="M0 0.4888 L14.5664 0.4888 L14.5664 0 L0 0 L0 0.4888 Z" transform="translate(0.28348, 24.0214)"/>
+     <path style="fill:none;stroke:#424244; stroke-width:0.56696; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:none;" d="M0 4.6216 L0 0 " transform="translate(14.8499, 20.3998)"/>
+     <path style="fill:none;stroke:#424244; stroke-width:0.56696; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:none;" d="M0 0 L3.232 0 " transform="translate(11.6179, 19.8328)"/>
+     <path style="fill:none;stroke:#424244; stroke-width:0.56696; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:none;" d="M1.2256 0 L0 0 " transform="translate(20.0675, 19.8328)"/>
+     <path style="fill:none;stroke:#424244; stroke-width:0.56696; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:none;" d="M14.5664 0 L0 0 " transform="translate(0.28348, 24.4544)"/>
+     <path style="fill:none;stroke:#424244; stroke-width:0.56696; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:none;" d="M14.5664 0 L0 0 " transform="translate(0.28348, 23.9656)"/>
+     <path style="fill:none;stroke:#424244; stroke-width:0.56696; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:none;" d="M0 0.4888 L0 0 " transform="translate(0.28348, 24.4544)"/>
+    </g>
+   </g>
+  </g>
+ </g>
+</svg>

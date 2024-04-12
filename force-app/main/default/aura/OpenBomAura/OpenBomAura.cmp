@@ -1,0 +1,8 @@
+<aura:component implements="flexipage:availableForAllPageTypes,lightning:isUrlAddressable,force:hasRecordId" access="global">
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>   
+	<aura:attribute name="theRecordId" type="String" />
+    <lightning:button variant="brand" label="Print This Page" title="Print This Page" onclick="{!c.printClick}" class="slds-m-left_x-small" />
+    <div class="slds-card">        
+        <c:bomReporting recordId="{!v.theRecordId}"/>
+    </div>
+</aura:component>

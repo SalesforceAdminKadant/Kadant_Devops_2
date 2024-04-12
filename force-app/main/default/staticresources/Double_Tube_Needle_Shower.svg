@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="27.95pt" version="1.1" xmlns="http://www.w3.org/2000/svg" height="36.85pt" viewBox="0 0 27.95 36.85" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs>
+  <clipPath id="Clip0">
+   <path d="M0 38.3853 L30.9531 38.3853 L30.9531 0 L0 0 L0 38.3853 Z" transform="translate(-1.5, -1.5)"/>
+  </clipPath>
+  <clipPath id="Clip1">
+   <path d="M0 38.3853 L30.9531 38.3853 L30.9531 0 L0 0 L0 38.3853 Z" transform="translate(-1.5, -1.5)"/>
+  </clipPath>
+  <clipPath id="Clip2">
+   <path d="M0 38.3853 L30.9531 38.3853 L30.9531 -4e-05 L0 -4e-05 L0 38.3853 Z" transform="translate(-1.5, -1.5)"/>
+  </clipPath>
+  <clipPath id="Clip3">
+   <path d="M0 38.3853 L30.9531 38.3853 L30.9531 -4e-05 L0 -4e-05 L0 38.3853 Z" transform="translate(-1.5, -1.5)"/>
+  </clipPath>
+  <clipPath id="Clip4">
+   <path d="M0 38.3853 L30.9531 38.3853 L30.9531 -4e-05 L0 -4e-05 L0 38.3853 Z" transform="translate(-1.5, -1.5)"/>
+  </clipPath>
+ </defs>
+ <g id="Background">
+  <g id="Group5" clip-path="url(#Clip0)">
+   <g id="Copy of Background" clip-path="url(#Clip1)">
+    <g id="Group3" clip-path="url(#Clip2)">
+     <g id="Background" clip-path="url(#Clip3)">
+      <g id="Layer_1" clip-path="url(#Clip4)">
+       <path style="fill:none;stroke:#424244; stroke-width:1.20192; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:none;" d="M19.6528 9.8232 C19.6528 15.248 15.256 19.6472 9.8312 19.6472 C4.408 19.6472 0 15.248 0 9.8232 C0 4.4008 4.408 0 9.8312 0 C15.256 0 19.6528 4.4008 19.6528 9.8232 L19.6528 9.8232 Z" transform="translate(4.14496, 4.15296)"/>
+       <path style="fill:none;stroke:#424244; stroke-width:1.36064; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:none;" d="M0 0 L0 12.404 " transform="translate(13.9754, 23.8009)"/>
+       <path style="fill:none;stroke:#424244; stroke-width:1.20192; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:none;" d="M7.3344 25.5864 C1.4112 21.42 0 13.2496 4.1656 7.3344 C8.3328 1.4208 16.5032 0 22.4168 4.1672 C28.3384 8.3336 29.7512 16.504 25.5856 22.4176 C24.7248 23.6488 23.648 24.7248 22.4168 25.5864 " transform="translate(-0.89904, -0.89904)"/>
+      </g>
+     </g>
+    </g>
+   </g>
+  </g>
+ </g>
+</svg>

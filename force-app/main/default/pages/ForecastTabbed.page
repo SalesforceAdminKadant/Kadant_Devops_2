@@ -1,0 +1,714 @@
+<apex:page Controller="forecastCtrl" tabStyle="Forecast__c" >
+<!--         <apex:actionstatus id="pleasewait"> -->
+<!--             <apex:facet name="start"> -->
+<!--                 <img src="{!$Resource.AjaxAnimation}" /> -->
+<!--             </apex:facet> -->
+<!--         </apex:actionstatus> -->
+         
+        <style>
+            /* This is for the full screen DIV */
+            .popupBackground 
+            {
+                /* Background color */
+                background-color:black;
+                opacity: 0.20;
+                filter: alpha(opacity = 20);
+                /* Dimensions */
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                z-index: 998;
+                position: absolute;
+                /* Mouse */
+                cursor:wait;
+            }
+             
+            /* This is for the message DIV */
+            .PopupPanel 
+            {
+                /* Background color */
+                border: solid 2px blue;   
+                background-color: white; 
+                 
+                /* Dimensions */
+                left: 50%;
+                width: 200px;
+                margin-left: -100px;
+                top: 50%;
+                height: 50px;
+                margin-top: -25px;
+                z-index: 999;
+                position: fixed;
+                /* Mouse */
+                cursor:pointer;
+            }
+        </style>
+        
+        <apex:actionStatus id="pleasewait" stopText="">
+            <apex:facet name="start">
+                <div>
+                    <div class="popupBackground" />
+                    <div class="PopupPanel">
+                        <table border="0" width="100%" height="100%">
+                            <tr>
+                                <td align="center"><b>Please Wait</b></td>
+                            </tr>
+                            <tr>
+                                <td align="center"><img src="{!$Resource.AjaxAnimation}"/></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </apex:facet>
+        </apex:actionStatus>  
+    <apex:form >        
+    
+    <apex:actionFunction name="saveSolutionsConsumables" action="{!updateForecastSolutionsConsumables}" rerender="theTabPanel" status="pleasewait">
+        <apex:param value="" name="p1" assignTo="{!selectedTab}"/>
+    </apex:actionFunction>
+    
+    <apex:actionFunction name="saveSolutionsCapital" action="{!updateForecastSolutionsCapital}" rerender="theTabPanel" status="pleasewait">
+        <apex:param value="" name="p4" assignTo="{!selectedTab}"/>
+    </apex:actionFunction>
+    
+    <apex:actionFunction name="saveJohnson" action="{!updateForecastJohnson}" rerender="theTabPanel" status="pleasewait">
+        <apex:param value="" name="p3" assignTo="{!selectedTab}"/>
+    </apex:actionFunction>
+    
+    <apex:actionFunction name="cancel" action="{!getForecast}" rerender="theTabPanel" status="pleasewait" >   
+    </apex:actionFunction>
+    
+        <script>
+            var strOldLocation = '';
+            var count=0;
+            
+            function setOldTab(arg)
+            {
+                strOldLocation = arg;
+            }
+            function DetailReport(strForecastName, strOwnerName, strType)
+            {
+                var url = "/00O60000003ssSY?pc0=01I60000000AwXN.Name&pn0=eq&pv0=" + strForecastName + "&pc1=Owner.Name&pn1=eq&pv1=" + strOwnerName;
+                if (strType != 'Total')
+                {
+                    url = url + "&pc2=01I60000000AwXM.00N60000002E1cI&pn2=eq&pv2=" + strType
+                }
+                window.open(url,"_blank");
+            }
+           
+            function saveForecast(strNewLocation)
+            {
+                if(count > 0)
+                {
+                    if (confirm('Do you want to save this forecast?'))
+                    {
+                        if(strOldLocation == 'SolutionsConsumables') 
+                            saveSolutionsConsumables(strNewLocation);
+                            
+                        if(strOldLocation == 'SolutionsCapital') 
+                            saveSolutionsCapital(strNewLocation); 
+                        
+                        if(strOldLocation == 'Johnson') 
+                            saveJohnson(strNewLocation);
+                            
+                        count = 0;
+                    }
+                    else
+                    {
+                        cancel();
+                        count = 0;
+                    }
+                    return false;
+                }
+                return true;
+            }
+            
+            function getString(url)
+            {
+                var splited = url.split('-');
+                if(splited.size()>2)
+                {
+                    splited[0] = splited[0]+'-'+splited[1];
+                    splited[1] = splited[2];
+                }
+                else if(splited[0].search('&') != -1)
+                {
+                    splited[0] = splited[0].replace('&','%26');
+                }
+                var url = "/00O60000003JkAv?pv1="+splited[0]+"&pv2="+splited[1];
+                window.open(url,"_blank");
+            }
+                
+            function getReportDT(url)
+            {
+                var splited = url.split('-');
+                if(splited.size()>2)
+                {
+                    splited[0] = splited[0]+'-'+splited[1];
+                    splited[1] = splited[2];
+                }
+                else if(splited[0].search('&') != -1)
+                {
+                    splited[0] = splited[0].replace('&','%26');
+                }
+                var url = "/00O60000003L9ug?pv0="+splited[0]+"&pv1="+splited[1];
+                window.open(url, "_blank");
+            }
+        </script>
+        
+        <apex:tabPanel id="theTabPanel" tabClass="activeTab" inactiveTabClass="inactiveTab" value="{!selectedTab}"  >
+        
+        <apex:tab label="Solutions Consumables" rendered="{!showSolutionsConsumableTab}" name="SolutionsConsumables" id="tabSolutionsConsumables" onTabLeave="setOldTab('SolutionsConsumables');" onTabEnter="return saveForecast('SolutionsConsumables');">
+              
+              <apex:pageBlock Title="Solutions Consumables -  {!forecast.Owner.Name} - {!forecast.Name}">
+              <apex:pageBlockButtons >
+                  <apex:commandButton value="Quick Save" action="{!updateForecastSolutionsConsumables}" disabled="{!flagApproval}" reRender="theTabPanel,ShowError" onClick="count=0;" />      
+                  <apex:commandButton value="Save & Exit" action="{!updateExitForecastSolutionsConsumables}" disabled="{!flagApproval}" />
+                  <apex:commandButton value="Detail Report" onclick="DetailReport('{!forecast.Name}','{!forecast.Owner.Name}','Solutions') ;"/>
+                  <apex:commandButton value="Submit Forecast" action="{!submit}" disabled="{!flagApproval}"/> <!-- disabled="{!flagApproval}" -->
+                  <apex:commandButton value="Cancel" action="{!cancel}"/>      
+              </apex:pageBlockButtons>
+              
+                <apex:pageMessage summary="No Forecast exists." severity="info" strength="3" rendered="{!TheTotalsSolutionsConsumables.size<=0}" />
+                <apex:pageMessages />
+                
+                  <apex:pageblockTable style="font-size:x-small;" value="{!TheTotalsSolutionsConsumables}" var="res" rendered="{!TheTotalsSolutionsConsumables.size>0}">
+                      <apex:column value="{!res.Product_Category__c}"/>
+                      <apex:column value="{!res.Forecast_Category__c}"/>
+                      <apex:column headerValue="Includes">
+                          <a target="_blank" href="/00O60000003JkAv?pv1={!URLENCODE(res.Product_Category__c)}&pv2={!URLENCODE(res.Forecast_Category__c)}">Click for more info.</a>
+                          <apex:facet name="footer">
+                                <apex:outputText value="Total:" />  
+                          </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!fh4} (Forecast)">
+                        <apex:InputField style="width: 60px;" value="{!res.Value_4__c}" onChange="count++;"></apex:InputField>
+                        <apex:facet name="footer">
+                            <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!ff4}"/>
+                            </apex:outputText>
+                        </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!fh3} (Forecast)">
+                        <apex:InputField style="width: 60px;" value="{!res.Value_3__c}" onChange="count++;"></apex:InputField>
+                        <apex:facet name="footer">
+                            <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!ff3}"/>
+                            </apex:outputText>
+                        </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!fh2} (Forecast)">
+                        <apex:InputField style="width: 60px;" value="{!res.Value_2__c}" onChange="count++;"></apex:InputField>
+                        <apex:facet name="footer">
+                            <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!ff2}"/>
+                            </apex:outputText>
+                        </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!fh1} (Forecast)">
+                        <apex:InputField style="width: 60px;" value="{!res.Value_1__c}" onChange="count++;"></apex:InputField>
+                        <apex:facet name="footer">
+                            <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!ff1}"/>
+                            </apex:outputText>
+                        </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="Current Qtr Forecast" value="{!res.LastQForecast__c}">
+                          <apex:facet name="footer">
+                              <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!ffcq}"/>
+                              </apex:outputText>
+                          </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!h8}" value="{!res.Val8__c}">
+                          <apex:facet name="footer">
+                              <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!f8}"/>
+                              </apex:outputText>
+                          </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!h7}" value="{!res.Val7__c}">
+                          <apex:facet name="footer">
+                              <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!f7}"/>
+                              </apex:outputText>
+                          </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!h6}" value="{!res.Val6__c}">
+                          <apex:facet name="footer">
+                              <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!f6}"/>
+                              </apex:outputText>
+                          </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!h5}" value="{!res.Val5__c}">
+                          <apex:facet name="footer">
+                              <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!f5}"/>
+                              </apex:outputText>
+                          </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!h4}" value="{!res.Val4__c}">
+                          <apex:facet name="footer">
+                              <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!f4}"/>
+                              </apex:outputText>
+                          </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!h3}" value="{!res.Val3__c}">
+                          <apex:facet name="footer">
+                              <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!f3}"/>
+                              </apex:outputText>
+                          </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!h2}" value="{!res.Val2__c}">
+                          <apex:facet name="footer">
+                              <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!f2}"/>
+                              </apex:outputText>
+                          </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!h1}" value="{!res.Val1__c}">
+                          <apex:facet name="footer">
+                              <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!f1}"/>
+                              </apex:outputText>
+                          </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="Detailed Report">
+                          <a target="_blank" href="/00O60000003JkAX?pv0={!forecast.Owner.Alias}&pv1={!URLENCODE(res.Product_Category__c)}&pv2={!URLENCODE(res.Forecast_Category__c)}">Click for more info.</a>
+                      </apex:column>
+                  </apex:pageblockTable>  
+              </apex:pageBlock>
+        </apex:tab>
+        
+        <apex:tab label="Solutions Capital" rendered="{!showSolutionsCapitalTab}" name="SolutionsCapital" id="tabSolutionsCapital"  onTabLeave="setOldTab('SolutionsCapital');" onTabEnter="return saveForecast('SolutionsCapital');">
+            
+              <apex:pageBlock Title="Solutions Capital - {!forecast.Owner.Name} - {!forecast.Name}">
+              <apex:pageBlockButtons >
+                  <apex:commandButton value="Quick Save" action="{!updateForecastSolutionsCapital}" disabled="{!flagApproval}" reRender="theTabPanel,ShowError" onClick="count=0;"  />           
+                  <apex:commandButton value="Save & Exit" action="{!updateExitForecastSolutionsCapital}" disabled="{!flagApproval}" />      
+                  <apex:commandButton value="Detail Report" onclick="DetailReport('{!forecast.Name}','{!forecast.Owner.Name}','Solutions') ;"/>
+                  <apex:commandButton value="Submit Forecast" action="{!submit}" disabled="{!flagApproval}"/>
+                  <apex:commandButton value="Cancel" action="{!cancel}"/>      
+              </apex:pageBlockButtons>
+              
+                  <apex:pageMessage summary="No Forecast exists." severity="info" strength="3" rendered="{!TheTotalsSolutionsCapital.size<=0}" />
+                  <apex:pageMessages /> 
+                    
+                  <apex:pageblockTable style="font-size:x-small;" value="{!TheTotalsSolutionsCapital}" var="res"  rendered="{!TheTotalsSolutionsCapital.size>0}">
+                      <apex:column value="{!res.Product_Category__c}"/>
+                      <apex:column value="{!res.Forecast_Category__c}"/>
+                      
+                      <apex:column headerValue="Includes">
+                          <a target="_blank" href="/00O60000003JkAv?pv1={!URLENCODE(res.Product_Category__c)}&pv2={!URLENCODE(res.Forecast_Category__c)}">Click for more info.</a>
+                          <apex:facet name="footer">
+                                <apex:outputText value="Total:" />  
+                          </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!fh4} (Forecast)">
+                        <apex:InputField style="width: 60px;" value="{!res.Value_4__c}" onChange="count++;"></apex:InputField>
+                        <apex:facet name="footer">
+                            <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!ffm4}"/>
+                            </apex:outputText>
+                        </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!fh3} (Forecast)">
+                        <apex:InputField style="width: 60px;" value="{!res.Value_3__c}" onChange="count++;"></apex:InputField>
+                        <apex:facet name="footer">
+                            <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!ffm3}"/>
+                            </apex:outputText>
+                        </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!fh2} (Forecast)">
+                        <apex:InputField style="width: 60px;" value="{!res.Value_2__c}" onChange="count++;"></apex:InputField>
+                        <apex:facet name="footer">
+                            <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!ffm2}"/>
+                            </apex:outputText>
+                        </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!fh1} (Forecast)">
+                        <apex:InputField style="width: 60px;" value="{!res.Value_1__c}" onChange="count++;"></apex:InputField>
+                        <apex:facet name="footer">
+                            <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!ffm1}"/>
+                            </apex:outputText>
+                        </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="Current Qtr Forecast" value="{!res.LastQForecast__c}">
+                          <apex:facet name="footer">
+                              <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!ffcqm}"/>
+                              </apex:outputText>
+                          </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!h8}" value="{!res.Val8__c}">
+                          <apex:facet name="footer">
+                              <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!fm8}"/>
+                              </apex:outputText>
+                          </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!h7}" value="{!res.Val7__c}">
+                          <apex:facet name="footer">
+                              <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!fm7}"/>
+                              </apex:outputText>
+                          </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!h6}" value="{!res.Val6__c}">
+                          <apex:facet name="footer">
+                              <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!fm6}"/>
+                              </apex:outputText>
+                          </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!h5}" value="{!res.Val5__c}">
+                          <apex:facet name="footer">
+                              <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!fm5}"/>
+                              </apex:outputText>
+                          </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!h4}" value="{!res.Val4__c}">
+                          <apex:facet name="footer">
+                              <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!fm4}"/>
+                              </apex:outputText>
+                          </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!h3}" value="{!res.Val3__c}">
+                          <apex:facet name="footer">
+                              <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!fm3}"/>
+                              </apex:outputText>
+                          </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!h2}" value="{!res.Val2__c}">
+                          <apex:facet name="footer">
+                              <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!fm2}"/>
+                              </apex:outputText>
+                          </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!h1}" value="{!res.Val1__c}">
+                          <apex:facet name="footer">
+                              <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!fm1}"/>
+                              </apex:outputText>
+                          </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="Detailed Report">
+                          <a target="_blank" href="/00O60000003JkAX?pv0={!forecast.Owner.Alias}&pv1={!URLENCODE(res.Product_Category__c)}&pv2={!URLENCODE(res.Forecast_Category__c)}">Click for more info.</a>
+                      </apex:column>
+                  </apex:pageblockTable>  
+              </apex:pageBlock>
+        </apex:tab>
+        
+        <apex:tab label="Johnson" rendered="{!showJohnsonTab}" name="Johnson" id="tabJohnson" onTabLeave="setOldTab('Johnson');" onTabEnter="return saveForecast('Johnson');">
+            
+              <apex:pageBlock Title="Johnson - {!forecast.Owner.Name} - {!forecast.Name}">
+              <apex:pageBlockButtons >
+                  <apex:commandButton value="Quick Save" action="{!updateForecastJohnson}" disabled="{!flagApproval}" reRender="theTabPanel,ShowError" onClick="count=0;" />            
+                  <apex:commandButton value="Save & Exit" action="{!updateExitForecastJohnson}" disabled="{!flagApproval}" />      
+                  <apex:commandButton value="Detail Report" onclick="DetailReport('{!forecast.Name}','{!forecast.Owner.Name}','Johnson') ;"/>
+                  <apex:commandButton value="Submit Forecast" action="{!submit}" disabled="{!flagApproval}"/>
+                  <apex:commandButton value="Cancel" action="{!cancel}"/>      
+              </apex:pageBlockButtons>
+              
+                <apex:pageMessage summary="No Forecast exists." severity="info" strength="3" rendered="{!TheTotalsJohnson.size<=0}" />
+                <apex:pageMessages />
+                
+                  <apex:pageblockTable style="font-size:x-small;" value="{!TheTotalsJohnson}" var="res" rendered="{!TheTotalsJohnson.size>0}">
+                      <apex:column value="{!res.Product_Category__c}"/>
+                      <apex:column value="{!res.Forecast_Category__c}"/>
+                      
+                      <apex:column headerValue="Includes">
+                          <a target="_blank" href="/00O60000003JkAv?pv1={!URLENCODE(res.Product_Category__c)}&pv2={!URLENCODE(res.Forecast_Category__c)}">Click for more info.</a>
+                          <apex:facet name="footer">
+                                <apex:outputText value="Total:" />  
+                          </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!fh4} (Forecast)">
+                        <apex:InputField style="width: 60px;" value="{!res.Value_4__c}" onChange="count++;"></apex:InputField>
+                        <apex:facet name="footer">
+                            <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!ffj4}"/>
+                            </apex:outputText>
+                        </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!fh3} (Forecast)">
+                        <apex:InputField style="width: 60px;" value="{!res.Value_3__c}" onChange="count++;"></apex:InputField>
+                        <apex:facet name="footer">
+                            <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!ffj3}"/>
+                            </apex:outputText>
+                        </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!fh2} (Forecast)">
+                        <apex:InputField style="width: 60px;" value="{!res.Value_2__c}" onChange="count++;"></apex:InputField>
+                        <apex:facet name="footer">
+                            <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!ffj2}"/>
+                            </apex:outputText>
+                        </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!fh1} (Forecast)">
+                        <apex:InputField style="width: 60px;" value="{!res.Value_1__c}" onChange="count++;"></apex:InputField>
+                        <apex:facet name="footer">
+                            <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!ffj1}"/>
+                            </apex:outputText>
+                        </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="Current Qtr Forecast" value="{!res.LastQForecast__c}">
+                         <apex:facet name="footer">
+                              <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!ffcqj}"/>
+                              </apex:outputText>
+                          </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!h8}" value="{!res.Val8__c}">
+                          <apex:facet name="footer">
+                              <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!fj8}"/>
+                              </apex:outputText>
+                          </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!h7}" value="{!res.Val7__c}">
+                          <apex:facet name="footer">
+                              <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!fj7}"/>
+                              </apex:outputText>
+                          </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!h6}" value="{!res.Val6__c}">
+                          <apex:facet name="footer">
+                              <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!fj6}"/>
+                              </apex:outputText>
+                          </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!h5}" value="{!res.Val5__c}">
+                          <apex:facet name="footer">
+                              <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!fj5}"/>
+                              </apex:outputText>
+                          </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!h4}" value="{!res.Val4__c}">
+                          <apex:facet name="footer">
+                              <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!fj4}"/>
+                              </apex:outputText>
+                          </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!h3}" value="{!res.Val3__c}">
+                          <apex:facet name="footer">
+                              <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!fj3}"/>
+                              </apex:outputText>
+                          </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!h2}" value="{!res.Val2__c}">
+                          <apex:facet name="footer">
+                              <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!fj2}"/>
+                              </apex:outputText>
+                          </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="{!h1}" value="{!res.Val1__c}">
+                          <apex:facet name="footer">
+                              <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!fj1}"/>
+                              </apex:outputText>
+                          </apex:facet>
+                      </apex:column>
+                      
+                      <apex:column headerValue="Detailed Report">
+                          <a target="_blank" href="/00O60000003JkAX?pv0={!forecast.Owner.Alias}&pv1={!URLENCODE(res.Product_Category__c)}&pv2={!URLENCODE(res.Forecast_Category__c)}">Click for more info.</a>
+                      </apex:column>
+                  </apex:pageblockTable>  
+              </apex:pageBlock>
+        </apex:tab>
+        
+        <apex:tab label="District Totals" name="District" id="tableDistrict" onTabLeave="setOldTab('District');" onTabEnter="return saveForecast('District');">
+            
+              <apex:pageBlock Title="District Totals - {!forecast.Owner.Name} - {!forecast.Name}">
+              <apex:pageBlockButtons >
+              <apex:commandButton value="Cancel" action="{!cancel}"/>
+              </apex:pageBlockButtons>
+
+                    <apex:pageMessage summary="No Forecast exists." severity="info" strength="3" rendered="{!TheTotalItems.size <= 0}" />
+
+                  <apex:pageblockTable style="font-size:x-small;" value="{!TheTotalItems}" var="res" rendered="{!TheTotalItems.size>0}">
+                      <apex:column value="{!res.Product_Category__c}" />
+                      
+                      <apex:column headerValue="Includes">
+                          <a href="#" onclick="getString('{!res.Product_Category__c}')">Click for more info.</a>
+                            <apex:facet name="footer">
+                                <apex:outputText value="Total:" />  
+                            </apex:facet>
+                      </apex:column>
+              
+              <apex:column headerValue="{!fh4} (Forecast)" value="{!res.Value_4__c}"> 
+                  <apex:facet name="footer">
+                      <apex:outputText value="{0,number,currency}">
+                        <apex:param value="{!totalCo.Value_4__c}"/>
+                      </apex:outputText>
+                  </apex:facet>
+              </apex:column>
+              
+              <apex:column headerValue="{!fh3} (Forecast)" value="{!res.Value_3__c}">
+                  <apex:facet name="footer">
+                      <apex:outputText value="{0,number,currency}">
+                        <apex:param value="{!totalCo.Value_3__c}"/>
+                      </apex:outputText>
+                  </apex:facet>
+              </apex:column>
+              
+              <apex:column headerValue="{!fh2} (Forecast)" value="{!res.Value_2__c}">
+                  <apex:facet name="footer">
+                      <apex:outputText value="{0,number,currency}">
+                        <apex:param value="{!totalCo.Value_2__c}"/>
+                      </apex:outputText>
+                  </apex:facet>
+              </apex:column>
+              
+              <apex:column headerValue="{!fh1} (Forecast)" value="{!res.Value_1__c}">
+                  <apex:facet name="footer">
+                      <apex:outputText value="{0,number,currency}">
+                        <apex:param value="{!totalCo.Value_1__c}"/>
+                      </apex:outputText>
+                  </apex:facet>
+              </apex:column>
+              
+              <apex:column headerValue="Current Qtr Forecast" value="{!res.LastQForecast__c}">
+                  <apex:facet name="footer">
+                      <apex:outputText value="{0,number,currency}">
+                        <apex:param value="{!totalCo.LastQForecast__c}"/>
+                      </apex:outputText>
+                  </apex:facet>
+              </apex:column>
+              
+              <apex:column headerValue="{!h8}" value="{!res.Val8__c}">
+                  <apex:facet name="footer">
+                      <apex:outputText value="{0,number,currency}">
+                        <apex:param value="{!totalCo.Val8__c}"/>
+                      </apex:outputText>
+                  </apex:facet>
+              </apex:column>
+              
+              <apex:column headerValue="{!h7}" value="{!res.Val7__c}">
+                  <apex:facet name="footer">
+                      <apex:outputText value="{0,number,currency}">
+                        <apex:param value="{!totalCo.Val7__c}"/>
+                      </apex:outputText>
+                  </apex:facet>
+              </apex:column>
+              
+              <apex:column headerValue="{!h6}" value="{!res.Val6__c}">
+                  <apex:facet name="footer">
+                      <apex:outputText value="{0,number,currency}">
+                        <apex:param value="{!totalCo.Val6__c}"/>
+                      </apex:outputText>
+                  </apex:facet>
+              </apex:column>
+              
+              <apex:column headerValue="{!h5}" value="{!res.Val5__c}">
+                  <apex:facet name="footer">
+                      <apex:outputText value="{0,number,currency}">
+                        <apex:param value="{!totalCo.Val5__c}"/>
+                      </apex:outputText>
+                  </apex:facet>
+              </apex:column>
+              
+              <apex:column headerValue="{!h4}" value="{!res.Val4__c}">
+                  <apex:facet name="footer">
+                      <apex:outputText value="{0,number,currency}">
+                        <apex:param value="{!totalCo.Val4__c}"/>
+                      </apex:outputText>
+                  </apex:facet>
+              </apex:column>
+              
+              <apex:column headerValue="{!h3}" value="{!res.Val3__c}">
+                  <apex:facet name="footer">
+                      <apex:outputText value="{0,number,currency}">
+                        <apex:param value="{!totalCo.Val3__c}"/>
+                      </apex:outputText>
+                  </apex:facet>
+              </apex:column>
+              
+              <apex:column headerValue="{!h2}" value="{!res.Val2__c}">
+                  <apex:facet name="footer">
+                      <apex:outputText value="{0,number,currency}">
+                        <apex:param value="{!totalCo.Val2__c}"/>
+                      </apex:outputText>
+                  </apex:facet>
+              </apex:column>
+              
+              <apex:column headerValue="{!h1}" value="{!res.Val1__c}">
+                  <apex:facet name="footer">
+                      <apex:outputText value="{0,number,currency}">
+                        <apex:param value="{!totalCo.Val1__c}"/>
+                      </apex:outputText>
+                  </apex:facet>
+              </apex:column>
+              
+              <apex:column headerValue="Detailed Report">
+<!--                      <a target="_blank" href="/00O60000003L9ug?pv0={!URLENCODE(res.Product_Category__c)}">Click for more info.</a> -->
+                    <a href="#" onclick="getReportDT('{!res.Product_Category__c}');">Click for more info.</a>
+              </apex:column>
+              
+          </apex:pageblockTable>  
+        </apex:pageBlock>
+        </apex:tab>
+    </apex:tabpanel>
+    </apex:form>
+</apex:page>
