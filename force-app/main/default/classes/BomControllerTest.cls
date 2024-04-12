@@ -27,7 +27,7 @@ public class BomControllerTest {
         Test.stopTest();
     }
 
-    
+    @IsTest(SeeAllData=true)
     static void getBomData() {        
         Product2 prod1 = new Product2(
             Name = 'Test Parent Product',
